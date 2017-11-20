@@ -9,8 +9,7 @@
             wordType="Noun"
             >
             <synonym>card1synonym1</synonym>
-            <synonym>card1synonym2</synonym>
-            <japaneseDisplay>japanesedisplay1</japaneseDisplay>
+            <japaneseDisplay>card1japanesedisplay</japaneseDisplay>
         </card>
 
     </deck>

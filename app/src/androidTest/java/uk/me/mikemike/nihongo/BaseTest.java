@@ -7,6 +7,7 @@ import org.junit.Before;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 import uk.me.mikemike.nihongo.model.Card;
 import uk.me.mikemike.nihongo.model.Deck;
@@ -52,9 +53,29 @@ public abstract class BaseTest {
         assertEquals(expected.getDescription(), b.getDescription());
     }
 
+
+    public void assertCardFieldsAreSame(Card expected, Card value){
+        assertEquals(expected.getCardType(), value.getCardType());
+        assertEquals(expected.getJapaneseDisplay(), value.getJapaneseDisplay());
+        assertEquals(expected.getJapaneseKanji(), value.getJapaneseKanji());
+        assertEquals(expected.getMainLanguage(), value.getMainLanguage());
+        assertEquals(expected.getJapaneseHiragana(), value.getJapaneseHiragana());
+        int i=0;
+        RealmList<String> valueS =value.getSynonyms();
+        for(String s: expected.getSynonyms()){
+            assertEquals(s, valueS.get(i));
+            i++;
+        }
+    }
+
     public void assertHasNumberOfCards(Deck d, int expected){
         assertEquals(expected, d.getCards().size());
     }
+
+    public void assertIsCardType(Card c, Card.CardType expected){
+        assertEquals(c.getCardType(), expected);
+    }
+
 
     @After
     public  void closeRealm(){

@@ -29,6 +29,13 @@ public class XmlImporterTest extends  BaseTest {
         Deck expected = new Deck("test1", "test1description", "test1author", new RealmList<Card>());
         assertDeckFieldsAreSame(expected, deck);
 
+        RealmList<String> s = new RealmList<>();
+        s.add("card1synonym1");
+        Card expectedCard = new Card("card1mainlanguage", "card1japanesehiragana",
+                            "card1japanesekanji", "card1japanesedisplay", s, Card.CardType.Noun);
+
+        assertCardFieldsAreSame(expectedCard, deck.getCards().first());
+
         deleteData();
     }
 
@@ -130,4 +137,18 @@ public class XmlImporterTest extends  BaseTest {
         assertEquals("card1japanesekanji", d.getCards().get(0).getJapaneseDisplay());
         deleteData();
     }
+
+    @Test
+    public void invalidWordTypeTest(){
+        XmlImporter importer = new XmlImporter(mRealm, InstrumentationRegistry.getTargetContext().getResources().getXml(R.xml.testinvalidwordtype),
+                "", "defaultauthor", 0);
+        importer.importData();
+        assertHasNumberOfDecks(1);
+        Deck d = getDecks().first();
+        assertHasNumberOfCards(d, 2);
+        assertIsCardType(d.getCards().get(0), Card.CardType.Other);
+        assertIsCardType(d.getCards().get(1), Card.CardType.Other);
+        deleteData();
+    }
+
 }

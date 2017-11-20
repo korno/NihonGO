@@ -39,6 +39,7 @@ import io.realm.Realm;
 import io.realm.RealmList;
 import uk.me.mikemike.nihongo.model.Card;
 import uk.me.mikemike.nihongo.model.Deck;
+import uk.me.mikemike.nihongo.utils.StringUtils;
 
 /**
  * @author mike
@@ -145,7 +146,7 @@ public class XmlImporter {
         String data;
         // null name not allowed
         data = mSource.getAttributeValue(null, DECK_NAME_ATTR);
-        if (isEmptyOrNull(data)) return null;
+        if (StringUtils.isEmptyOrNull(data)) return null;
         d.setName(data);
         // null description is ok, we will add a "No description" field
         data = mSource.getAttributeValue(null, DECK_DESCRIPTION_ATTR);
@@ -192,25 +193,25 @@ public class XmlImporter {
 
         // the kana is required
         data = mSource.getAttributeValue(null, CARD_JAPANESE_KANA_ATTR);
-        if(isEmptyOrNull(data)) return null;
+        if(StringUtils.isEmptyOrNull(data)) return null;
         c.setJapaneseHiragana(data);
 
         // main language is required
         data = mSource.getAttributeValue(null, CARD_MAIN_LANGUAGE_ATTR);
-        if(isEmptyOrNull(data)) return null;
+        if(StringUtils.isEmptyOrNull(data)) return null;
         c.setMainLanguage(data);
 
         data = mSource.getAttributeValue(null, CARD_JAPANESE_ATTR);
         // if there is no kanji lets use the hiragana, this is useful when there are words
         // with no kanji
-        c.setJapaneseKanji(isEmptyOrNull(data) ? c.getJapaneseHiragana() : data);
+        c.setJapaneseKanji(StringUtils.isEmptyOrNull(data) ? c.getJapaneseHiragana() : data);
 
         c.setSynonyms(new RealmList<String>());
 
         // try and get the word type
         Card.CardType type = Card.CardType.Other;
         try {
-            type = Card.CardType.valueOf(mSource.getAttributeValue(null, CARD_WORDTYPE_ATTR).toUpperCase());
+            type = Card.CardType.valueOf(mSource.getAttributeValue(null, CARD_WORDTYPE_ATTR));
         } catch (Exception e) {
             type = Card.CardType.Other;
         }
@@ -230,14 +231,14 @@ public class XmlImporter {
             if (name.equals(SYNONYM_TAG)) {
                 mSource.require(XmlPullParser.START_TAG, mNameSpace, SYNONYM_TAG);
                 String text = readText(mSource);
-                if(!isEmptyOrNull(text)){
+                if(!StringUtils.isEmptyOrNull(text)){
                     c.getSynonyms().add(text);
                 }
                 mSource.require(XmlPullParser.END_TAG, mNameSpace, SYNONYM_TAG);
             } else if (name.equals(CARD_JAPANESEDISPLAY_TAG)) {
                 mSource.require(XmlPullParser.START_TAG, mNameSpace, CARD_JAPANESEDISPLAY_TAG);
                 String text = readText(mSource);
-                if(!isEmptyOrNull(text)){
+                if(!StringUtils.isEmptyOrNull(text)){
                     c.setJapaneseDisplay(text);
                 }
                 mSource.require(XmlPullParser.END_TAG, mNameSpace, CARD_JAPANESEDISPLAY_TAG);
@@ -279,9 +280,5 @@ public class XmlImporter {
         return result.trim();
     }
 
-    protected boolean isEmptyOrNull(String s){
-        if(s == null) return true;
-        return s.trim().isEmpty();
-    }
 
 }
