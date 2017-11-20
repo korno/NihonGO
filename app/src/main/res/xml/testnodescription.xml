@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<decks>
+
+    <deck name="test1">
+        <card
+            mainLanguage="card1mainlanguage"
+            japaneseKanji="card1japanesekanji"
+            japaneseHiragana="card1japanesehiragana"
+            wordType="Noun"
+            >
+            <synonym>card1synonym1</synonym>
+            <synonym>card1synonym2</synonym>
+        </card>
+
+    </deck>
+
+</decks>

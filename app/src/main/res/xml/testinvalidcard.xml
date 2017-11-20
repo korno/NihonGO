@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<decks>
+
+    <deck name="test1" description="test1description" author="test1author">
+        <!-- main language is empty -->
+        <card
+            mainLanguage=""
+            japaneseKanji="card1japanesekanji"
+            japaneseHiragana="card1japanesehiragana"
+            wordType="Noun"
+            >
+            <synonym>card1synonym1</synonym>
+            <synonym>card1synonym2</synonym>
+        </card>
+        <!-- no main language attribute -->
+        <card
+            japaneseKanji="card1japanesekanji"
+            japaneseHiragana="card1japanesehiragana"
+            wordType="Noun"
+            >
+            <synonym>card1synonym1</synonym>
+            <synonym>card1synonym2</synonym>
+        </card>
+        <!-- main language is empty but with padding -->
+        <card
+            japaneseKanji="card1japanesekanji"
+            japaneseHiragana="card1japanesehiragana"
+            wordType="Noun"
+            mainLanguage=" "
+            >
+            <synonym>card1synonym1</synonym>
+            <synonym>card1synonym2</synonym>
+        </card>
+        <!-- japanese is empty string -->
+        <card
+            japaneseKanji="card1japanesekanji"
+            japaneseHiragana=""
+            wordType="Noun"
+            mainLanguage="aaa"
+            >
+            <synonym>card1synonym1</synonym>
+            <synonym>card1synonym2</synonym>
+        </card>
+        <!-- no japanese tag -->
+        <card
+            japaneseKanji="card1japanesekanji"
+            wordType="Noun"
+            mainLanguage="aaa"
+            >
+            <synonym>card1synonym1</synonym>
+            <synonym>card1synonym2</synonym>
+        </card>
+        <!-- japanese is empty but with padding -->
+        <card
+            japaneseKanji="card1japanesekanji"
+            japaneseHiragana=" "
+            wordType="Noun"
+            mainLanguage="aaa"
+            >
+            <synonym>card1synonym1</synonym>
+            <synonym>card1synonym2</synonym>
+        </card>
+
+    </deck>
+
+</decks>
