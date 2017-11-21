@@ -30,19 +30,27 @@
  */
 package uk.me.mikemike.nihongo.utils;
 
+import java.util.Calendar;
+import java.util.Date;
+
 /**
- * @author mike
- * Collection of useful string related functions
+ * Created by mike on 11/21/17.
+ * Provides some methods to manage dates
  */
-public final class StringUtils {
+public class DateUtils {
 
     /**
-     * Checks to see if a string is null or empty
-     * @param value the string to check
-     * @return true if the string is null or empty
+     * Add days to a date, this will roll over months and years
+     * @param d date that will be added from
+     * @param days how many days to add, can be negative
+     * @return a new date object representing the new date
      */
-    public static boolean isEmptyOrNull(String value){
-        if(value == null)return true;
-        return value.isEmpty();
+    public static Date addDaysToDate(Date d, int days){
+        if(d == null) throw new IllegalArgumentException("Date cannot be null");
+        Calendar c =  Calendar.getInstance();
+        c.setTime(d);
+        c.add(Calendar.DATE, days);
+        return c.getTime();
     }
+
 }

@@ -31,6 +31,8 @@
 package uk.me.mikemike.nihongo.data;
 
 
+
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
@@ -40,6 +42,10 @@ import io.realm.RealmList;
 import uk.me.mikemike.nihongo.model.Card;
 import uk.me.mikemike.nihongo.model.Deck;
 import uk.me.mikemike.nihongo.utils.StringUtils;
+import uk.me.mikemike.nihongo.utils.XmlUtils;
+
+import static uk.me.mikemike.nihongo.utils.XmlUtils.ignore;
+import static uk.me.mikemike.nihongo.utils.XmlUtils.readText;
 
 /**
  * @author mike
@@ -123,7 +129,7 @@ public class XmlImporter {
                         mRealm.copyToRealmOrUpdate(d);
                     }
                 } else {
-                    ignore();
+                    ignore(mSource);
                 }
 
             }
@@ -134,29 +140,26 @@ public class XmlImporter {
             mRealm.cancelTransaction();
             return;
         }
-
         mRealm.commitTransaction();
     }
 
 
     protected Deck loadDeck() throws IOException, XmlPullParserException {
+
         boolean isFixedOrder;
-        mSource.require(XmlPullParser.START_TAG, mNameSpace, DECK_TAG);
         Deck d = new Deck();
         String data;
-        // null name not allowed
-        data = mSource.getAttributeValue(null, DECK_NAME_ATTR);
-        if (StringUtils.isEmptyOrNull(data)) return null;
-        d.setName(data);
-        // null description is ok, we will add a "No description" field
-        data = mSource.getAttributeValue(null, DECK_DESCRIPTION_ATTR);
-        String s = mSource.getAttributeValue(null, DECK_FIXED_ORDER_ATTR);
+
+        mSource.require(XmlPullParser.START_TAG, mNameSpace, DECK_TAG);
+        d.setName(XmlUtils.getAttributeAndTrim(mSource,null, DECK_NAME_ATTR));
+        data = XmlUtils.getAttributeAndTrim(mSource,null, DECK_DESCRIPTION_ATTR);
+        String s = XmlUtils.getAttributeAndTrim(mSource,null, DECK_FIXED_ORDER_ATTR);
         isFixedOrder = s == null ? false : s.equalsIgnoreCase("true");
         d.setDescription(data == null ? mDefaultDeckDescription : data);
-        data = mSource.getAttributeValue(null, DECK_AUTHOR_TAG);
-        d.setAuthor(data == null ? mDefaultAuthor : data);
+        data = XmlUtils.getAttributeAndTrim(mSource,null, DECK_AUTHOR_TAG);
+        d.setAuthor(StringUtils.isEmptyOrNull(data) ? mDefaultAuthor : data);
         RealmList<Card> cards = new RealmList<>();
-        d.setCards(new RealmList<Card>());
+
         while (mSource.next() != XmlPullParser.END_TAG) {
 
             if (mSource.getEventType() != XmlPullParser.START_TAG) {
@@ -169,49 +172,38 @@ public class XmlImporter {
                 if(c != null){
                     cards.add(c);
                 }
-            } else {
-                ignore();
+            }
+            else {
+                ignore(mSource);
             }
 
         }
-        // are the enough cards?
-        if (cards.size() < mMinimumCards) return null;
+
         if (!isFixedOrder) {
-            Collections.shuffle(d.getCards());
+            Collections.shuffle(cards);
         }
         d.setCards(cards);
-        return d;
+        return isValidDeckImport(d) ? d : null;
     }
 
 
     protected Card loadCard() throws IOException, XmlPullParserException {
 
-        mSource.require(XmlPullParser.START_TAG, mNameSpace, CARD_TAG);
-        Card c = new Card();
 
+        Card c = new Card();
+        Card.CardType type;
         String data;
 
-        // the kana is required
-        data = mSource.getAttributeValue(null, CARD_JAPANESE_KANA_ATTR);
-        if(StringUtils.isEmptyOrNull(data)) return null;
-        c.setJapaneseHiragana(data);
-
-        // main language is required
-        data = mSource.getAttributeValue(null, CARD_MAIN_LANGUAGE_ATTR);
-        if(StringUtils.isEmptyOrNull(data)) return null;
-        c.setMainLanguage(data);
-
-        data = mSource.getAttributeValue(null, CARD_JAPANESE_ATTR);
-        // if there is no kanji lets use the hiragana, this is useful when there are words
-        // with no kanji
+        mSource.require(XmlPullParser.START_TAG, mNameSpace, CARD_TAG);
+        c.setJapaneseHiragana(XmlUtils.getAttributeAndTrim(mSource,null, CARD_JAPANESE_KANA_ATTR));
+        c.setMainLanguage(XmlUtils.getAttributeAndTrim(mSource,null, CARD_MAIN_LANGUAGE_ATTR));
+        data = XmlUtils.getAttributeAndTrim(mSource,null, CARD_JAPANESE_ATTR);
         c.setJapaneseKanji(StringUtils.isEmptyOrNull(data) ? c.getJapaneseHiragana() : data);
-
         c.setSynonyms(new RealmList<String>());
 
-        // try and get the word type
-        Card.CardType type = Card.CardType.Other;
+
         try {
-            type = Card.CardType.valueOf(mSource.getAttributeValue(null, CARD_WORDTYPE_ATTR));
+            type = Card.CardType.valueOf(XmlUtils.getAttributeAndTrim(mSource,null, CARD_WORDTYPE_ATTR));
         } catch (Exception e) {
             type = Card.CardType.Other;
         }
@@ -243,42 +235,28 @@ public class XmlImporter {
                 }
                 mSource.require(XmlPullParser.END_TAG, mNameSpace, CARD_JAPANESEDISPLAY_TAG);
             } else {
-                ignore();
+                ignore(mSource);
             }
         }
 
-        return c;
+        // we have traversed the element and set what we could, lets check if it is a valid card
+        return isValidCardImport(c) ? c : null;
     }
 
 
-    // based on googles example
-    protected void ignore() throws XmlPullParserException, IOException {
-        if (mSource.getEventType() != XmlPullParser.START_TAG) {
-            throw new IllegalStateException();
-        }
-        int depth = 1;
-        while (depth != 0) {
-            switch (mSource.next()) {
-                case XmlPullParser.END_TAG:
-                    depth--;
-                    break;
-                case XmlPullParser.START_TAG:
-                    depth++;
-                    break;
-            }
-        }
 
+    protected boolean isValidDeckImport(Deck d){
+        if(d==null)return false;
+        if(StringUtils.isEmptyOrNull(d.getName())) return false;
+        if(d.getCards().size() < mMinimumCards) return false;
+        return true;
     }
 
-    // more google
-    protected String readText(XmlPullParser parser) throws IOException, XmlPullParserException {
-        String result = "";
-        if (parser.next() == XmlPullParser.TEXT) {
-            result = parser.getText();
-            parser.nextTag();
-        }
-        return result.trim();
+    protected boolean isValidCardImport(Card c){
+        if(c == null) return false;
+        if(StringUtils.isEmptyOrNull(c.getJapaneseHiragana())) return false;
+        if(StringUtils.isEmptyOrNull(c.getMainLanguage())) return false;
+        return true;
     }
-
 
 }

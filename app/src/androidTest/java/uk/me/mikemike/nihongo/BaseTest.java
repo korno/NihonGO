@@ -76,6 +76,18 @@ public abstract class BaseTest {
         assertEquals(c.getCardType(), expected);
     }
 
+    public void assertNoDeckWithName(String name){
+        assertEquals(null, mRealm.where(Deck.class).equalTo("mName", name).findFirst());
+    }
+
+    public Deck getDeckByName(String name){
+        return mRealm.where(Deck.class).equalTo("mName", name).findFirst();
+    }
+
+    public Card getDummyNonRealmCard(){
+        return new Card("main", "hiragana",
+                "kanji", "display", new RealmList<String>(), Card.CardType.Noun);
+    }
 
     @After
     public  void closeRealm(){

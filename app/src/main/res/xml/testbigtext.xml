@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<decks>
+
+    <!-- test1 should be imported with one card -->
+    <deck name="test1" description="test1description" author="test1author">
+        <card
+            mainLanguage="card1mainlanguage"
+            japaneseKanji="card1japanesekanji"
+            japaneseHiragana="card1japanesehiragana"
+            wordType="Noun"
+            >
+            <synonym>card1synonym1</synonym>
+            <japaneseDisplay>card1japanesedisplay</japaneseDisplay>
+        </card>
+    </deck>
+
+    <!-- test2 will not be imported as there are no cards -->
+    <deck name="test2" description="test2description" author="test2author">
+        <card
+            japaneseKanji="card1japanesekanji"
+            japaneseHiragana="card1japanesehiragana"
+            wordType="Noun"
+            >
+            <synonym>card1synonym1</synonym>
+            <japaneseDisplay>card1japanesedisplay</japaneseDisplay>
+        </card>
+    </deck>
+
+
+    <!-- test1 should be imported with one card -->
+    <deck name="test4" description="test1description" author="test1author">
+        <card
+            mainLanguage="card1mainlanguage"
+            japaneseKanji="card1japanesekanji"
+            japaneseHiragana="card1japanesehiragana"
+            wordType="Noun"
+            >
+            <synonym>card1synonym1</synonym>
+            <japaneseDisplay>card1japanesedisplay</japaneseDisplay>
+        </card>
+        <card
+            mainLanguage=""
+            japaneseKanji="card1japanesekanji"
+            japaneseHiragana="card1japanesehiragana"
+            wordType="Noun"
+            >
+            <synonym>card1synonym1</synonym>
+            <japaneseDisplay>card1japanesedisplay</japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="card1japanesekanji"
+            japaneseHiragana="card1japanesehiragana"
+            wordType="Noun"
+            >
+            <synonym>card1synonym1</synonym>
+            <japaneseDisplay>card1japanesedisplay</japaneseDisplay>
+        </card>
+    </deck>
+
+
+    <!-- test5 will not be imported as there are no cards -->
+    <deck name="test5" description="test2description" author="test2author">
+
+    </deck>
+</decks>

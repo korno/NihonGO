@@ -10,6 +10,7 @@ import uk.me.mikemike.nihongo.model.Card;
 import uk.me.mikemike.nihongo.model.Deck;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 
 /**
  * Created by mike on 11/16/17.
@@ -149,6 +150,27 @@ public class XmlImporterTest extends  BaseTest {
         assertIsCardType(d.getCards().get(0), Card.CardType.Other);
         assertIsCardType(d.getCards().get(1), Card.CardType.Other);
         deleteData();
+    }
+
+    /*this is a big test which will fail if any of the above tests fail
+     */
+    @Test
+    public void importXmlWithValidAndInvalidDecks(){
+        XmlImporter importer = new XmlImporter(mRealm, InstrumentationRegistry.getTargetContext().getResources().getXml(R.xml.testbigtext),
+                "", "defaultauthor", 1);
+        importer.importData();
+        assertHasNumberOfDecks(2);
+        assertNoDeckWithName("test2");
+        assertNoDeckWithName("test3");
+        Deck deck1 = getDeckByName("test1");
+        assertNotNull(deck1);
+        assertHasNumberOfCards(deck1, 1);
+        Deck deck4 = getDeckByName("test4");
+        assertNotNull(deck4);
+        assertHasNumberOfCards(deck4, 1);
+        deleteData();
+        System.out.println("checking new deck");
+
     }
 
 }
