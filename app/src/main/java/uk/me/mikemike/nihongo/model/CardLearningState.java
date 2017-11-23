@@ -48,7 +48,7 @@ public class CardLearningState extends RealmObject {
     protected Card mSourceCard;
     protected Date mNextDueDate;
     protected float mEasiness;
-    protected int mConsecutiveCorrectAnswers;
+    protected int mReps;
     protected float mInterval;
 
 
@@ -56,7 +56,7 @@ public class CardLearningState extends RealmObject {
     public Card getSourceCard(){return mSourceCard;}
     public Date getNextDueData(){return mNextDueDate;}
     public float getEasyness(){return mEasiness;}
-    public int getConsecutiveCorrectAnswers(){return mConsecutiveCorrectAnswers;}
+    public int getReps(){return mReps;}
     public float getInterval(){return mInterval;}
 
 
@@ -71,7 +71,7 @@ public class CardLearningState extends RealmObject {
         mSourceCard = card;
         mNextDueDate = nextDueDate;
         mEasiness = easiness;
-        mConsecutiveCorrectAnswers = consecutiveCorrectAnswers;
+        mReps = consecutiveCorrectAnswers;
         mInterval = interval;
     }
 
@@ -86,7 +86,7 @@ public class CardLearningState extends RealmObject {
         mNextDueDate = startDate;
         mInterval = 0;
         mEasiness = STARTING_E_VALUE;
-        mConsecutiveCorrectAnswers = 0;
+        mReps = 0;
     }
 
     /**
@@ -102,23 +102,24 @@ public class CardLearningState extends RealmObject {
 
         float oldE = mEasiness;
         if(answerLevel < 3){
-            mInterval = 1;
-            mConsecutiveCorrectAnswers = 0;
+            mInterval = 0;
+            mReps = 1;
         }
         else {
             // newEF = oldEF + (0.1 - (5-grade)*(0.08+(5-grade)*0.02));
             mEasiness = Math.max(1.3f, oldE + (0.1f - (5f-answerLevel)*(0.08f+(5f-answerLevel)*0.02f)));
-            mConsecutiveCorrectAnswers++;
-            switch (mConsecutiveCorrectAnswers){
-                case 1:
-                    mInterval=1;
-                    break;
-                case 2:
-                    mInterval=6;
-                    break;
-                default:
-                   mInterval = mInterval * mEasiness;
-            }
+            mReps++;
+        }
+
+        switch (mReps){
+            case 1:
+                mInterval=1;
+                break;
+            case 2:
+                mInterval=6;
+                break;
+            default:
+                mInterval = mInterval * mEasiness;
         }
 
         mNextDueDate = DateUtils.addDaysToDate(date, (int)Math.ceil(mInterval));
