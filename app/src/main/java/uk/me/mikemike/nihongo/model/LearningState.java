@@ -39,13 +39,13 @@ import uk.me.mikemike.nihongo.utils.DateUtils;
 
 /**
  * @author mike
- * Represents the learning state of a single card.
+ * Represents a learning state for something, implements the supermemo 2 algorithym
  */
-public class CardLearningState extends RealmObject {
+public class LearningState extends RealmObject {
+
     @PrimaryKey
     @Required
     protected String mCardLearningStateID = UUID.randomUUID().toString();
-    protected Card mSourceCard;
     protected Date mNextDueDate;
     protected float mEasiness;
     protected int mReps;
@@ -53,28 +53,43 @@ public class CardLearningState extends RealmObject {
 
 
     public String getCardLearningStateID(){return mCardLearningStateID;}
-    public Card getSourceCard(){return mSourceCard;}
-    public Date getNextDueData(){return mNextDueDate;}
+    public Date getNextDueDate(){return mNextDueDate;}
     public float getEasyness(){return mEasiness;}
     public int getReps(){return mReps;}
     public float getInterval(){return mInterval;}
 
 
     public static float STARTING_E_VALUE = 2.5f;
+    public static float MINIMUM_E_VALUE = 1.3f;
 
     /* required by realm */
-    public CardLearningState(){}
+    public LearningState(){
+        mNextDueDate = new Date();
+        mEasiness = STARTING_E_VALUE;
+        mReps = 0;
+        mInterval = 0;
+        mNextDueDate = new Date();
+    }
 
-    public CardLearningState(Card card, Date nextDueDate, float easiness, int consecutiveCorrectAnswers,
-                                float interval){
-        if(card == null)throw new IllegalArgumentException("the source card must not be null");
-        mSourceCard = card;
+    /**
+     *
+     * @param nextDueDate The next date the test will be due
+     * @param easiness The starting easiness value. Must be greater or equal to  {@value #MINIMUM_E_VALUE }
+     * @param consecutiveCorrectAnswers The number of consecutive correct answers. Must be greate than or equal to zero
+     * @param interval The  interval to use.
+     */
+    public LearningState(Date nextDueDate, float easiness, int consecutiveCorrectAnswers,
+                         float interval){
+
+        if(nextDueDate == null) throw new IllegalArgumentException("next due date must not be null");
+        if(easiness < MINIMUM_E_VALUE) throw new IllegalArgumentException("the easiness value is less than the minimum value");
+        if(interval < 0) throw new IllegalArgumentException("the interval must be 0 or greater");
+        if(consecutiveCorrectAnswers < 0) throw new IllegalArgumentException("the number of consecutive correct answers must be 0 or more");
         mNextDueDate = nextDueDate;
         mEasiness = easiness;
         mReps = consecutiveCorrectAnswers;
         mInterval = interval;
     }
-
 
     /**
      * Sets the study state to represent a new study item. This will reset all previous data if the item
@@ -103,15 +118,18 @@ public class CardLearningState extends RealmObject {
         float oldE = mEasiness;
         if(answerLevel < 3){
             mInterval = 0;
-            mReps = 1;
+            mReps = 0;
         }
         else {
             // newEF = oldEF + (0.1 - (5-grade)*(0.08+(5-grade)*0.02));
-            mEasiness = Math.max(1.3f, oldE + (0.1f - (5f-answerLevel)*(0.08f+(5f-answerLevel)*0.02f)));
+            mEasiness = Math.max(MINIMUM_E_VALUE, oldE + (0.1f - (5f-answerLevel)*(0.08f+(5f-answerLevel)*0.02f)));
             mReps++;
         }
 
         switch (mReps){
+            case 0:
+                mInterval=1;
+                break;
             case 1:
                 mInterval=1;
                 break;

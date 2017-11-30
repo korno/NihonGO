@@ -30,9 +30,30 @@
  */
 package uk.me.mikemike.nihongo.data;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
+import uk.me.mikemike.nihongo.model.Deck;
+
 /**
+ * The data access class for Nihongo, provides queries and methods to query the nihongo realm
  * Created by mike on 11/16/17.
  */
 
-public class DataRepository {
+public class NihongoRepository {
+
+    protected Realm mRealm;
+    protected RealmResults<Deck> mAllDecks=null;
+
+    public NihongoRepository(Realm realm){
+        if(realm == null) throw new IllegalArgumentException("realm must not be null");
+        mRealm = realm;
+    }
+
+    public RealmResults<Deck> getAllDecks(){
+        if(mAllDecks == null){
+            mAllDecks = mRealm.where(Deck.class).findAll();
+        }
+        return mAllDecks;
+    }
+
 }

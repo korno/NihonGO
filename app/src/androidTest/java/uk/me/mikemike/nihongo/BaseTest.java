@@ -5,12 +5,16 @@ import android.support.test.InstrumentationRegistry;
 import org.junit.After;
 import org.junit.Before;
 
+import java.util.Date;
+
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 import uk.me.mikemike.nihongo.model.Card;
 import uk.me.mikemike.nihongo.model.Deck;
+import uk.me.mikemike.nihongo.model.LearningState;
+import uk.me.mikemike.nihongo.model.StudyCard;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -32,10 +36,16 @@ public abstract class BaseTest {
     }
 
 
+    public void assertMoreThan(float lowlimit, float value){
+        assertEquals(true, value >= lowlimit);
+    }
+
     public void deleteData(){
         mRealm.beginTransaction();
         mRealm.where(Card.class).findAll().deleteAllFromRealm();
         mRealm.where(Deck.class).findAll().deleteAllFromRealm();
+        mRealm.where(LearningState.class).findAll().deleteAllFromRealm();
+        mRealm.where(StudyCard.class).findAll().deleteAllFromRealm();
         mRealm.commitTransaction();
     }
 
@@ -88,6 +98,26 @@ public abstract class BaseTest {
         return new Card("main", "hiragana",
                 "kanji", "display", new RealmList<String>(), Card.CardType.Noun);
     }
+
+    public LearningState getDummyNonRealmLearningState(){
+        return new LearningState(new Date(),LearningState.STARTING_E_VALUE, 0, 0);
+    }
+
+    public void addDecks(int count, int cardCount){
+        for(int i =0; i<count; i++){
+            String currentCount = String.valueOf(i);
+            Deck d = new Deck("deck_" + currentCount, "description_" + currentCount, "test_author",
+                            new RealmList<Card>());
+            mRealm.beginTransaction();
+            Deck managedD = mRealm.copyToRealmOrUpdate(d);
+
+
+
+            mRealm.commitTransaction();
+
+        }
+    }
+
 
     @After
     public  void closeRealm(){
