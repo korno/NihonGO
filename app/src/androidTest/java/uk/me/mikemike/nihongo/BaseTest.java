@@ -15,6 +15,8 @@ import uk.me.mikemike.nihongo.model.Card;
 import uk.me.mikemike.nihongo.model.Deck;
 import uk.me.mikemike.nihongo.model.LearningState;
 import uk.me.mikemike.nihongo.model.StudyCard;
+import uk.me.mikemike.nihongo.model.StudyDeck;
+import uk.me.mikemike.nihongo.model.StudySession;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -42,10 +44,13 @@ public abstract class BaseTest {
 
     public void deleteData(){
         mRealm.beginTransaction();
+        mRealm.where(StudySession.class).findAll().deleteAllFromRealm();
         mRealm.where(Card.class).findAll().deleteAllFromRealm();
         mRealm.where(Deck.class).findAll().deleteAllFromRealm();
         mRealm.where(LearningState.class).findAll().deleteAllFromRealm();
         mRealm.where(StudyCard.class).findAll().deleteAllFromRealm();
+        mRealm.where(StudyDeck.class).findAll().deleteAllFromRealm();
+
         mRealm.commitTransaction();
     }
 
@@ -56,6 +61,8 @@ public abstract class BaseTest {
     public RealmResults<Deck> getDecks(){
         return mRealm.where(Deck.class).findAll();
     }
+
+    public RealmResults<StudyDeck> getStudyDecks() { return mRealm.where(StudyDeck.class).findAll();}
 
     public void assertDeckFieldsAreSame(Deck expected, Deck b){
         assertEquals(expected.getName(), b.getName());
@@ -75,6 +82,15 @@ public abstract class BaseTest {
         for(String s: expected.getSynonyms()){
             assertEquals(s, valueS.get(i));
             i++;
+        }
+    }
+
+
+    public void assertStudyDeckFieldsAreSame(StudyDeck expected, StudyDeck d, boolean checkSourceDeck){
+        assertEquals(expected.getStudyDeckID(), d.getStudyDeckID());
+        assertEquals(expected.getName(), d.getName());
+        if(checkSourceDeck){
+            assertDeckFieldsAreSame(expected.getSourceDeck(), d.getSourceDeck());
         }
     }
 
@@ -103,21 +119,52 @@ public abstract class BaseTest {
         return new LearningState(new Date(),LearningState.STARTING_E_VALUE, 0, 0);
     }
 
-    public void addDecks(int count, int cardCount){
+    public void addDecks(int count, int cardCount, boolean addStudyDeck){
         for(int i =0; i<count; i++){
             String currentCount = String.valueOf(i);
             Deck d = new Deck("deck_" + currentCount, "description_" + currentCount, "test_author",
                             new RealmList<Card>());
             mRealm.beginTransaction();
             Deck managedD = mRealm.copyToRealmOrUpdate(d);
-
-
-
+            for(int y=0; y<cardCount; y++){
+                String currentCardCount = String.valueOf(y);
+                Card c = new Card("mainLanguage" + currentCardCount, "hiragana" + currentCardCount,
+                        "kanji" + currentCardCount, "display" + currentCardCount, new RealmList<String>(), Card.CardType.Other);
+                managedD.getCards().add(c);
+            }
             mRealm.commitTransaction();
 
         }
+        if(addStudyDeck){
+            for(Deck dd: mRealm.where(Deck.class).findAll()){
+                addStudyDeck(dd);
+            }
+        }
     }
 
+
+    public void addStudyDeck(Deck d){
+        StudyDeck sd = new StudyDeck(d.getName(), new RealmList<StudyCard>(), d);
+        mRealm.beginTransaction();
+        StudyDeck managedDeck = mRealm.copyToRealmOrUpdate(sd);
+        for(Card c: d.getCards()){
+            managedDeck.getStudyCards().add(new StudyCard(c, new LearningState()));
+        }
+        mRealm.commitTransaction();
+    }
+
+
+    public RealmResults<StudySession> getStudySessions(){
+        return mRealm.where(StudySession.class).findAll();
+    }
+
+    public RealmResults<LearningState> getLearningStates(){
+        return mRealm.where(LearningState.class).findAll();
+    }
+
+    public RealmResults<StudyCard> getStudyCards(){
+        return  mRealm.where(StudyCard.class).findAll();
+    }
 
     @After
     public  void closeRealm(){

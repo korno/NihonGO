@@ -34,6 +34,8 @@ package uk.me.mikemike.nihongo.model;
 import java.util.UUID;
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.RealmResults;
+import io.realm.annotations.LinkingObjects;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
 
@@ -51,7 +53,10 @@ public class Deck extends RealmObject {
     protected String mDescription;
     protected String mAuthor;
     protected RealmList<Card> mCards;
+    @LinkingObjects("mSourceDeck")
+    protected final RealmResults<StudyDeck> mStudyDecks=null;
 
+    public RealmResults<StudyDeck> getStudyDecksUsingThisDeck(){return mStudyDecks;}
     public String getName(){return mName;}
     public String getDescription(){return mDescription;}
     public String getAuthor(){return mAuthor;}

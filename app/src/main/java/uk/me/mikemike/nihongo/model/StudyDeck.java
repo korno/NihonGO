@@ -31,9 +31,13 @@
 
 package uk.me.mikemike.nihongo.model;
 
+import java.util.Date;
 import java.util.UUID;
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.RealmResults;
+import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.Required;
 
 /**
  *
@@ -42,22 +46,33 @@ import io.realm.RealmObject;
  */
 public class StudyDeck extends RealmObject {
 
+    @PrimaryKey
+    @Required
     protected String mStudyDeckID = UUID.randomUUID().toString();
+
     protected String mName;
     protected RealmList<StudyCard> mStudyCards;
+    protected Deck mSourceDeck;
 
+    public String getStudyDeckID(){return mStudyDeckID;}
     public String getName(){return mName;}
     public RealmList<StudyCard> getStudyCards() { return mStudyCards;}
+    public Deck getSourceDeck() { return mSourceDeck; }
 
 
     /* required by realm */
     public StudyDeck(){
     }
 
-    public StudyDeck(String name, RealmList<StudyCard> studyCards){
+    public StudyDeck(String name, RealmList<StudyCard> studyCards, Deck sourceDeck){
         mStudyCards = studyCards;
         mName = name;
+        mSourceDeck = sourceDeck;
     }
 
+    public RealmResults<StudyCard> getCardsWithNextReviewDateOlderThan(Date date){
+        if(date == null) throw new IllegalArgumentException("the date must not be null");
+        return mStudyCards.where().lessThanOrEqualTo("mLearningState.mNextDueDate", date).findAll();
+    }
 
 }

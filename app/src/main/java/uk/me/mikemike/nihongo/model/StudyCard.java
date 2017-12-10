@@ -31,9 +31,8 @@
 
 package uk.me.mikemike.nihongo.model;
 
-import java.util.Date;
+
 import java.util.UUID;
-import io.realm.Realm;
 import io.realm.RealmObject;
 
 /**
@@ -59,29 +58,6 @@ public class StudyCard extends RealmObject {
         if(state == null) throw new IllegalArgumentException("the learning state cannot be null");
         mSourceCard = card;
         mLearningState = state;
-    }
-
-    public static StudyCard StartStudying(final Card source, final Date firstStudyDate, Realm destination){
-        if(source == null) throw new IllegalArgumentException("the source card cannot be null");
-        if(firstStudyDate == null) throw new IllegalArgumentException("the first study date cannot be null");
-        if(destination == null) throw new IllegalArgumentException("the destination realm cannot be null");
-        if(source.isManaged() == false) throw new IllegalArgumentException("The source card is not managed by realm");
-        if(source.isValid() == false) throw new IllegalArgumentException("the source card is not valid");
-
-        final LearningState learningState = new LearningState();
-        learningState.startLearning(firstStudyDate);
-        final StudyCard studyCard = new StudyCard(source, learningState);
-
-        destination.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                realm.insert(learningState);
-                realm.insert(studyCard);
-            }
-
-        });
-
-        return studyCard.isManaged() ? studyCard : null;
     }
 
 }

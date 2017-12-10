@@ -30,30 +30,232 @@
  */
 package uk.me.mikemike.nihongo.data;
 
+import java.util.Date;
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
+import uk.me.mikemike.nihongo.model.Card;
 import uk.me.mikemike.nihongo.model.Deck;
+import uk.me.mikemike.nihongo.model.LearningState;
+import uk.me.mikemike.nihongo.model.StudyCard;
+import uk.me.mikemike.nihongo.model.StudyDeck;
+import uk.me.mikemike.nihongo.model.StudySession;
+import uk.me.mikemike.nihongo.utils.DateUtils;
 
 /**
- * The data access class for Nihongo, provides queries and methods to query the nihongo realm
+ * The data access class for Nihongo, provides queries and methods to query the nihongo realm data store.
  * Created by mike on 11/16/17.
  */
-
 public class NihongoRepository {
 
     protected Realm mRealm;
-    protected RealmResults<Deck> mAllDecks=null;
+    protected RealmResults<Deck> mAllDecks = null;
+    protected RealmResults<StudyDeck> mAllStudyDecks = null;
+    protected RealmResults<Deck> mDecksNotBeingStudied = null;
 
-    public NihongoRepository(Realm realm){
-        if(realm == null) throw new IllegalArgumentException("realm must not be null");
+
+    public Realm getConnectedRealm() {
+        return mRealm;
+    }
+
+
+    public NihongoRepository(Realm realm) {
+        if (realm == null) throw new IllegalArgumentException("realm must not be null");
         mRealm = realm;
     }
 
-    public RealmResults<Deck> getAllDecks(){
-        if(mAllDecks == null){
+    /**
+     * Returns all the decks in the repository. This includes decks that are being studied and
+     * decks that are not being studied.
+     *
+     * @return A RealmResults that contains all the decks.
+     */
+    public RealmResults<Deck> getAllDecks() {
+        if (mAllDecks == null) {
             mAllDecks = mRealm.where(Deck.class).findAll();
         }
         return mAllDecks;
     }
 
+    /**
+     * Gets the number of decks present in the realm
+     *
+     * @return the number of decks present in the realm
+     */
+    public int getTotalNumberOfDecks() {
+        return getAllDecks().size();
+    }
+
+
+    /**
+     * Gets all of the StudyDecks in the repository
+     *
+     * @return A RealmResults that contains all the study decks
+     */
+    public RealmResults<StudyDeck> getAllStudyDecks() {
+        if (mAllStudyDecks == null) {
+            mAllStudyDecks = mRealm.where(StudyDeck.class).findAll();
+        }
+        return mAllStudyDecks;
+    }
+
+    /**
+     * Gets the number of study decks in the realm
+     *
+     * @return the number of study decks in the realm
+     */
+    public int getTotalNumberOfStudyDecks() {
+        return getAllStudyDecks().size();
+    }
+
+
+    /**
+     * Gets a StudyDeck by its ID
+     *
+     * @param id The Id to use must not be null
+     * @return The StudyDeck or null if not found
+     */
+    public StudyDeck getStudyDeckByID(String id) {
+        if (id == null) throw new IllegalArgumentException("The ID must not be null");
+        return mRealm.where(StudyDeck.class).equalTo("mStudyDeckID", id).findFirst();
+    }
+
+
+    /**
+     * Gets all study decks that have a StudyCard where the review date is older than the
+     * date passed
+     *
+     * @param date the date that any study carss next review date must be older than
+     * @return A RealmResults that contains all study decks with outstanding study decks
+     */
+    public RealmResults<StudyDeck> getStudyDecksWithReviewsWaiting(Date date) {
+        if (date == null) throw new IllegalArgumentException("the date must not be null");
+        RealmResults<StudyDeck> results;
+        results = mRealm.where(StudyDeck.class).lessThanOrEqualTo("mStudyCards.mLearningState.mNextDueDate", date).findAll();
+        return results;
+    }
+
+
+    /**
+     * Performs the spaced repetition algorithm on the learning state. This method just handles wraping the call in a realm
+     * transaction and canceling the transaction if something fails.
+     *
+     * @param s     The learning state to invoke the performSR method on
+     * @param score the score
+     * @param date  the date to use
+     */
+    public void performSR(LearningState s, int score, Date date) {
+        if (s == null) throw new IllegalArgumentException("the learning state must not be null");
+        try {
+            mRealm.beginTransaction();
+            s.performSR(score, date);
+            mRealm.commitTransaction();
+        } catch (Exception e) {
+            if (mRealm.isInTransaction()) {
+                mRealm.cancelTransaction();
+            }
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Creates a new StudyDeck and collection of StudyCards for the deck passed to it and all of its cards
+     * The maxCardsPerDay and intervalBetweenCards allow all the cards first study date to spread over an interval
+     *
+     * @param deck                    The deck to use
+     * @param date                    The start date for the first study
+     * @param maxCardsPerDay          how many cards will be set for each day
+     * @param intervalBetweenMaxCards the interval between each max cards collection. set to zero for all study cards to have the same start day
+     * @return The managed StudyDeck representing the deck
+     */
+    public StudyDeck startStudying(Deck deck, Date date, int maxCardsPerDay, int intervalBetweenMaxCards) {
+
+        if (deck == null) throw new IllegalArgumentException("the deck must not be null");
+        if (date == null) throw new IllegalArgumentException("the date must not be null");
+        if (maxCardsPerDay <= 0)
+            throw new IllegalArgumentException("the max cards per day must be a positive integer");
+        if (intervalBetweenMaxCards < 0)
+            throw new IllegalArgumentException("the interval between max cards must be > 0");
+
+        try {
+            mRealm.beginTransaction();
+            Date current = date;
+            int cardCount = 0;
+            StudyDeck d = new StudyDeck(deck.getName(), new RealmList<StudyCard>(), deck);
+            for (Card c : deck.getCards()) {
+                StudyCard sc = new StudyCard(c, new LearningState(current, LearningState.STARTING_E_VALUE, 0, 0));
+                d.getStudyCards().add(sc);
+                cardCount++;
+                if (cardCount == maxCardsPerDay) {
+                    cardCount = 0;
+                    current = DateUtils.addDaysToDate(current, intervalBetweenMaxCards);
+                }
+            }
+
+            StudyDeck managedDeck = mRealm.copyToRealmOrUpdate(d);
+            mRealm.commitTransaction();
+            return managedDeck;
+        } catch (Exception e) {
+            if (mRealm.isInTransaction()) {
+                mRealm.cancelTransaction();
+            }
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Gets all the decks in the realm that are not being studied (i.e there are no StudyDeck objects that
+     * reference them)
+     *
+     * @return a realm results containing the decks
+     */
+    public RealmResults<Deck> getAllDecksNotBeingStudied() {
+        if (mDecksNotBeingStudied == null) {
+            mDecksNotBeingStudied = mRealm.where(Deck.class).isEmpty("mStudyDecks").findAll();
+        }
+        return mDecksNotBeingStudied;
+    }
+
+
+    /**
+     * Returns the number of decks that are not being studied (i.e. don't have a StudyDeck that references them)
+     *
+     * @return
+     */
+    public int getNumberOfDecksNotBeingStudied() {
+        return getAllDecksNotBeingStudied().size();
+    }
+
+    /**
+     * Creates a new study session (inserted into realm) from the studydeck with cards with review dates old than date
+     * @param deck The Studydeck to use
+     * @param date The date to use
+     * @return a managed studydeck
+     */
+    public StudySession CreateStudySession(StudyDeck deck, Date date) {
+        StudySession s = new StudySession(deck, date);
+        mRealm.beginTransaction();
+        StudySession mss = mRealm.copyToRealmOrUpdate(s);
+        mRealm.commitTransaction();
+        return mss;
+    }
+
+    public boolean answerStudySessionJapaneseAnswer(StudySession session, String answer){
+        boolean result;
+        try{
+            mRealm.beginTransaction();
+            result = session.answerJapanese(answer);
+            mRealm.commitTransaction();
+            return result;
+        }
+        catch (Exception e){
+            if(mRealm.isInTransaction()) {
+                mRealm.cancelTransaction();
+            }
+            throw new RuntimeException(e);
+        }
+
+    }
+
 }
+
