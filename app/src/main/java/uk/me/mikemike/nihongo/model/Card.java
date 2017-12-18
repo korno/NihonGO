@@ -36,13 +36,13 @@ import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
+import uk.me.mikemike.nihongo.utils.StringUtils;
 
 /**
  * @author mike
  * Represents a single vocabulary item also known as a flash card
  */
 public class Card extends RealmObject {
-
 
     public enum CardType {
         Other,
@@ -117,6 +117,35 @@ public class Card extends RealmObject {
     */
     public Card(){
 
+    }
+
+    /**
+     * Returns Japanese display if present otherwise the normal Japanese.
+     * @return
+     */
+    public String getJapaneseDisplayIfPresentKanjiIfNot(){
+        return StringUtils.isEmptyOrNull(mJapaneseDisplay) ? mJapaneseKanji : mJapaneseDisplay;
+    }
+
+
+    public boolean hasSynonyms(){
+       return mSynonyms.size() > 0;
+    }
+
+    public String createSynonymsString(String seperator){
+        if(seperator == null) throw new IllegalArgumentException("The seperator must not be null");
+        String list = "";
+        if(hasSynonyms()){
+            list = mSynonyms.get(0);
+            for(int i=1
+                ; i< mSynonyms.size()-1; i++){
+                list += seperator + mSynonyms.get(i);
+            }
+            if(mSynonyms.size() > 1){
+                list += seperator + mSynonyms.get(mSynonyms.size()-1);
+            }
+        }
+        return list;
     }
 
 }

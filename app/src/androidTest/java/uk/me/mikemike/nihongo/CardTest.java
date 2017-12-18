@@ -20,4 +20,54 @@ public class CardTest extends BaseTest {
         c.setCardType(Card.CardType.Phrase);
         assertEquals(Card.CardType.Phrase, c.getCardType());
     }
+
+
+    @Test
+    public void getJapaneseDisplayIfPresentKanjiIfNot_NoDisplayJapaneseTest(){
+        Card c = new Card();
+        c.setJapaneseKanji("kanji");
+        c.setJapaneseDisplay(null);
+        assertEquals("kanji", c.getJapaneseDisplayIfPresentKanjiIfNot());
+    }
+
+
+    @Test
+    public void getJapaneseDisplayIfPresentKanjiIfNot_YesDisplayJapaneseTest(){
+        Card c = new Card();
+        c.setJapaneseKanji("kanji");
+        c.setJapaneseDisplay("display");
+        assertEquals("display", c.getJapaneseDisplayIfPresentKanjiIfNot());
+    }
+
+    @Test
+    public void createSynonymsString_NoSynonymsTest(){
+        addDecks(1, 1, false);
+        Card c = getDecks().first().getCards().first();
+        assertEquals("", c.createSynonymsString(","));
+    }
+
+    @Test
+    public void createSynonymsString_OneSynonymTest(){
+        addDecks(1, 1, false);
+        Card c = getDecks().first().getCards().first();
+        mRealm.beginTransaction();
+        c.getSynonyms().add("one");
+        mRealm.commitTransaction();
+        assertEquals("one", c.createSynonymsString(","));
+    }
+
+    @Test
+    public void createSynonymsString_MultipleSynonymTest(){
+        addDecks(1, 1, false);
+        Card c = getDecks().first().getCards().first();
+        mRealm.beginTransaction();
+        c.getSynonyms().add("one");
+        c.getSynonyms().add("two");
+        c.getSynonyms().add("three");
+        mRealm.commitTransaction();
+        // not sure how realm will actually handle insert order?
+        assertEquals("one,two,three", c.createSynonymsString(","));
+    }
+
+
 }

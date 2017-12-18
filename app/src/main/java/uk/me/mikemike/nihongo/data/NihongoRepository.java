@@ -232,7 +232,7 @@ public class NihongoRepository {
      * @param date The date to use
      * @return a managed studydeck
      */
-    public StudySession CreateStudySession(StudyDeck deck, Date date) {
+    public StudySession createStudySession(StudyDeck deck, Date date) {
         StudySession s = new StudySession(deck, date);
         mRealm.beginTransaction();
         StudySession mss = mRealm.copyToRealmOrUpdate(s);
@@ -240,6 +240,13 @@ public class NihongoRepository {
         return mss;
     }
 
+    /**
+     * Answers a study sessions question. This method just wraps the StudySession.answerJapanese
+     * in a realm transaction.
+     * @param session The session to use
+     * @param answer The answer
+     * @return true if correct, false otherwise
+     */
     public boolean answerStudySessionJapaneseAnswer(StudySession session, String answer){
         boolean result;
         try{
@@ -255,6 +262,31 @@ public class NihongoRepository {
             throw new RuntimeException(e);
         }
 
+    }
+
+
+    /**
+     * Returns the deck with the id that matches
+     * @param id the id to use
+     * @return Deck of null if none present
+     */
+    public Deck getDeckByID(String id){
+        if(id == null) throw new IllegalArgumentException("id must not be null");
+        return mRealm.where(Deck.class).equalTo("mDeckID", id).findFirst();
+    }
+
+    /**
+     * Deletes everything from realm
+     */
+    public void deleteEverything(){
+        mRealm.beginTransaction();
+        mRealm.where(StudySession.class).findAll().deleteAllFromRealm();
+        mRealm.where(StudyCard.class).findAll().deleteAllFromRealm();
+        mRealm.where(StudyDeck.class).findAll().deleteAllFromRealm();
+        mRealm.where(Card.class).findAll().deleteAllFromRealm();
+        mRealm.where(LearningState.class).findAll().deleteAllFromRealm();
+        mRealm.where(Deck.class).findAll().deleteAllFromRealm();
+        mRealm.commitTransaction();
     }
 
 }

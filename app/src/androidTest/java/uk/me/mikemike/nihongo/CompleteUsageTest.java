@@ -15,7 +15,7 @@ import uk.me.mikemike.nihongo.model.StudySession;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
+
 
 /**
  * Created by mike on 12/4/17.
@@ -132,7 +132,7 @@ public class CompleteUsageTest extends BaseTest {
         assertEquals(1, studyDecksWithReviews.size());
 
         // create a study session
-        StudySession s = repository.CreateStudySession(studyDecksWithReviews.first(), new Date());
+        StudySession s = repository.createStudySession(studyDecksWithReviews.first(), new Date());
         // only one card to study
         repository.answerStudySessionJapaneseAnswer(s, s.getCurrent().getSourceCard().getJapaneseHiragana());
 

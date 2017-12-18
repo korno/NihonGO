@@ -254,4 +254,36 @@ public class NihongoRepositoryTest extends BaseTest {
 
     }
 
+    @Test
+    public void deleteEverythingTest(){
+        addDecks(1, 1, true);
+        NihongoRepository repository = new NihongoRepository(mRealm);
+        repository.deleteEverything();
+        assertEquals(0, getDecks().size());
+        assertEquals(0, getStudyCards().size());
+        assertEquals(0, getStudyDecks().size());
+        assertEquals(0, getStudySessions().size());
+        assertEquals(0,getLearningStates().size());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getDeckByID_nullIDTest(){
+        NihongoRepository repository = new NihongoRepository(mRealm);
+        repository.getDeckByID(null);
+    }
+
+    @Test
+    public void getDeckByID_invalidIDTest(){
+        addDecks(1, 1, false);
+        NihongoRepository repository = new NihongoRepository(mRealm);
+        assertNull(repository.getDeckByID("badid"));
+    }
+
+    @Test
+    public void getDeckByID_validIDTest(){
+        addDecks(1, 1, false);
+        NihongoRepository repository = new NihongoRepository(mRealm);
+        assertNotNull(repository.getDeckByID(getDecks().first().getDeckID()));
+    }
+
 }

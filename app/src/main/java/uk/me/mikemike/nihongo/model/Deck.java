@@ -82,6 +82,13 @@ public class Deck extends RealmObject {
 
     }
 
+    /**
+     * Returns true if this deck is being studied (A StudyDeck exists that references this deck)
+     * This is just a shorthand method for getStudyDecksUsingThisDeck().size() > 0
+     * @return True if this deck is being studied
+     */
+    public boolean isBeingStudied(){return getStudyDecksUsingThisDeck().size() > 0;}
+
 
 
 }
