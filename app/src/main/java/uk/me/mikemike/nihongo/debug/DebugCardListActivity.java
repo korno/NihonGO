@@ -1,4 +1,4 @@
-package uk.me.mikemike.nihongo.activities;
+package uk.me.mikemike.nihongo.debug;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;

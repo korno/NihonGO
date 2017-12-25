@@ -1,4 +1,4 @@
-package uk.me.mikemike.nihongo.fragments;
+package uk.me.mikemike.nihongo.debug;
 
 
 import android.arch.lifecycle.Observer;
@@ -18,7 +18,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.realm.RealmList;
 import uk.me.mikemike.nihongo.R;
-import uk.me.mikemike.nihongo.adapters.DebugStudyCardListAdapter;
+import uk.me.mikemike.nihongo.debug.DebugStudyCardListAdapter;
 import uk.me.mikemike.nihongo.model.StudyCard;
 import uk.me.mikemike.nihongo.viewmodels.DebugStudyStateViewModel;
 

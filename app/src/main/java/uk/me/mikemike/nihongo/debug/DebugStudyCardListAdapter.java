@@ -1,4 +1,4 @@
-package uk.me.mikemike.nihongo.adapters;
+package uk.me.mikemike.nihongo.debug;
 
 import android.content.Context;
 import android.support.annotation.Nullable;

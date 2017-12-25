@@ -2,12 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="uk.me.mikemike.nihongo.debug.DebugStudyCardListFragment">
+    tools:context="uk.me.mikemike.nihongo.fragments.ChooseDeckToStudyFragment">
 
     <!-- TODO: Update blank fragment layout -->
+
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view_all_study_cards"
+        android:id="@+id/recycler_view_decks_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
 </FrameLayout>

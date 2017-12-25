@@ -28,13 +28,13 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package uk.me.mikemike.nihongo.activities;
+package uk.me.mikemike.nihongo.debug;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import io.realm.Realm;
-import uk.me.mikemike.nihongo.NihongoRealmConfiguration;
+import uk.me.mikemike.nihongo.data.NihongoRealmConfiguration;
 import uk.me.mikemike.nihongo.R;
 import uk.me.mikemike.nihongo.data.XmlImporter;
 import uk.me.mikemike.nihongo.viewmodels.NihongoViewModel;
@@ -52,7 +52,7 @@ public class DebugDeckListActivity extends AppCompatActivity {
         mModel = ViewModelProviders.of(this).get(NihongoViewModel.class);
         NihongoRealmConfiguration.configureNihongoRealm(this);
         mRealm = Realm.getDefaultInstance();
-        mModel.init(mRealm);
+        mModel.init();
         XmlImporter importer = new XmlImporter(mRealm,getResources().getXml(R.xml.testxml),
                 "", "", 0);
         importer.importData();

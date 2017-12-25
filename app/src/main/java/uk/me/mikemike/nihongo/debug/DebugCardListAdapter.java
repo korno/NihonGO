@@ -1,4 +1,4 @@
-package uk.me.mikemike.nihongo.adapters;
+package uk.me.mikemike.nihongo.debug;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.OrderedRealmCollection;

@@ -28,7 +28,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package uk.me.mikemike.nihongo.adapters;
+package uk.me.mikemike.nihongo.debug;
 
 import android.content.Context;
 import android.content.res.Resources;

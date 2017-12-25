@@ -1,11 +1,10 @@
-package uk.me.mikemike.nihongo.activities;
+package uk.me.mikemike.nihongo.debug;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
 
 import uk.me.mikemike.nihongo.R;
 import uk.me.mikemike.nihongo.viewmodels.DebugStudyStateViewModel;

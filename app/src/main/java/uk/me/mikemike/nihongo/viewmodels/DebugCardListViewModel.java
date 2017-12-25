@@ -1,19 +1,13 @@
 package uk.me.mikemike.nihongo.viewmodels;
 
 import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
-import io.realm.Realm;
 import io.realm.RealmList;
-import uk.me.mikemike.nihongo.NihongoRealmConfiguration;
-import uk.me.mikemike.nihongo.data.NihongoRepository;
 import uk.me.mikemike.nihongo.model.Card;
 import uk.me.mikemike.nihongo.model.Deck;
 import uk.me.mikemike.nihongo.utils.RealmListLiveData;
-import uk.me.mikemike.nihongo.utils.RealmResultsLiveData;
 import uk.me.mikemike.nihongo.utils.RealmObjectLiveData;
 
 /**

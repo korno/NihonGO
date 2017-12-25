@@ -5,7 +5,7 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.support.annotation.NonNull;
 
 import io.realm.Realm;
-import uk.me.mikemike.nihongo.NihongoRealmConfiguration;
+import uk.me.mikemike.nihongo.data.NihongoRealmConfiguration;
 import uk.me.mikemike.nihongo.data.NihongoRepository;
 
 /**

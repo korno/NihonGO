@@ -54,11 +54,9 @@ public class StudySession extends RealmObject {
     protected RealmList<StudyCard> mSessionCards = new RealmList<>();
     protected RealmList<StudyCard> mCorrectCards = new RealmList<>();
     protected RealmList<StudyCard> mWrongCards = new RealmList<>();
-
     protected Date mSessionDate;
     protected StudyCard mCurrentQuestion;
     protected int mTotalStudyCards;
-
     protected boolean mIsFinished=false;
 
 
@@ -89,18 +87,15 @@ public class StudySession extends RealmObject {
     /* required by realm */
     public StudySession(){}
 
+    /**
+     * Gets the current StudyCard to be studied
+     * @return
+     */
     public StudyCard getCurrent(){
         if(mIsFinished == true) throw new RuntimeException("The test is finished getCurrent must not be called");
         return mCurrentQuestion;
     }
 
-    protected void moveToNextQuestion(){
-        mSessionCards.remove(0);
-        mCurrentQuestion = mSessionCards.first(null);
-        if(mCurrentQuestion == null){
-            mIsFinished = true;
-        }
-    }
 
     /**
      * Answers the current question by checking the japanese (hiragana) to the answer provided. After checking the
@@ -141,6 +136,14 @@ public class StudySession extends RealmObject {
         }
         mCurrentQuestion.getLearningState().performSR(result ? 4 : 1, mSessionDate);
         moveToNextQuestion();
+    }
+
+    protected void moveToNextQuestion(){
+        mSessionCards.remove(0);
+        mCurrentQuestion = mSessionCards.first(null);
+        if(mCurrentQuestion == null){
+            mIsFinished = true;
+        }
     }
 
 }

@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="uk.me.mikemike.nihongo.activities.DebugDeckStudyStateActivity">
+    tools:context="uk.me.mikemike.nihongo.debug.DebugDeckStudyStateActivity">
 
     <fragment
         android:id="@+id/fragment_debug_deck_list"
-        class="uk.me.mikemike.nihongo.fragments.DebugStudyCardListFragment"
+        class="uk.me.mikemike.nihongo.debug.DebugStudyCardListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

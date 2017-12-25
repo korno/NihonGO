@@ -1,4 +1,4 @@
-package uk.me.mikemike.nihongo;
+package uk.me.mikemike.nihongo.data;
 
 import android.content.Context;
 

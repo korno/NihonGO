@@ -28,7 +28,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package uk.me.mikemike.nihongo.fragments;
+package uk.me.mikemike.nihongo.debug;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -42,16 +42,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.realm.RealmResults;
 import uk.me.mikemike.nihongo.R;
-import uk.me.mikemike.nihongo.activities.DebugCardListActivity;
-import uk.me.mikemike.nihongo.activities.DebugDeckStudyStateActivity;
-import uk.me.mikemike.nihongo.adapters.DebugDeckListAdapter;
 import uk.me.mikemike.nihongo.model.Deck;
 import uk.me.mikemike.nihongo.viewmodels.NihongoViewModel;
 
