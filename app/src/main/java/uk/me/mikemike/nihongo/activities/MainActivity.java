@@ -2,7 +2,6 @@ package uk.me.mikemike.nihongo.activities;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
@@ -18,12 +17,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import uk.me.mikemike.nihongo.R;
 import uk.me.mikemike.nihongo.fragments.ChooseDeckToStudyFragment;
+import uk.me.mikemike.nihongo.fragments.CurrentlyStudyingListFragment;
 
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     protected ChooseDeckToStudyFragment mFragmentChooseDeckToStudy;
+    protected CurrentlyStudyingListFragment mFragmentCurrentlyStudying;
 
     @BindView(R.id.fab)
     protected FloatingActionButton mFAB;
@@ -47,16 +48,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
         setSupportActionBar(mToolBar);
         mFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+               swapMainFragment(mFragmentChooseDeckToStudy, false);
             }
         });
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -65,16 +63,15 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         mNavView.setNavigationItemSelectedListener(this);
         mFragmentChooseDeckToStudy = ChooseDeckToStudyFragment.newInstance();
-
-        swapMainFragment(mFragmentChooseDeckToStudy, false);
-
+        mFragmentCurrentlyStudying = CurrentlyStudyingListFragment.newInstance();
+        swapMainFragment(mFragmentCurrentlyStudying, true);
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+
+        if (mDrawer.isDrawerOpen(GravityCompat.START)) {
+            mDrawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
@@ -103,13 +100,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
-
         if(id == R.id.nav_add_new_study){
            swapMainFragment(mFragmentChooseDeckToStudy, false);
         }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        else if(id == R.id.nav_view_currently_studying){
+            swapMainFragment(mFragmentCurrentlyStudying, true);
+        }
+        mDrawer.closeDrawer(GravityCompat.START);
         return true;
     }
 

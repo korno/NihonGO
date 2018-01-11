@@ -7,7 +7,11 @@
         <item
             android:id="@+id/nav_add_new_study"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Add New Study" />
+            android:title="Add Study" />
+        <item
+            android:id="@+id/nav_view_currently_studying"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="My Study" />
     </group>
 
     <item android:title="Communicate">

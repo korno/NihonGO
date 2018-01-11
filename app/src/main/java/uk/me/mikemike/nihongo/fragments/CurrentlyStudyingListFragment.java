@@ -12,7 +12,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  * notice, this list of conditions and the following disclaimer in the
  * documentation and/or other materials provided with the distribution.
- * 3. Neither the name of mosquitto nor the names of its
+ * 3. Neither the name of NihonGo nor the names of its
  * contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
  * <p>
@@ -41,59 +41,66 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.realm.RealmResults;
 import uk.me.mikemike.nihongo.R;
-import uk.me.mikemike.nihongo.adapters.ChooseDeckToStudyListAdapter;
-import uk.me.mikemike.nihongo.model.Deck;
+import uk.me.mikemike.nihongo.activities.StudySessionActivity;
+import uk.me.mikemike.nihongo.adapters.StudyDeckListAdapter;
+import uk.me.mikemike.nihongo.model.StudyDeck;
+import uk.me.mikemike.nihongo.model.StudySession;
 import uk.me.mikemike.nihongo.viewmodels.NihongoViewModel;
 
 /**
- * Fragment that displays all list of all decks that are not being studied and
- * allows the user to select one to start studying. Once a deck has been selected
- * this fragment will invoke the methods to create a studydeck for that deck
- * and offer the user a choice to start studying straight away
- *
+ * Fragment that displays the list of StudyDecks the user is currently studying
+ * and provides a way to start reviewing when clicked.
  */
-public class ChooseDeckToStudyFragment extends Fragment implements Observer<RealmResults<Deck>>,ChooseDeckToStudyListAdapter.ChooseDeckToStudyAdapterHandler {
+public class CurrentlyStudyingListFragment extends Fragment implements Observer<RealmResults<StudyDeck>>,StudyDeckListAdapter.StudyDeckAdapterHandler {
 
-    protected NihongoViewModel mViewModel;
-    protected ChooseDeckToStudyListAdapter mAdapter;
-    @BindView(R.id.recycler_view_decks_list)
-    protected RecyclerView mListDeck;
+    protected NihongoViewModel mModel;
+    protected StudyDeckListAdapter mAdapter;
+    @BindView(R.id.recycler_view_currently_studying)
+    protected RecyclerView mListStudyDecks;
     protected Unbinder mUnbinder;
 
-    public ChooseDeckToStudyFragment() {
-
+    public static CurrentlyStudyingListFragment newInstance(){
+        return new CurrentlyStudyingListFragment();
     }
 
-    public static ChooseDeckToStudyFragment newInstance(){
-        return new ChooseDeckToStudyFragment();
+    public CurrentlyStudyingListFragment() {
+        // Required empty public constructor
+    }
+
+
+    @Override
+    public void onActivityCreated (Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mModel = ViewModelProviders.of(getActivity()).get(NihongoViewModel.class);
+        mModel.init();
+        mModel.getAllStudyDecks().observe(this, this);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_select_new_deck_to_study, container, false);
+        // Inflate the layout for this fragment
+        View v = inflater.inflate(R.layout.fragment_currently_studying_list, container, false);
         mUnbinder = ButterKnife.bind(this, v);
-        mListDeck.setLayoutManager(new LinearLayoutManager(getActivity()));
-        // this will occur if we have been created before, and are just being reattached
-        // and the view is just being recreated
+        mListStudyDecks.setLayoutManager(new LinearLayoutManager(getActivity()));
         if(mAdapter != null){
-            mListDeck.setAdapter(mAdapter);
-
+            mListStudyDecks.setAdapter(mAdapter);
         }
         return v;
     }
 
     @Override
-    public void onActivityCreated (Bundle savedInstanceState){
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(getActivity()).get(NihongoViewModel.class);
-        mViewModel.init();
-        mViewModel.getAllDecksNotBeingStudied().observe(this, this);
+    public void onChanged(@Nullable RealmResults<StudyDeck> studyDecks) {
+        if(mAdapter == null){
+            mAdapter = new StudyDeckListAdapter(getActivity(),this,studyDecks, true);
+            mListStudyDecks.setAdapter(mAdapter);
+        }
     }
 
     @Override
@@ -102,21 +109,8 @@ public class ChooseDeckToStudyFragment extends Fragment implements Observer<Real
         mUnbinder.unbind();
     }
 
-
     @Override
-    public void onChanged(@Nullable RealmResults<Deck> decks) {
-        // this might look weird but we only need to handle this the first time
-        // after that, the adapter itself will listen to data changes
-        if(mAdapter == null){
-            mAdapter = new ChooseDeckToStudyListAdapter(getContext(), this ,decks,true);
-            mListDeck.setAdapter(mAdapter);
-        }
-
-    }
-
-    /* The ChooseDeckToStudyListAdapter will invoke this */
-    @Override
-    public void onDeckChosen(Deck d) {
-        mViewModel.startStudying(d);
+    public void onReviewStudyDeckChosen(StudyDeck deck) {
+        startActivity(StudySessionActivity.createIntent(getActivity(), deck));
     }
 }

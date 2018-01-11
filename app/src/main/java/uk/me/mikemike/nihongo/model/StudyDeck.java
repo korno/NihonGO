@@ -74,5 +74,5 @@ public class StudyDeck extends RealmObject {
         if(date == null) throw new IllegalArgumentException("the date must not be null");
         return mStudyCards.where().lessThanOrEqualTo("mLearningState.mNextDueDate", date).findAll();
     }
-
+    
 }
