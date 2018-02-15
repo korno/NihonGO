@@ -42,6 +42,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.Date;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -57,13 +59,22 @@ import uk.me.mikemike.nihongo.viewmodels.NihongoViewModel;
  * Fragment that displays the list of StudyDecks the user is currently studying
  * and provides a way to start reviewing when clicked.
  */
-public class CurrentlyStudyingListFragment extends Fragment implements Observer<RealmResults<StudyDeck>>,StudyDeckListAdapter.StudyDeckAdapterHandler {
+public class CurrentlyStudyingListFragment extends Fragment implements Observer<RealmResults<StudyDeck>>,StudyDeckListAdapter.StudyDeckAdapterHandler
+                {
 
     protected NihongoViewModel mModel;
     protected StudyDeckListAdapter mAdapter;
     @BindView(R.id.recycler_view_currently_studying)
     protected RecyclerView mListStudyDecks;
     protected Unbinder mUnbinder;
+
+    protected final Observer<Date> mDateObserver = new Observer<Date>() {
+        @Override
+        public void onChanged(@Nullable Date date) {
+            mAdapter.setStudyDate(date);
+            mAdapter.notifyDataSetChanged();
+        }
+    };
 
     public static CurrentlyStudyingListFragment newInstance(){
         return new CurrentlyStudyingListFragment();
@@ -78,8 +89,9 @@ public class CurrentlyStudyingListFragment extends Fragment implements Observer<
     public void onActivityCreated (Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mModel = ViewModelProviders.of(getActivity()).get(NihongoViewModel.class);
-        mModel.init();
+        mModel.importXml(getActivity().getResources().getXml(R.xml.colors));
         mModel.getAllStudyDecks().observe(this, this);
+        mModel.getStudyDate().observe(this, mDateObserver);
     }
 
     @Override
@@ -98,7 +110,7 @@ public class CurrentlyStudyingListFragment extends Fragment implements Observer<
     @Override
     public void onChanged(@Nullable RealmResults<StudyDeck> studyDecks) {
         if(mAdapter == null){
-            mAdapter = new StudyDeckListAdapter(getActivity(),this,studyDecks, true);
+            mAdapter = new StudyDeckListAdapter(getActivity(),this,studyDecks, true, mModel.getStudyDate().getValue());
             mListStudyDecks.setAdapter(mAdapter);
         }
     }

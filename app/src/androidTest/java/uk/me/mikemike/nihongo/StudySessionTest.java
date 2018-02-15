@@ -57,6 +57,16 @@ public class StudySessionTest extends BaseTest {
         ss.answerJapanese("wrong answer");
         mRealm.commitTransaction();
 
+        assertEquals(false, ss.isFinished());
+        assertEquals(0, ss.getCorrectCards().size());
+        assertEquals(1, ss.getWrongCards().size());
+        assertEquals(1, ss.getRemainingStudyCardsCount());
+
+        mRealm.beginTransaction();
+        // answer correctly
+        ss.answerJapanese(ss.getCurrent().getSourceCard().getJapaneseHiragana());
+        mRealm.commitTransaction();
+
         assertEquals(true, ss.isFinished());
         assertEquals(0, ss.getCorrectCards().size());
         assertEquals(1, ss.getWrongCards().size());
@@ -104,6 +114,8 @@ public class StudySessionTest extends BaseTest {
         ss.answerJapanese("wrong");
         ss.answerJapanese("wrong");
         ss.answerJapanese(ss.getCurrent().getSourceCard().getJapaneseHiragana());
+        ss.answerJapanese(ss.getCurrent().getSourceCard().getJapaneseHiragana());
+        ss.answerJapanese(ss.getCurrent().getSourceCard().getJapaneseHiragana());
         mRealm.commitTransaction();
 
         assertEquals(true, ss.isFinished());
@@ -135,7 +147,7 @@ public class StudySessionTest extends BaseTest {
         assertEquals(false, s2.isFinished());
         assertEquals(1, s2.getWrongCards().size());
         assertEquals(0, s2.getCorrectCards().size());
-        assertEquals(1, s2.getRemainingStudyCardsCount());
+        assertEquals(2, s2.getRemainingStudyCardsCount());
         assertEquals(2, s2.getTotalStudyCardsCount());
 
         // finish the test
@@ -144,10 +156,10 @@ public class StudySessionTest extends BaseTest {
         s2.answerJapanese(s2.getCurrent().getSourceCard().getJapaneseHiragana());
         mRealm.commitTransaction();
 
-        assertEquals(true, s2.isFinished());
+        assertEquals(false, s2.isFinished());
         assertEquals(1, s2.getWrongCards().size());
         assertEquals(1, s2.getCorrectCards().size());
-        assertEquals(0, s2.getRemainingStudyCardsCount());
+        assertEquals(1, s2.getRemainingStudyCardsCount());
         assertEquals(2, s2.getTotalStudyCardsCount());
 
 
@@ -175,5 +187,37 @@ public class StudySessionTest extends BaseTest {
     @Test(expected = IllegalArgumentException.class)
     public  void createStudySession_NullStudyDeck(){
         StudySession s = new StudySession(null, new Date());
+    }
+
+
+    @Test
+    public void usingAnswerCurrentQuestion_WrongAnswerTest(){
+        addDecks(1, 2, true);
+        StudySession s = new StudySession(getStudyDecks().first(), new Date());
+        // answer the wrong question
+        mRealm.beginTransaction();
+        if(s.isCurrentQuestionJapaneseAnswer()){
+            assertEquals(false, s.answerCurrentQuestion(s.getCurrent().getSourceCard().getMainLanguage()));
+        }
+        else{
+            assertEquals(false, s.answerCurrentQuestion(s.getCurrent().getSourceCard().getJapaneseHiragana()));
+        }
+        mRealm.commitTransaction();
+
+    }
+
+    @Test
+    public void usingAnswerCurrentQuestion_CorrectAnswerTest(){
+        addDecks(1, 2, true);
+        StudySession s = new StudySession(getStudyDecks().first(), new Date());
+        mRealm.beginTransaction();
+        if(s.isCurrentQuestionJapaneseAnswer()){
+            assertEquals(true, s.answerCurrentQuestion(s.getCurrent().getSourceCard().getJapaneseHiragana()));
+        }
+        else
+        {
+            assertEquals(true, s.answerCurrentQuestion(s.getCurrent().getSourceCard().getMainLanguage()));
+        }
+        mRealm.commitTransaction();
     }
 }

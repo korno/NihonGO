@@ -31,10 +31,12 @@
 package uk.me.mikemike.nihongo.model;
 
 import java.util.Date;
+import java.util.Random;
 import java.util.UUID;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
 
@@ -58,26 +60,29 @@ public class StudySession extends RealmObject {
     protected StudyCard mCurrentQuestion;
     protected int mTotalStudyCards;
     protected boolean mIsFinished=false;
+    protected boolean mCurrentQuestionIsJapaneseAnswer=false;
 
 
+    public String getStudySessionID(){return mStudySessionID;}
     public int getRemainingStudyCardsCount() { return mSessionCards.size();}
     public int getTotalStudyCardsCount() { return  mTotalStudyCards; }
     public boolean isFinished() { return mIsFinished;}
     public RealmList<StudyCard> getWrongCards() { return  mWrongCards;}
     public RealmList<StudyCard> getCorrectCards() { return mCorrectCards;}
+    public boolean isCurrentQuestionJapaneseAnswer(){return mCurrentQuestionIsJapaneseAnswer;}
 
-
+    @Ignore
+    protected Random mRandom;
 
     public StudySession(StudyDeck source, Date sessionDate){
-
         if(source == null) throw new IllegalArgumentException("Source deck must not be null");
         if(sessionDate == null) throw new IllegalArgumentException("Session date must not be null");
-
         mSessionCards.addAll(source.getCardsWithNextReviewDateOlderThan(sessionDate));
-
         mSessionDate = sessionDate;
         mTotalStudyCards = mSessionCards.size();
         mCurrentQuestion = mSessionCards.first(null);
+        mRandom = new Random();
+        mCurrentQuestionIsJapaneseAnswer = mRandom.nextInt(2) == 1;
         if(mCurrentQuestion == null){
             mIsFinished = true;
         }
@@ -85,7 +90,9 @@ public class StudySession extends RealmObject {
     }
 
     /* required by realm */
-    public StudySession(){}
+    public StudySession(){
+        mRandom = new Random();
+    }
 
     /**
      * Gets the current StudyCard to be studied
@@ -95,7 +102,6 @@ public class StudySession extends RealmObject {
         if(mIsFinished == true) throw new RuntimeException("The test is finished getCurrent must not be called");
         return mCurrentQuestion;
     }
-
 
     /**
      * Answers the current question by checking the japanese (hiragana) to the answer provided. After checking the
@@ -128,22 +134,64 @@ public class StudySession extends RealmObject {
     }
 
     protected void handleAnswer(boolean result){
+        // firstly remove the question from the outstanding questions list
+        // (we may re add it though)
+        mSessionCards.remove(0);
         if(result){
-            mCorrectCards.add(mCurrentQuestion);
+            // have we already gotten this one wrong before? if that is the case
+            // we are just reviewing an answer we got wrong so we shouldnt add it to the
+            // correct answers
+            if(doesWrongAnswersContainCard(mCurrentQuestion) == false) {
+                mCorrectCards.add(mCurrentQuestion);
+            }
         }
         else{
-            mWrongCards.add(mCurrentQuestion);
+            // ok we got it wrong, is this the first time we got it wrong?
+            if(doesWrongAnswersContainCard(mCurrentQuestion) == false){
+                // yes so add it to the wrong list
+                mWrongCards.add(mCurrentQuestion);
+            }
+            // as we go the answer wrong, readd the question to the list
+            mSessionCards.add(mCurrentQuestion);
         }
         mCurrentQuestion.getLearningState().performSR(result ? 4 : 1, mSessionDate);
         moveToNextQuestion();
     }
 
+
+
+    protected boolean doesCorrectAnswersContainCard(StudyCard card){
+        if(isManaged()){
+            return mCorrectCards.where().equalTo("mStudyCardID", card.getStudyCardID()).count() == 1;
+        }
+        else{
+            return mCorrectCards.contains(card);
+        }
+    }
+
+    protected boolean doesWrongAnswersContainCard(StudyCard card){
+        if(isManaged()){
+            return mWrongCards.where().equalTo("mStudyCardID", card.getStudyCardID()).count() == 1;
+        }
+        else{
+            return mWrongCards.contains(card);
+        }
+    }
+
+    public boolean answerCurrentQuestion(String answer){
+        if(mIsFinished) throw new RuntimeException("The test is finished so answerCurrentQuestion calls are not allowed");
+        if(mCurrentQuestionIsJapaneseAnswer){
+            return answerJapanese(answer);
+        }
+        return answerMainLanguage(answer);
+    }
+
     protected void moveToNextQuestion(){
-        mSessionCards.remove(0);
         mCurrentQuestion = mSessionCards.first(null);
         if(mCurrentQuestion == null){
             mIsFinished = true;
         }
+        mCurrentQuestionIsJapaneseAnswer = mRandom.nextInt(2) == 1;
     }
 
 }

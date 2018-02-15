@@ -6,7 +6,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+
+import java.util.Date;
+
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -22,11 +27,15 @@ public class StudyDeckListAdapter extends RealmRecyclerViewAdapter<StudyDeck, St
 
     protected Context mContext;
     protected StudyDeckAdapterHandler mHandler;
+    protected Date mDate;
 
-    public StudyDeckListAdapter(Context context, StudyDeckAdapterHandler handler, @Nullable OrderedRealmCollection<StudyDeck> data, boolean autoUpdate) {
+
+    public StudyDeckListAdapter(Context context, StudyDeckAdapterHandler handler, @Nullable OrderedRealmCollection<StudyDeck> data, boolean autoUpdate,
+                                        Date date) {
         super(data, autoUpdate);
         mContext = context;
         mHandler = handler;
+        mDate = date;
     }
 
     @Override
@@ -41,6 +50,11 @@ public class StudyDeckListAdapter extends RealmRecyclerViewAdapter<StudyDeck, St
     }
 
 
+    public void setStudyDate(Date date){
+        mDate = date;
+    }
+
+
     public interface StudyDeckAdapterHandler{
         void onReviewStudyDeckChosen(StudyDeck deck);
     }
@@ -49,6 +63,10 @@ public class StudyDeckListAdapter extends RealmRecyclerViewAdapter<StudyDeck, St
 
         @BindView(R.id.text_studydeck_name)
         protected TextView mNameTextView;
+        @BindView(R.id.button_start_review_session)
+        protected Button mStartStudyButton;
+        @BindString(R.string.format_number_of_reviews)
+        protected String mNumberOfReviewsFormatString;
 
         public StudyDeckRecyclerView(View itemView) {
             super(itemView);
@@ -57,6 +75,13 @@ public class StudyDeckListAdapter extends RealmRecyclerViewAdapter<StudyDeck, St
 
         public void bindToStudyDeck(StudyDeck deck){
             mNameTextView.setText(deck.getName());
+            if(deck.hasReviewsWaiting(mDate)){
+                mStartStudyButton.setVisibility(View.VISIBLE);
+                mStartStudyButton.setText(String.format(mNumberOfReviewsFormatString, deck.getCardsWithNextReviewDateOlderThan(mDate).size()));
+            }
+            else{
+                mStartStudyButton.setVisibility(View.GONE);
+            }
         }
 
         @OnClick(R.id.button_start_review_session)

@@ -1,6 +1,6 @@
 package uk.me.mikemike.nihongo.utils;
 
-import android.arch.lifecycle.LiveData;
+
 import android.arch.lifecycle.MutableLiveData;
 
 import io.realm.RealmChangeListener;
@@ -22,22 +22,29 @@ public class RealmObjectLiveData<T extends RealmObject> extends MutableLiveData<
     public RealmObjectLiveData(T realmResults) {
         mObject = realmResults;
         setValue(mObject);
-        postValue(mObject);
     }
 
     @Override
     public void setValue(T value){
-       super.setValue(value);
+        if(value != getValue()){
+           if(getValue() != null) {
+               getValue().removeAllChangeListeners();
+           }
+           if(value != null) {
+               value.addChangeListener(listener);
+           }
+       }
+        super.setValue(value);
     }
 
     @Override
     protected void onActive() {
-        mObject.addChangeListener(listener);
+        if(mObject != null) mObject.addChangeListener(listener);
     }
 
     @Override
     protected void onInactive() {
-        mObject.removeChangeListener(listener);
+        if(mObject != null) mObject.removeChangeListener(listener);
     }
 
 }

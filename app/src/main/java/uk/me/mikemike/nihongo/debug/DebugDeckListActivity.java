@@ -52,7 +52,7 @@ public class DebugDeckListActivity extends AppCompatActivity {
         mModel = ViewModelProviders.of(this).get(NihongoViewModel.class);
         NihongoRealmConfiguration.configureNihongoRealm(this);
         mRealm = Realm.getDefaultInstance();
-        mModel.init();
+        //mModel.init();
         XmlImporter importer = new XmlImporter(mRealm,getResources().getXml(R.xml.testxml),
                 "", "", 0);
         importer.importData();

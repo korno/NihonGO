@@ -24,4 +24,9 @@
 
     <string name="format_next_study_date">yyyy-MM-dd-hh-mm</string>
 
+
+    <string name="format_remaining_questions">%d remaining</string>
+
+    <string name="format_number_of_reviews">%d Reviews</string>
+
 </resources>

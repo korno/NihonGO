@@ -9,6 +9,7 @@ import io.realm.RealmResults;
 import uk.me.mikemike.nihongo.data.NihongoRepository;
 import uk.me.mikemike.nihongo.model.Deck;
 import uk.me.mikemike.nihongo.model.StudyDeck;
+import uk.me.mikemike.nihongo.model.StudySession;
 import uk.me.mikemike.nihongo.utils.DateUtils;
 
 import static junit.framework.Assert.assertEquals;
@@ -284,6 +285,36 @@ public class NihongoRepositoryTest extends BaseTest {
         addDecks(1, 1, false);
         NihongoRepository repository = new NihongoRepository(mRealm);
         assertNotNull(repository.getDeckByID(getDecks().first().getDeckID()));
+    }
+
+
+    @Test
+    public void getStudySessionByID_validIDTest(){
+        addDecks(1, 1, true);
+        StudyDeck d = getStudyDecks().first();
+        NihongoRepository  r = new NihongoRepository(mRealm);
+        StudySession s = r.createStudySession(d, new Date());
+        String id = s.getStudySessionID();
+
+        assertEquals(r.getStudySessionByID(id), s);
+    }
+
+    @Test
+    public void getStudySessionByID_nullIDTest(){
+        addDecks(1, 1, true);
+        StudyDeck d = getStudyDecks().first();
+        NihongoRepository  r = new NihongoRepository(mRealm);
+        StudySession s = r.createStudySession(d, new Date());
+        String id = s.getStudySessionID();
+
+        assertNull(r.getStudySessionByID("banana"));
+    }
+
+
+    @Test(expected = IllegalArgumentException.class)
+    public void answerCurrentStudySessionQuestion_nullSessionTest(){
+        NihongoRepository repository = new NihongoRepository(mRealm);
+        repository.answerStudySessionCurrentQuestion("", null);
     }
 
 }

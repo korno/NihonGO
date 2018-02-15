@@ -40,4 +40,19 @@ public class StudyDeckTest extends BaseTest {
         d.getCardsWithNextReviewDateOlderThan(null);
     }
 
+    @Test
+    public void hasReviewsWaitingNoReviewsTest(){
+        addDecks(1, 2,true);
+        StudyDeck d = getStudyDecks().first();
+        assertEquals(false, d.hasReviewsWaiting(DateUtils.addDaysToDate(new Date(), -20)));
+    }
+
+
+    @Test
+    public void hasReviewsWaitingYesReviews(){
+        addDecks(1, 2,true);
+        StudyDeck d = getStudyDecks().first();
+        assertEquals(true, d.hasReviewsWaiting(DateUtils.addDaysToDate(new Date(), 1)));
+    }
+
 }

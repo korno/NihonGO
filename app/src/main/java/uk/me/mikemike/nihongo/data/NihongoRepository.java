@@ -51,6 +51,7 @@ public class NihongoRepository {
     protected Realm mRealm;
     protected RealmResults<Deck> mAllDecks = null;
     protected RealmResults<StudyDeck> mAllStudyDecks = null;
+    protected RealmResults<StudySession> mAllStudySessions = null;
     protected RealmResults<Deck> mDecksNotBeingStudied = null;
 
 
@@ -75,6 +76,14 @@ public class NihongoRepository {
             mAllDecks = mRealm.where(Deck.class).findAll();
         }
         return mAllDecks;
+    }
+
+
+    public RealmResults<StudySession> getAllStudySessions(){
+        if(mAllStudySessions == null){
+            mAllStudySessions = mRealm.where(StudySession.class).findAll();
+        }
+        return mAllStudySessions;
     }
 
     /**
@@ -287,6 +296,33 @@ public class NihongoRepository {
         mRealm.where(LearningState.class).findAll().deleteAllFromRealm();
         mRealm.where(Deck.class).findAll().deleteAllFromRealm();
         mRealm.commitTransaction();
+    }
+
+
+    /**
+     * Returns the study session with the correct id
+     * @param id the id to search for
+     * @return study or null if it cannot be found
+     */
+    public StudySession getStudySessionByID(String id){
+        if(id == null) throw new IllegalArgumentException("id must not be null");
+        return mRealm.where(StudySession.class).equalTo("mStudySessionID", id).findFirst();
+    }
+
+
+    /**
+     * Wraps a StudySession.answerCurrentQuestion in a realm transaction
+     * @param answer The answer to use
+     * @param session the session that will be invoked, must not be null
+     * @return true if the answer was correct, false otherwise
+     */
+    public boolean answerStudySessionCurrentQuestion(String answer, StudySession session){
+        if(session == null) throw new IllegalArgumentException("session must not be null");
+        boolean result;
+        mRealm.beginTransaction();
+        result = session.answerCurrentQuestion(answer);
+        mRealm.commitTransaction();
+        return result;
     }
 
 }

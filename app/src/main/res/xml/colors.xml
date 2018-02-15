@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<decks>
+<deck name="test1" description="test1description" author="test1author">
+    <card
+        mainLanguage="red"
+        japaneseKanji="赤"
+        japaneseHiragana="あか"
+        wordType="Noun"
+        >
+        <japaneseDisplay>card1japanesedisplay</japaneseDisplay>
+    </card>
+    <card
+        mainLanguage="yellow"
+        japaneseKanji="黄色"
+        japaneseHiragana="きいろ"
+        wordType="Noun"
+        >
+        <japaneseDisplay>card1japanesedisplay</japaneseDisplay>
+    </card>
+    <card
+        mainLanguage="blue"
+        japaneseKanji="青"
+        japaneseHiragana="あお"
+        wordType="Noun"
+        >
+        <japaneseDisplay>card1japanesedisplay</japaneseDisplay>
+    </card>
+    <card
+        mainLanguage="black"
+        japaneseKanji="黒"
+        japaneseHiragana="くろ"
+        wordType="Noun"
+        >
+        <japaneseDisplay>card1japanesedisplay</japaneseDisplay>
+    </card>
+    <card
+        mainLanguage="white"
+        japaneseKanji="白"
+        japaneseHiragana="しろ"
+        wordType="Noun"
+        >
+        <japaneseDisplay>card1japanesedisplay</japaneseDisplay>
+    </card>
+</deck>
+</decks>

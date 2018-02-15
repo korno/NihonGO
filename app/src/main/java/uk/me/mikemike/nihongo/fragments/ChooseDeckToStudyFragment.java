@@ -92,7 +92,6 @@ public class ChooseDeckToStudyFragment extends Fragment implements Observer<Real
     public void onActivityCreated (Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(getActivity()).get(NihongoViewModel.class);
-        mViewModel.init();
         mViewModel.getAllDecksNotBeingStudied().observe(this, this);
     }
 
