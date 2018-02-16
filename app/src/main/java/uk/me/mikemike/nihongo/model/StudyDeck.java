@@ -53,12 +53,14 @@ public class StudyDeck extends RealmObject {
     protected String mName;
     protected RealmList<StudyCard> mStudyCards;
     protected Deck mSourceDeck;
+    protected Date mStartStudyDate;
+
 
     public String getStudyDeckID(){return mStudyDeckID;}
     public String getName(){return mName;}
     public RealmList<StudyCard> getStudyCards() { return mStudyCards;}
     public Deck getSourceDeck() { return mSourceDeck; }
-
+    public Date getStartedStudyDate(){return mStartStudyDate;}
 
     /* required by realm */
     public StudyDeck(){
@@ -68,14 +70,36 @@ public class StudyDeck extends RealmObject {
         mStudyCards = studyCards;
         mName = name;
         mSourceDeck = sourceDeck;
+        mStartStudyDate = new Date();
     }
 
+    /**
+     * Returns all study cards belonging to this deck that have review dates older than the date parameter
+     * @param date The date to dest
+     * @return a realmresults containing all the results
+     */
     public RealmResults<StudyCard> getCardsWithNextReviewDateOlderThan(Date date){
         if(date == null) throw new IllegalArgumentException("the date must not be null");
         return mStudyCards.where().lessThanOrEqualTo("mLearningState.mNextDueDate", date).findAll();
     }
 
+    /**
+     * Does the study have reviews that are older than the specified date
+     * @param date the date to check
+     * @return true if there are reviews older or false if there are not
+     */
     public boolean hasReviewsWaiting(Date date){
         return getCardsWithNextReviewDateOlderThan(date).size() > 0;
+    }
+
+    /**
+     * Returns the number of reviews waiting that are older than the specified date
+     * This is a shorthand method which calls through to getCardsWithNextReviewDateOlderThan and returns
+     * the length of those results
+     * @param date the date to check
+     * @return how many reviews are waiting
+     */
+    public int howManyReviewsWaiting(Date date){
+        return getCardsWithNextReviewDateOlderThan(date).size();
     }
 }

@@ -305,8 +305,6 @@ public class NihongoRepositoryTest extends BaseTest {
         StudyDeck d = getStudyDecks().first();
         NihongoRepository  r = new NihongoRepository(mRealm);
         StudySession s = r.createStudySession(d, new Date());
-        String id = s.getStudySessionID();
-
         assertNull(r.getStudySessionByID("banana"));
     }
 
@@ -315,6 +313,26 @@ public class NihongoRepositoryTest extends BaseTest {
     public void answerCurrentStudySessionQuestion_nullSessionTest(){
         NihongoRepository repository = new NihongoRepository(mRealm);
         repository.answerStudySessionCurrentQuestion("", null);
+    }
+
+    @Test(expected =  IllegalArgumentException.class)
+    public void stopStudyingNullStudyDeck(){
+        NihongoRepository repository = new NihongoRepository(mRealm);
+        repository.stopStudying(null);
+    }
+
+    @Test
+    public void stopStudyingValidStudyDeck(){
+        addDecks(2, 2, true);
+        StudyDeck d = getStudyDecks().first();
+        String id = d.getStudyDeckID();
+        NihongoRepository repository = new NihongoRepository(mRealm);
+        repository.stopStudying(d);
+        assertEquals(1, getStudyDecks().size());
+        assertEquals(2, getStudyCards().size());
+        assertEquals(2, getLearningStates().size());
+        assertEquals(0, getStudyDecks().where().equalTo("mStudyDeckID", id).findAll().size());
+
     }
 
 }

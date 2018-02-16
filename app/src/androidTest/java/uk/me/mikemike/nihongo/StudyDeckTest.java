@@ -47,12 +47,25 @@ public class StudyDeckTest extends BaseTest {
         assertEquals(false, d.hasReviewsWaiting(DateUtils.addDaysToDate(new Date(), -20)));
     }
 
-
     @Test
     public void hasReviewsWaitingYesReviews(){
         addDecks(1, 2,true);
         StudyDeck d = getStudyDecks().first();
         assertEquals(true, d.hasReviewsWaiting(DateUtils.addDaysToDate(new Date(), 1)));
+    }
+
+    @Test
+    public void getNumberOfReviewsWaitingNoReviews(){
+        addDecks(1, 2,true);
+        StudyDeck d = getStudyDecks().first();
+        assertEquals(0, d.howManyReviewsWaiting(DateUtils.addDaysToDate(new Date(), -20)));
+    }
+
+    @Test
+    public void getNumberOfReviewsWaiting2Reviews(){
+        addDecks(1, 2,true);
+        StudyDeck d = getStudyDecks().first();
+        assertEquals(2, d.howManyReviewsWaiting(DateUtils.addDaysToDate(new Date(), 1)));
     }
 
 }

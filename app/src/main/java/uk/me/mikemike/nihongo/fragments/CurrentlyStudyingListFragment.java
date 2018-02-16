@@ -33,9 +33,12 @@ package uk.me.mikemike.nihongo.fragments;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -52,27 +55,26 @@ import uk.me.mikemike.nihongo.R;
 import uk.me.mikemike.nihongo.activities.StudySessionActivity;
 import uk.me.mikemike.nihongo.adapters.StudyDeckListAdapter;
 import uk.me.mikemike.nihongo.model.StudyDeck;
-import uk.me.mikemike.nihongo.model.StudySession;
 import uk.me.mikemike.nihongo.viewmodels.NihongoViewModel;
 
 /**
  * Fragment that displays the list of StudyDecks the user is currently studying
  * and provides a way to start reviewing when clicked.
  */
-public class CurrentlyStudyingListFragment extends Fragment implements Observer<RealmResults<StudyDeck>>,StudyDeckListAdapter.StudyDeckAdapterHandler
-                {
+public class CurrentlyStudyingListFragment extends Fragment implements Observer<RealmResults<StudyDeck>>,StudyDeckListAdapter.StudyDeckAdapterHandler, SwipeRefreshLayout.OnRefreshListener {
 
     protected NihongoViewModel mModel;
     protected StudyDeckListAdapter mAdapter;
     @BindView(R.id.recycler_view_currently_studying)
     protected RecyclerView mListStudyDecks;
     protected Unbinder mUnbinder;
+    @BindView(R.id.swiperefresh)
+    protected SwipeRefreshLayout mSwipeRefresh;
 
     protected final Observer<Date> mDateObserver = new Observer<Date>() {
         @Override
         public void onChanged(@Nullable Date date) {
             mAdapter.setStudyDate(date);
-            mAdapter.notifyDataSetChanged();
         }
     };
 
@@ -84,6 +86,11 @@ public class CurrentlyStudyingListFragment extends Fragment implements Observer<
         // Required empty public constructor
     }
 
+
+    protected  void refreshData(){
+        mModel.getStudyDate().setValue(new Date());
+        mSwipeRefresh.setRefreshing(false);
+    }
 
     @Override
     public void onActivityCreated (Bundle savedInstanceState) {
@@ -97,13 +104,13 @@ public class CurrentlyStudyingListFragment extends Fragment implements Observer<
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_currently_studying_list, container, false);
         mUnbinder = ButterKnife.bind(this, v);
         mListStudyDecks.setLayoutManager(new LinearLayoutManager(getActivity()));
         if(mAdapter != null){
             mListStudyDecks.setAdapter(mAdapter);
         }
+        mSwipeRefresh.setOnRefreshListener(this);
         return v;
     }
 
@@ -124,5 +131,31 @@ public class CurrentlyStudyingListFragment extends Fragment implements Observer<
     @Override
     public void onReviewStudyDeckChosen(StudyDeck deck) {
         startActivity(StudySessionActivity.createIntent(getActivity(), deck));
+    }
+
+    @Override
+    public void onStopStudyingDeckChosen(final StudyDeck deck) {
+        AlertDialog dialog = new
+                AlertDialog.Builder(getActivity()).setMessage("Stop studying " + deck.getName() + "? All study records will be deleted.")
+                .setPositiveButton("Stop", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        mModel.stopStudying(deck);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                }).create();
+        dialog.show();
+    }
+
+    @Override
+    public void onRefresh() {
+        if(mAdapter != null){
+           refreshData();
+        }
     }
 }

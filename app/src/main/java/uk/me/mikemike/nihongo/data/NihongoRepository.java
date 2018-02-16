@@ -325,5 +325,25 @@ public class NihongoRepository {
         return result;
     }
 
+
+    /**
+     * Stops studying the passed study deck. This deletes all study related data from the realm
+     * @param studyDeck The study deck to delete, must not be null
+     */
+    public void stopStudying(StudyDeck studyDeck){
+        if(studyDeck == null) throw new IllegalArgumentException("The study deck must not be null");
+        mRealm.beginTransaction();
+        // delete all the learning states first
+        for (StudyCard card: studyDeck.getStudyCards()
+             ) {
+            card.getLearningState().deleteFromRealm();
+        }
+        // delete the list of study cards
+        studyDeck.getStudyCards().deleteAllFromRealm();
+        // delete the study deck itself
+        studyDeck.deleteFromRealm();
+        mRealm.commitTransaction();
+    }
+
 }
 

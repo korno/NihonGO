@@ -22,11 +22,14 @@
     <string name="item_debug_card_synonym_seperator">, </string>
 
 
+
+
+
+
     <string name="format_next_study_date">yyyy-MM-dd-hh-mm</string>
-
-
     <string name="format_remaining_questions">%d remaining</string>
+    <string name="format_number_of_reviews">Review %d Cards</string>
+    <string name="format_studycard_detals">%d total cards. Studying since %s. </string>
 
-    <string name="format_number_of_reviews">%d Reviews</string>
 
 </resources>
