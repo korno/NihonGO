@@ -23,13 +23,25 @@
 
 
 
+    <string name="snackbar_studydeck_created_format_string">%s added to study list.</string>
+    <string name="snackbar_studydeck_created_study_action">Study Now</string>
+
 
 
 
     <string name="format_next_study_date">yyyy-MM-dd-hh-mm</string>
     <string name="format_remaining_questions">%d remaining</string>
-    <string name="format_number_of_reviews">Review %d Cards</string>
+    <string name="format_number_of_reviews">%d reviews</string>
     <string name="format_studycard_detals">%d total cards. Studying since %s. </string>
 
+    <string name="item_current_study_deck_review_button">Review</string>
+    <string name="item_current_study_deck_delete_button">Stop Studying</string>
+
+
+    <string name="dialog_delete_studydeck_title">Stopy studying %s?</string>
+    <string name="dialog_delete_studydeck_message">All study progress will be deleted. If you choose to study this deck again, you will have to start again.</string>
+    <string name="dialog_delete_studydeck_positive_button">Stop Studying</string>
+    <string name="dialog_delete_studydeck_negative_button">Cancel</string>
+    <string name="item_current_study_study_percentage_title">Seen:</string>
 
 </resources>

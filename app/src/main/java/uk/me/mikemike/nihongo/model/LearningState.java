@@ -43,6 +43,11 @@ import uk.me.mikemike.nihongo.utils.DateUtils;
  */
 public class LearningState extends RealmObject {
 
+
+    public static final int NEW_LEVEL =0;
+    public static final int STUDYING_LEVEL = 1;
+    public static final int MASTERED_LEVEL = 2;
+
     @PrimaryKey
     @Required
     protected String mCardLearningStateID = UUID.randomUUID().toString();
@@ -50,6 +55,8 @@ public class LearningState extends RealmObject {
     protected float mEasiness;
     protected int mReps;
     protected float mInterval;
+    protected int mTotalTries;
+    protected int mStudyLevel;
 
 
     public String getCardLearningStateID(){return mCardLearningStateID;}
@@ -57,10 +64,31 @@ public class LearningState extends RealmObject {
     public float getEasyness(){return mEasiness;}
     public int getReps(){return mReps;}
     public float getInterval(){return mInterval;}
+    public int getTotalTries(){return mTotalTries;}
+    public int getStudyLevel(){return mStudyLevel;}
 
+
+
+    public void setEasiness(float easiness){
+        if(easiness < MINIMUM_E_VALUE) throw new IllegalArgumentException("easiness value is less than MINIMUM_E_VALUE");
+        mEasiness = easiness;
+        changeLevel();
+    }
+
+    public void setTotalTries(int tries){
+        if(tries < 0) throw new IllegalArgumentException("Total tries cannot be less than 0");
+        mTotalTries=tries;
+        changeLevel();
+    }
 
     public static float STARTING_E_VALUE = 2.5f;
     public static float MINIMUM_E_VALUE = 1.3f;
+
+
+    public static float MASTERED_E_VALUE = 2.48f;
+    public static int MASTERED_MIN_TRIES = 5;
+
+
 
     /* required by realm */
     public LearningState(){
@@ -69,6 +97,7 @@ public class LearningState extends RealmObject {
         mReps = 0;
         mInterval = 0;
         mNextDueDate = new Date();
+        mStudyLevel=NEW_LEVEL;
     }
 
     /**
@@ -89,6 +118,7 @@ public class LearningState extends RealmObject {
         mEasiness = easiness;
         mReps = consecutiveCorrectAnswers;
         mInterval = interval;
+        mTotalTries=0;
     }
 
     /**
@@ -102,6 +132,8 @@ public class LearningState extends RealmObject {
         mInterval = 0;
         mEasiness = STARTING_E_VALUE;
         mReps = 0;
+        mTotalTries=0;
+        mStudyLevel=NEW_LEVEL;
     }
 
     /**
@@ -140,8 +172,28 @@ public class LearningState extends RealmObject {
                 mInterval = mInterval * mEasiness;
         }
 
+        mTotalTries++;
         mNextDueDate = DateUtils.addDaysToDate(date, (int)Math.ceil(mInterval));
+        changeLevel();
+    }
+
+
+    protected void changeLevel(){
+
+        if(mTotalTries == 0){
+            mStudyLevel=NEW_LEVEL;
+        }
+        else if(mEasiness >= MASTERED_E_VALUE && mTotalTries >= MASTERED_MIN_TRIES){
+            mStudyLevel = MASTERED_LEVEL;
+        }
+
+        else {
+            mStudyLevel=STUDYING_LEVEL;
+        }
+
 
     }
+
+    public boolean isNew(){return mStudyLevel == 0;}
 
 }

@@ -60,4 +60,11 @@ public class StudyCard extends RealmObject {
         mLearningState = state;
     }
 
+    /**
+     * Is this card a new card? Has it ever been studied before
+     * @return
+     */
+    public boolean isNewCard(){
+        return mLearningState.getTotalTries() == 0;
+    }
 }

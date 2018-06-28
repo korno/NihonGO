@@ -162,7 +162,7 @@ public class StudySession extends RealmObject {
 
     protected boolean doesCorrectAnswersContainCard(StudyCard card){
         if(isManaged()){
-            return mCorrectCards.where().equalTo("mStudyCardID", card.getStudyCardID()).count() == 1;
+            return mCorrectCards.where().equalTo(StudyCardFields.STUDY_CARD_ID, card.getStudyCardID()).count() == 1;
         }
         else{
             return mCorrectCards.contains(card);
@@ -171,7 +171,7 @@ public class StudySession extends RealmObject {
 
     protected boolean doesWrongAnswersContainCard(StudyCard card){
         if(isManaged()){
-            return mWrongCards.where().equalTo("mStudyCardID", card.getStudyCardID()).count() == 1;
+            return mWrongCards.where().equalTo(StudyCardFields.STUDY_CARD_ID, card.getStudyCardID()).count() == 1;
         }
         else{
             return mWrongCards.contains(card);

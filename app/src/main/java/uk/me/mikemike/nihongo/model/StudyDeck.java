@@ -35,6 +35,7 @@ import java.util.Date;
 import java.util.UUID;
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
@@ -62,6 +63,8 @@ public class StudyDeck extends RealmObject {
     public Deck getSourceDeck() { return mSourceDeck; }
     public Date getStartedStudyDate(){return mStartStudyDate;}
 
+
+
     /* required by realm */
     public StudyDeck(){
     }
@@ -80,7 +83,7 @@ public class StudyDeck extends RealmObject {
      */
     public RealmResults<StudyCard> getCardsWithNextReviewDateOlderThan(Date date){
         if(date == null) throw new IllegalArgumentException("the date must not be null");
-        return mStudyCards.where().lessThanOrEqualTo("mLearningState.mNextDueDate", date).findAll();
+        return mStudyCards.where().lessThanOrEqualTo(StudyCardFields.LEARNING_STATE.NEXT_DUE_DATE, date).findAll();
     }
 
     /**
@@ -101,5 +104,60 @@ public class StudyDeck extends RealmObject {
      */
     public int howManyReviewsWaiting(Date date){
         return getCardsWithNextReviewDateOlderThan(date).size();
+    }
+
+    /**
+     * Returns all the cards that have never been studied (mStudyLevel == 0)
+     * @return A realm result
+     */
+    public RealmResults<StudyCard> getAllNewCards(){
+        return getCardsForLevelQuery(LearningState.NEW_LEVEL).findAll();
+    }
+
+
+    /**
+     * Reeturns all the studycards that have been mastered (studyLevel == 2)
+     * @return
+     */
+    public RealmResults<StudyCard> getAllMasteredCards(){
+        return getCardsForLevelQuery(LearningState.MASTERED_LEVEL).findAll();
+    }
+
+    public int howManyMasteredCards(){
+        return getAllMasteredCards().size();
+    }
+
+
+    /**
+     * Returns the number of cards (cards that have never been studied)
+     * @return how many new cars
+     */
+    public int howManyNewCards(){
+        return getAllNewCards().size();
+    }
+
+    /**
+     * Returns the percentage of cards that are new cards (have never been studied)
+     * @return
+     */
+    public int getNewCardPercentage(){
+        return calculateCardPercentage(howManyNewCards());
+    }
+
+
+    /**
+     * Returns the percentage of cards that have been mastered
+     * @return
+     */
+    public int getMasteredCardPercentage(){return calculateCardPercentage(getAllMasteredCards().size());}
+
+
+    protected int calculateCardPercentage(int number){
+        if(number == 0) return 0;
+        return (int)(100.0f * (float)number/getStudyCards().size());
+    }
+
+    protected RealmQuery<StudyCard> getCardsForLevelQuery(int level){
+        return mStudyCards.where().equalTo(StudyCardFields.LEARNING_STATE.STUDY_LEVEL, level);
     }
 }

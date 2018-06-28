@@ -166,6 +166,16 @@ public abstract class BaseTest {
         return  mRealm.where(StudyCard.class).findAll();
     }
 
+
+    public void setAllLearningStatesToValues(RealmResults<LearningState> states, int tries, float evalue){
+        mRealm.beginTransaction();
+        for(LearningState s: states ){
+            s.setEasiness(evalue);
+            s.setTotalTries(tries);
+        }
+        mRealm.commitTransaction();
+    }
+
     @After
     public  void closeRealm(){
         mRealm.close();

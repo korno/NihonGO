@@ -5,6 +5,7 @@ import org.junit.Test;
 import java.util.Date;
 
 import uk.me.mikemike.nihongo.model.LearningState;
+import uk.me.mikemike.nihongo.model.StudyDeck;
 import uk.me.mikemike.nihongo.utils.DateUtils;
 
 import static junit.framework.Assert.assertEquals;
@@ -25,6 +26,8 @@ public class LearningStateTest extends  BaseTest {
         assertEquals(s.getEasyness(), LearningState.STARTING_E_VALUE, 1e-15);
         assertEquals(0.0f,s.getInterval(), 1e-15 );
         assertEquals(0, s.getReps());
+        assertEquals(0, s.getTotalTries());
+        assertEquals(0, s.getStudyLevel());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -71,6 +74,8 @@ public class LearningStateTest extends  BaseTest {
         assertEquals(   1f, s.getInterval(), 1e-15);
         s.performSR(5, d);
         assertEquals(   6f, s.getInterval(), 1e-15);
+        assertEquals(2, s.getTotalTries());
+        assertEquals(1, s.getStudyLevel());
     }
 
     @Test
@@ -93,6 +98,10 @@ public class LearningStateTest extends  BaseTest {
         s.performSR(1,d);
         assertEquals(DateUtils.addDaysToDate(d, 1), s.getNextDueDate());
         assertEquals(   1f, s.getInterval(), 1e-15);
+        assertEquals(3, s.getTotalTries());
+
+
+        assertEquals(1, s.getStudyLevel());
 
     }
 
@@ -125,6 +134,27 @@ public class LearningStateTest extends  BaseTest {
         s.performSR(3, d);
         s.performSR(3, d);
         assertMoreThan(LearningState.MINIMUM_E_VALUE, s.getEasyness());
+    }
+
+    @Test
+    public void getStudyLevelTest_AllMastered(){
+        addDecks(2, 2, true);
+        setAllLearningStatesToValues(getLearningStates(), 5, LearningState.MASTERED_E_VALUE);
+
+        for(LearningState s: getLearningStates()){
+            assertEquals(2, s.getStudyLevel());
+        }
+
+    }
+
+    @Test
+    public void getStudyLevelTest_AllNew(){
+        addDecks(2, 2, true);
+        //setAllLearningStatesToValues(getLearningStates(), 5, 2.3f);
+
+        for(LearningState s: getLearningStates()){
+            assertEquals(0, s.getStudyLevel());
+        }
     }
 
 

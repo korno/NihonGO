@@ -47,6 +47,7 @@ import android.view.ViewGroup;
 
 import java.util.Date;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -70,6 +71,9 @@ public class CurrentlyStudyingListFragment extends Fragment implements Observer<
     protected Unbinder mUnbinder;
     @BindView(R.id.swiperefresh)
     protected SwipeRefreshLayout mSwipeRefresh;
+
+    @BindString(R.string.dialog_delete_studydeck_title)
+    protected String mDeleteStudyDeckTitleString;
 
     protected final Observer<Date> mDateObserver = new Observer<Date>() {
         @Override
@@ -136,19 +140,19 @@ public class CurrentlyStudyingListFragment extends Fragment implements Observer<
     @Override
     public void onStopStudyingDeckChosen(final StudyDeck deck) {
         AlertDialog dialog = new
-                AlertDialog.Builder(getActivity()).setMessage("Stop studying " + deck.getName() + "? All study records will be deleted.")
-                .setPositiveButton("Stop", new DialogInterface.OnClickListener() {
+                AlertDialog.Builder(getActivity()).setTitle(String.format(mDeleteStudyDeckTitleString, deck.getName()))
+                .setPositiveButton(R.string.dialog_delete_studydeck_positive_button, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         mModel.stopStudying(deck);
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.dialog_delete_studydeck_negative_button, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
                     }
-                }).create();
+                }).setMessage(R.string.dialog_delete_studydeck_message).create();
         dialog.show();
     }
 

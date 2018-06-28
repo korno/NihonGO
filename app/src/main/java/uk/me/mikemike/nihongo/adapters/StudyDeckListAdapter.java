@@ -33,10 +33,12 @@ package uk.me.mikemike.nihongo.adapters;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -106,6 +108,14 @@ public class StudyDeckListAdapter extends RealmRecyclerViewAdapter<StudyDeck, St
         protected String mNumberOfReviewsFormatString;
         @BindString(R.string.format_studycard_detals)
         protected String mStudyDeckDetailsFormatString;
+        @BindView(R.id.text_review_count)
+        protected TextView mReviewCount;
+        @BindView(R.id.progress_bar_cards_seen)
+        protected ProgressBar mCardsSeenProgressBar;
+
+        /*@BindView(R.id.progress_bar_cards_seen)*/
+        //protected ProgressBar mMasteredCardsProgressBar;
+
 
 
         public StudyDeckRecyclerView(View itemView) {
@@ -115,18 +125,11 @@ public class StudyDeckListAdapter extends RealmRecyclerViewAdapter<StudyDeck, St
 
         public void bindToStudyDeck(StudyDeck deck){
             mNameTextView.setText(deck.getName());
+            mReviewCount.setText(String.format(mNumberOfReviewsFormatString, deck.howManyReviewsWaiting(mDate)));
             mTextViewStudyDeckDetails.setText(String.format(mStudyDeckDetailsFormatString, deck.getStudyCards().size(), mDateFormatter.format(deck.getStartedStudyDate())));
-            if(deck.hasReviewsWaiting(mDate)){
-                mStartStudyButton.setEnabled(true);
-                //mStartStudyButton.setVisibility(View.VISIBLE);
-                mStartStudyButton.setText(String.format(mNumberOfReviewsFormatString, deck.howManyReviewsWaiting(mDate)));
-
-            }
-            else{
-                //mStartStudyButton.setVisibility(View.GONE);
-                mStartStudyButton.setEnabled(false);
-                mStartStudyButton.setText("No Reviews");
-            }
+            mStartStudyButton.setEnabled(deck.hasReviewsWaiting(mDate));
+            mCardsSeenProgressBar.setProgress(100 - deck.getNewCardPercentage());
+            //mMasteredCardsProgressBar.setProgress(deck.getMasteredCardPercentage());
         }
 
 

@@ -33,21 +33,27 @@ package uk.me.mikemike.nihongo.fragments;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.realm.RealmResults;
 import uk.me.mikemike.nihongo.R;
+import uk.me.mikemike.nihongo.activities.StudySessionActivity;
 import uk.me.mikemike.nihongo.adapters.ChooseDeckToStudyListAdapter;
 import uk.me.mikemike.nihongo.model.Deck;
+import uk.me.mikemike.nihongo.model.StudyDeck;
 import uk.me.mikemike.nihongo.viewmodels.NihongoViewModel;
 
 /**
@@ -65,6 +71,14 @@ public class ChooseDeckToStudyFragment extends Fragment implements Observer<Real
     protected RecyclerView mListDeck;
     protected Unbinder mUnbinder;
 
+    @BindString(R.string.snackbar_studydeck_created_format_string)
+    protected String mDeckAddedSnackbackFormatString;
+
+
+
+    protected View mRootView;
+
+
     public ChooseDeckToStudyFragment() {
 
     }
@@ -76,8 +90,8 @@ public class ChooseDeckToStudyFragment extends Fragment implements Observer<Real
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_select_new_deck_to_study, container, false);
-        mUnbinder = ButterKnife.bind(this, v);
+        mRootView = inflater.inflate(R.layout.fragment_select_new_deck_to_study, container, false);
+        mUnbinder = ButterKnife.bind(this, mRootView);
         mListDeck.setLayoutManager(new LinearLayoutManager(getActivity()));
         // this will occur if we have been created before, and are just being reattached
         // and the view is just being recreated
@@ -85,7 +99,7 @@ public class ChooseDeckToStudyFragment extends Fragment implements Observer<Real
             mListDeck.setAdapter(mAdapter);
 
         }
-        return v;
+        return mRootView;
     }
 
     @Override
@@ -116,6 +130,15 @@ public class ChooseDeckToStudyFragment extends Fragment implements Observer<Real
     /* The ChooseDeckToStudyListAdapter will invoke this */
     @Override
     public void onDeckChosen(Deck d) {
-        mViewModel.startStudying(d);
+        final StudyDeck studyDeck = mViewModel.startStudying(d);
+        Snackbar studyAddedBar = Snackbar.make(mRootView, String.format(mDeckAddedSnackbackFormatString, d.getName()), Snackbar.LENGTH_LONG);
+        studyAddedBar.setAction(R.string.snackbar_studydeck_created_study_action, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent studyIntent = StudySessionActivity.createIntent(getContext(), studyDeck);
+                getActivity().startActivity(studyIntent);
+            }
+        });
+        studyAddedBar.show();
     }
 }

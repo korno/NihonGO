@@ -123,7 +123,6 @@ public class StudySessionFragment extends Fragment implements Observer<StudySess
 
 
     protected void BindCurrentQuestion(){
-        Log.d("StudySessionFragment", "BindCurrentQuestionCalled");
         StudySession current = mModel.getCurrentSession().getValue();
         if(current != null) {
             mRemainingQuestionsText.setText(String.format(mRemainingQuestionsFormatString,current.getRemainingStudyCardsCount()));

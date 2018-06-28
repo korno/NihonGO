@@ -36,10 +36,13 @@ import io.realm.RealmList;
 import io.realm.RealmResults;
 import uk.me.mikemike.nihongo.model.Card;
 import uk.me.mikemike.nihongo.model.Deck;
+import uk.me.mikemike.nihongo.model.DeckFields;
 import uk.me.mikemike.nihongo.model.LearningState;
 import uk.me.mikemike.nihongo.model.StudyCard;
 import uk.me.mikemike.nihongo.model.StudyDeck;
+import uk.me.mikemike.nihongo.model.StudyDeckFields;
 import uk.me.mikemike.nihongo.model.StudySession;
+import uk.me.mikemike.nihongo.model.StudySessionFields;
 import uk.me.mikemike.nihongo.utils.DateUtils;
 
 /**
@@ -126,7 +129,7 @@ public class NihongoRepository {
      */
     public StudyDeck getStudyDeckByID(String id) {
         if (id == null) throw new IllegalArgumentException("The ID must not be null");
-        return mRealm.where(StudyDeck.class).equalTo("mStudyDeckID", id).findFirst();
+        return mRealm.where(StudyDeck.class).equalTo(StudyDeckFields.STUDY_DECK_ID, id).findFirst();
     }
 
 
@@ -220,7 +223,7 @@ public class NihongoRepository {
      */
     public RealmResults<Deck> getAllDecksNotBeingStudied() {
         if (mDecksNotBeingStudied == null) {
-            mDecksNotBeingStudied = mRealm.where(Deck.class).isEmpty("mStudyDecks").findAll();
+            mDecksNotBeingStudied = mRealm.where(Deck.class).isEmpty(DeckFields.STUDY_DECKS).findAll();
         }
         return mDecksNotBeingStudied;
     }
@@ -281,7 +284,7 @@ public class NihongoRepository {
      */
     public Deck getDeckByID(String id){
         if(id == null) throw new IllegalArgumentException("id must not be null");
-        return mRealm.where(Deck.class).equalTo("mDeckID", id).findFirst();
+        return mRealm.where(Deck.class).equalTo(DeckFields.DECK_ID, id).findFirst();
     }
 
     /**
@@ -306,7 +309,7 @@ public class NihongoRepository {
      */
     public StudySession getStudySessionByID(String id){
         if(id == null) throw new IllegalArgumentException("id must not be null");
-        return mRealm.where(StudySession.class).equalTo("mStudySessionID", id).findFirst();
+        return mRealm.where(StudySession.class).equalTo(StudySessionFields.STUDY_SESSION_ID, id).findFirst();
     }
 
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <decks>
-<deck name="test1" description="test1description" author="test1author">
+<deck name="Super long title for this deck of cards" description="test1description" author="test1author">
     <card
         mainLanguage="red"
         japaneseKanji="赤"
