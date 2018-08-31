@@ -26,6 +26,8 @@ public class MainActivity extends AppCompatActivity
     protected ChooseDeckToStudyFragment mFragmentChooseDeckToStudy;
     protected CurrentlyStudyingListFragment mFragmentCurrentlyStudying;
 
+    protected Fragment mCurrentFragment=null;
+
     @BindView(R.id.fab)
     protected FloatingActionButton mFAB;
     @BindView(R.id.toolbar)
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity
         fragmentManager.beginTransaction()
                 .replace(R.id.layout_content_main, newFragment)
                 .commit();
+        mCurrentFragment = newFragment;
         mFAB.setVisibility(showFAB == true ? View.VISIBLE : View.GONE);
     }
 
@@ -73,7 +76,12 @@ public class MainActivity extends AppCompatActivity
         if (mDrawer.isDrawerOpen(GravityCompat.START)) {
             mDrawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            if(mCurrentFragment != mFragmentCurrentlyStudying){
+                swapMainFragment(mFragmentCurrentlyStudying, true);
+            }
+            else{
+                super.onBackPressed();
+            }
         }
     }
 

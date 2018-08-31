@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <decks>
-<deck name="Super long title for this deck of cards" description="test1description" author="test1author">
+<deck name="Colors, Sizes, and Shapes" description="test1description" author="test1author">
     <card
         mainLanguage="red"
         japaneseKanji="赤"
         japaneseHiragana="あか"
         wordType="Noun"
         >
-        <japaneseDisplay>card1japanesedisplay</japaneseDisplay>
+
     </card>
     <card
         mainLanguage="yellow"
@@ -15,7 +15,7 @@
         japaneseHiragana="きいろ"
         wordType="Noun"
         >
-        <japaneseDisplay>card1japanesedisplay</japaneseDisplay>
+
     </card>
     <card
         mainLanguage="blue"
@@ -23,7 +23,7 @@
         japaneseHiragana="あお"
         wordType="Noun"
         >
-        <japaneseDisplay>card1japanesedisplay</japaneseDisplay>
+
     </card>
     <card
         mainLanguage="black"
@@ -31,7 +31,7 @@
         japaneseHiragana="くろ"
         wordType="Noun"
         >
-        <japaneseDisplay>card1japanesedisplay</japaneseDisplay>
+
     </card>
     <card
         mainLanguage="white"
@@ -39,7 +39,7 @@
         japaneseHiragana="しろ"
         wordType="Noun"
         >
-        <japaneseDisplay>card1japanesedisplay</japaneseDisplay>
+
     </card>
 </deck>
 </decks>

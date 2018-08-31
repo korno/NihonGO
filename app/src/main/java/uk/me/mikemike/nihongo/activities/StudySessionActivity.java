@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Debug;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +14,7 @@ import java.util.Date;
 
 import uk.me.mikemike.nihongo.R;
 import uk.me.mikemike.nihongo.fragments.StudySessionFragment;
+import uk.me.mikemike.nihongo.fragments.StudySessionResultsFragment;
 import uk.me.mikemike.nihongo.model.StudyDeck;
 import uk.me.mikemike.nihongo.model.StudySession;
 import uk.me.mikemike.nihongo.viewmodels.StudySessionViewModel;
@@ -25,7 +27,7 @@ public class StudySessionActivity extends AppCompatActivity implements StudySess
     protected StudySessionViewModel mModel;
 
     protected StudySessionFragment mStudySessionFragment;
-
+    protected StudySessionResultsFragment mResultsFragment;
 
 
 
@@ -37,6 +39,10 @@ public class StudySessionActivity extends AppCompatActivity implements StudySess
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
+        mStudySessionFragment = StudySessionFragment.newInstance();
+        mResultsFragment = StudySessionResultsFragment.newInstance();
 
         // we can load the session in one of three ways, in order of priority
 
@@ -83,10 +89,17 @@ public class StudySessionActivity extends AppCompatActivity implements StudySess
             }
         }
 
-        // now we have the
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_study_session);
+
+        if(mModel.getCurrentSession().getValue().isFinished()){
+            displayResults();
+        }
+        else{
+            displaySession();
+        }
+
     }
 
 
@@ -99,6 +112,21 @@ public class StudySessionActivity extends AppCompatActivity implements StudySess
     @Override
     public void onTestFinished(StudySession session) {
         Toast.makeText(this, "Study Session finished", Toast.LENGTH_SHORT).show();
+        displayResults();
+    }
+
+    protected void displayResults(){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.study_activity_layout_main, mResultsFragment)
+                .commit();
+    }
+
+    protected  void displaySession(){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.study_activity_layout_main, mStudySessionFragment)
+                .commit();
     }
 
     @Override

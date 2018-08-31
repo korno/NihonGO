@@ -70,12 +70,8 @@ public class ChooseDeckToStudyFragment extends Fragment implements Observer<Real
     @BindView(R.id.recycler_view_decks_list)
     protected RecyclerView mListDeck;
     protected Unbinder mUnbinder;
-
     @BindString(R.string.snackbar_studydeck_created_format_string)
     protected String mDeckAddedSnackbackFormatString;
-
-
-
     protected View mRootView;
 
 

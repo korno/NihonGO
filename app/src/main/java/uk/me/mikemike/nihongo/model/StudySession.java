@@ -118,6 +118,9 @@ public class StudySession extends RealmObject {
         return result;
     }
 
+
+
+
     /**
      * Answers the current question by checking the main language to the answer provided. After checking the
      * session will move on to the next question (or end the study if there isnt one)
@@ -185,6 +188,7 @@ public class StudySession extends RealmObject {
         }
         return answerMainLanguage(answer);
     }
+
 
     protected void moveToNextQuestion(){
         mCurrentQuestion = mSessionCards.first(null);

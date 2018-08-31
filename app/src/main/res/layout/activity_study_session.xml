@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/study_activity_layout_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="uk.me.mikemike.nihongo.activities.StudySessionActivity">
-    <fragment
-        android:id="@+id/fragment_study_session"
-        class="uk.me.mikemike.nihongo.fragments.StudySessionFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
 </android.support.constraint.ConstraintLayout>

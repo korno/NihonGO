@@ -46,7 +46,7 @@ import uk.me.mikemike.nihongo.R;
 import uk.me.mikemike.nihongo.model.Deck;
 
 /**
- * Recycler view adapter for decks
+ * Recycler view adapter for a list of decks
  */
 public class ChooseDeckToStudyListAdapter extends RealmRecyclerViewAdapter<Deck, ChooseDeckToStudyListAdapter.DeckViewHolder> {
 
@@ -82,6 +82,8 @@ public class ChooseDeckToStudyListAdapter extends RealmRecyclerViewAdapter<Deck,
 
         @BindView(R.id.text_deck_name)
         protected TextView mTextTitle;
+        @BindView(R.id.text_deck_description)
+        protected TextView mTextDescription;
 
         public DeckViewHolder(View itemView) {
             super(itemView);
@@ -95,6 +97,7 @@ public class ChooseDeckToStudyListAdapter extends RealmRecyclerViewAdapter<Deck,
 
         public void bindToDeck(Deck deck){
             mTextTitle.setText(deck.getName());
+            mTextDescription.setText(deck.getDescription());
         }
 
     }

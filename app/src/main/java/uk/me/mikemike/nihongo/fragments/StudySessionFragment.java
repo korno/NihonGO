@@ -106,18 +106,8 @@ public class StudySessionFragment extends Fragment implements Observer<StudySess
         BindCurrentQuestion();
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+
     public interface StudySessionFragmentListener {
-        // TODO: Update argument type and name
         void onTestFinished(StudySession session);
     }
 
@@ -127,7 +117,9 @@ public class StudySessionFragment extends Fragment implements Observer<StudySess
         if(current != null) {
             mRemainingQuestionsText.setText(String.format(mRemainingQuestionsFormatString,current.getRemainingStudyCardsCount()));
             if (current.isFinished() == false) {
-                mQuestionText.setText(current.getCurrent().getSourceCard().getMainLanguage());
+                String questionText =  current.isCurrentQuestionJapaneseAnswer() ?  current.getCurrent().getSourceCard().getMainLanguage() :
+                                            current.getCurrent().getSourceCard().getJapaneseDisplayIfPresentKanjiIfNot();
+                mQuestionText.setText(questionText);
                 mAnswerEditText.setText("");
             } else {
                 mListener.onTestFinished(current);
