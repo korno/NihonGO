@@ -259,11 +259,11 @@ public class NihongoRepository {
      * @param answer The answer
      * @return true if correct, false otherwise
      */
-    public boolean answerStudySessionJapaneseAnswer(StudySession session, String answer){
+    public boolean answerStudySessionJapaneseAnswer(StudySession session, String answer, boolean updateSessionState){
         boolean result;
         try{
             mRealm.beginTransaction();
-            result = session.answerJapanese(answer);
+            result = session.answerJapanese(answer, updateSessionState);
             mRealm.commitTransaction();
             return result;
         }
@@ -319,11 +319,11 @@ public class NihongoRepository {
      * @param session the session that will be invoked, must not be null
      * @return true if the answer was correct, false otherwise
      */
-    public boolean answerStudySessionCurrentQuestion(String answer, StudySession session){
+    public boolean answerStudySessionCurrentQuestion(String answer, StudySession session, boolean updateSessionState){
         if(session == null) throw new IllegalArgumentException("session must not be null");
         boolean result;
         mRealm.beginTransaction();
-        result = session.answerCurrentQuestion(answer);
+        result = session.answerCurrentQuestion(answer, updateSessionState);
         mRealm.commitTransaction();
         return result;
     }

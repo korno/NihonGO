@@ -27,6 +27,8 @@
     <string name="snackbar_studydeck_created_study_action">Study Now</string>
 
 
+    <string name="toast_correct_answer"> ^_^ Correct!</string>
+    <string name="toast_wrong_answer"> &gt;_&lt; Wrong...</string>
 
 
     <string name="format_next_study_date">yyyy-MM-dd-hh-mm</string>

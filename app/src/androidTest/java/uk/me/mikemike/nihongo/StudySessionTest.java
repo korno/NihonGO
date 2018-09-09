@@ -94,6 +94,25 @@ public class StudySessionTest extends BaseTest {
     }
 
     @Test
+    public void answerCurrentQuestion_DoNotUpdateState(){
+        addDecks(1, 1, true);
+        StudySession ss = new StudySession(getStudyDecks().first(),new Date());
+        assertEquals(ss.getCorrectCards().size(), 0);
+        assertEquals(ss.getRemainingStudyCardsCount(), 1);
+        assertEquals(ss.getWrongCards().size(), 0);
+        mRealm.beginTransaction();
+        // we can do this as many time as we want as the study session state will not be updated
+        ss.answerJapanese("", false);
+        ss.answerCurrentQuestion("", false);
+        mRealm.commitTransaction();
+        // no change to state
+        assertEquals(ss.getCorrectCards().size(), 0);
+        assertEquals(ss.getRemainingStudyCardsCount(), 1);
+        assertEquals(ss.getWrongCards().size(), 0);
+        assertEquals(ss.isFinished(), false);
+    }
+
+    @Test
     public void doStudySession_SRIsCalledCorrectlyTest(){
         addDecks(1, 1, true);
         StudySession ss = new StudySession(getStudyDecks().first(),new Date());

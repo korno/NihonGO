@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<decks>
+    <deck name="Mikes Realworld Test" description="A collection of vocab for the N2 JLPT test. Designed also as a realworld test for NihonGO" author="Mike">
+        <card
+            mainLanguage="instructions"
+            japaneseKanji="指示"
+            japaneseHiragana="しじ"
+            wordType="Noun"
+            >
+            <japaneseDisplay><![CDATA[<ruby>指示<rt>しじ</rt></ruby>]]>
+            </japaneseDisplay>
+            <synonym>directions</synonym>
+        </card>
+        <card
+            mainLanguage="documentation"
+            japaneseHiragana="しりょう"
+           wordType="Noun"
+            >
+        </card>
+    </deck>
+</decks>

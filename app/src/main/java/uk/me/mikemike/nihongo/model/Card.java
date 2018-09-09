@@ -59,11 +59,11 @@ public class Card extends RealmObject {
     @PrimaryKey
     @Required
     protected String mCardID = UUID.randomUUID().toString();
-    protected String mMainLanguage;
-    protected String mJapaneseHiragana;
-    protected String mJapaneseKanji;
-    protected String mJapaneseDisplay;
-    protected RealmList<String> mSynonyms;
+    protected String mMainLanguage="";
+    protected String mJapaneseHiragana="";
+    protected String mJapaneseKanji="";
+    protected String mJapaneseDisplay="";
+    protected RealmList<String> mSynonyms=new RealmList<>();
     protected String mCardType;
 
     public String getCardID(){return mCardID;}
@@ -116,7 +116,7 @@ public class Card extends RealmObject {
    Required by realm
     */
     public Card(){
-
+        mSynonyms=new RealmList<>();
     }
 
     /**
@@ -132,6 +132,8 @@ public class Card extends RealmObject {
        return mSynonyms.size() > 0;
     }
 
+    public boolean hasDisplayJapanese() { return mJapaneseDisplay  != null;}
+
     public String createSynonymsString(String seperator){
         if(seperator == null) throw new IllegalArgumentException("The seperator must not be null");
         String list = "";
@@ -146,6 +148,36 @@ public class Card extends RealmObject {
             }
         }
         return list;
+    }
+
+
+    public boolean isHiraganaEqual(String hiragana){
+        if(hiragana == null) throw new IllegalArgumentException("Hiragana compare paramter must not be null");
+        return mJapaneseHiragana.equals(hiragana);
+    }
+
+    public boolean isASynonym(String check){
+        if(check == null) throw new IllegalArgumentException(("The check parameter must not be null"));
+        for(String s: mSynonyms){
+            if(s.equalsIgnoreCase(check)){
+                return  true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isMainLanguageEqual(String check, boolean includeSynonyms){
+        if(check == null) throw new IllegalArgumentException("check parameter must not be null");
+        if(mMainLanguage.equalsIgnoreCase(check))
+        {
+            return true;
+        }
+        else if(includeSynonyms == true){
+            return isASynonym(check);
+        }
+        else{
+            return false;
+        }
     }
 
 }

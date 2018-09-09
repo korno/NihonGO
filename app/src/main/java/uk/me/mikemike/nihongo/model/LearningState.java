@@ -47,6 +47,10 @@ public class LearningState extends RealmObject {
     public static final int NEW_LEVEL =0;
     public static final int STUDYING_LEVEL = 1;
     public static final int MASTERED_LEVEL = 2;
+    public static float STARTING_E_VALUE = 2.5f;
+    public static float MINIMUM_E_VALUE = 1.3f;
+    public static float MASTERED_E_VALUE = 2.48f;
+    public static int MASTERED_MIN_TRIES = 5;
 
     @PrimaryKey
     @Required
@@ -81,12 +85,7 @@ public class LearningState extends RealmObject {
         changeLevel();
     }
 
-    public static float STARTING_E_VALUE = 2.5f;
-    public static float MINIMUM_E_VALUE = 1.3f;
 
-
-    public static float MASTERED_E_VALUE = 2.48f;
-    public static int MASTERED_MIN_TRIES = 5;
 
 
 

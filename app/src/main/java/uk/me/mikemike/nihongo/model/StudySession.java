@@ -109,13 +109,19 @@ public class StudySession extends RealmObject {
      * @param answer The answer to use
      * @return true if correct, false if not
      */
-    public boolean answerJapanese(String answer){
+    public boolean answerJapanese(String answer, boolean updateState){
         if(answer == null) throw new IllegalArgumentException("answer must not be null");
         if(mIsFinished) throw new RuntimeException("The test is finished so answerJapanese calls are not allowed");
         boolean result;
-        result = mCurrentQuestion.getSourceCard().getJapaneseHiragana().equalsIgnoreCase(answer);
-        handleAnswer(result);
+        result = mCurrentQuestion.getSourceCard().isHiraganaEqual(answer);
+        if(updateState){
+            handleAnswer(result);
+        }
         return result;
+    }
+
+    public boolean answerJapanese(String answer){
+        return answerJapanese(answer, true);
     }
 
 
@@ -125,15 +131,22 @@ public class StudySession extends RealmObject {
      * Answers the current question by checking the main language to the answer provided. After checking the
      * session will move on to the next question (or end the study if there isnt one)
      * @param answer The answer to use
+     * @param updateState If the session should update its state after checking the answer (moving to the next question etc)
      * @return true if correct, false if not
      */
-    public boolean answerMainLanguage(String answer){
+    public boolean answerMainLanguage(String answer, boolean updateState){
         if(answer == null) throw new IllegalArgumentException("answer must not be null");
         if(mIsFinished) throw new RuntimeException("The test is finished so answerJapanese calls are not allowed");
         boolean result;
-        result = mCurrentQuestion.getSourceCard().getMainLanguage().equalsIgnoreCase(answer);
-        handleAnswer(result);
+        result = mCurrentQuestion.getSourceCard().isMainLanguageEqual(answer, true);
+        if(updateState){
+            handleAnswer(result);
+        }
         return result;
+    }
+
+    public boolean answerMainLanguage(String answer){
+        return answerMainLanguage(answer, true);
     }
 
     protected void handleAnswer(boolean result){
@@ -181,13 +194,19 @@ public class StudySession extends RealmObject {
         }
     }
 
-    public boolean answerCurrentQuestion(String answer){
+    public boolean answerCurrentQuestion(String answer, boolean updateState){
         if(mIsFinished) throw new RuntimeException("The test is finished so answerCurrentQuestion calls are not allowed");
         if(mCurrentQuestionIsJapaneseAnswer){
-            return answerJapanese(answer);
+            return answerJapanese(answer, updateState);
         }
-        return answerMainLanguage(answer);
+        return answerMainLanguage(answer, updateState);
     }
+
+    public boolean answerCurrentQuestion(String answer){
+        return answerCurrentQuestion(answer, true);
+    }
+
+
 
 
     protected void moveToNextQuestion(){

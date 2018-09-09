@@ -100,7 +100,7 @@ public class CurrentlyStudyingListFragment extends Fragment implements Observer<
     public void onActivityCreated (Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mModel = ViewModelProviders.of(getActivity()).get(NihongoViewModel.class);
-        mModel.importXml(getActivity().getResources().getXml(R.xml.colors));
+        mModel.importXml(getActivity().getResources().getXml(R.xml.mikes_test));
         mModel.getAllStudyDecks().observe(this, this);
         mModel.getStudyDate().observe(this, mDateObserver);
     }

@@ -70,4 +70,116 @@ public class CardTest extends BaseTest {
     }
 
 
+    @Test
+    public void isHiriganaEqual_EqualTest(){
+        Card c = new Card();
+        c.setJapaneseHiragana("ひりがな");
+        assertEquals(true, c.isHiraganaEqual("ひりがな"));
+    }
+
+    @Test
+    public void isHiriganaEqual_NoEqualTest(){
+        Card c = new Card();
+        c.setJapaneseHiragana("ひりがな");
+        assertEquals(false, c.isHiraganaEqual("からかな"));
+    }
+    @Test
+    public void isHiriganaEqual_NoHiriganaSet(){
+        Card c = new Card();
+        assertEquals(false, c.isHiraganaEqual("ひりがな"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void isHiriganaEqual_NullParamater(){
+        Card c = new Card();
+        c.setJapaneseHiragana("ひりがな");
+        c.isHiraganaEqual(null);
+    }
+
+    @Test
+    public void isASynonym_NoSynonymsTest(){
+        Card c = new Card();
+        assertEquals(false, c.isASynonym("banana"));
+    }
+
+    @Test
+    public void isASynonym_OneSynonymCorrect(){
+        Card c = new Card();
+        c.getSynonyms().add("banana");
+        assertEquals(true, c.isASynonym("banana"));
+    }
+
+    @Test
+    public void isASynonym_OneSynonymWrong(){
+        Card c = new Card();
+        c.getSynonyms().add("apple");
+        assertEquals(false, c.isASynonym("banana"));
+    }
+
+    @Test
+    public void isASynonym_MultipleSynonymCorrect(){
+        Card c = new Card();
+        c.getSynonyms().add("coffee");
+        c.getSynonyms().add("apple");
+        c.getSynonyms().add("banana");
+        assertEquals(true, c.isASynonym("banana"));
+    }
+
+    @Test
+    public void isASynonym_MultipleSynonymWrong(){
+        Card c = new Card();
+        c.getSynonyms().add("coffee");
+        c.getSynonyms().add("apple");
+        c.getSynonyms().add("banana");
+        assertEquals(false, c.isASynonym("princess"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void isASynonym_NullParamater(){
+        Card c = new Card();
+        c.isASynonym(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void isMainLanguageEquals_NullParamater(){
+        Card c = new Card();
+        c.isMainLanguageEqual(null, false);
+    }
+
+    @Test
+    public void isMainLanguageEquals_CorrectMainLanguage(){
+        Card c = new Card();
+        c.setMainLanguage("banana");
+        assertEquals(true, c.isMainLanguageEqual("banana", true));
+    }
+
+    @Test
+    public void isMainLanguageEquals_WrongMainLanguageButCorrectSynonym(){
+        Card c = new Card();
+        c.setMainLanguage("banana");
+        c.getSynonyms().add("apple");
+        assertEquals(true, c.isMainLanguageEqual("apple", true));
+    }
+
+    @Test
+    public void isMainLanguageEquals_WrongMainLanguageButWrongSynonym(){
+        Card c = new Card();
+        c.setMainLanguage("banana");
+        c.getSynonyms().add("apple");
+        assertEquals(false, c.isMainLanguageEqual("princess", true));
+    }
+
+    @Test
+    public void isMainLanguageEquals_WrongMainLanguageButCorrectSynonymButDontIncludeSynonymCheck(){
+        Card c = new Card();
+        c.setMainLanguage("banana");
+        c.getSynonyms().add("apple");
+        assertEquals(false, c.isMainLanguageEqual("apple", false));
+    }
+
+
+
+
+
+
 }

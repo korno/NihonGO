@@ -4,6 +4,9 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/NihonGO3.iml" filepath="$PROJECT_DIR$/NihonGO3.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/furiganatextview/furiganatextview.iml" filepath="$PROJECT_DIR$/furiganatextview/furiganatextview.iml" />
+      <module fileurl="file://$PROJECT_DIR$/wanakana-android/wanakana-android.iml" filepath="$PROJECT_DIR$/wanakana-android/wanakana-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/wanakana-core/wanakana-core.iml" filepath="$PROJECT_DIR$/wanakana-core/wanakana-core.iml" />
     </modules>
   </component>
 </project>

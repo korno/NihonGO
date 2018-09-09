@@ -134,7 +134,7 @@ public class CompleteUsageTest extends BaseTest {
         // create a study session
         StudySession s = repository.createStudySession(studyDecksWithReviews.first(), new Date());
         // only one card to study
-        repository.answerStudySessionJapaneseAnswer(s, s.getCurrent().getSourceCard().getJapaneseHiragana());
+        repository.answerStudySessionJapaneseAnswer(s, s.getCurrent().getSourceCard().getJapaneseHiragana(), true);
 
 
         // CHECK 5 - the test has finished with one correct answer

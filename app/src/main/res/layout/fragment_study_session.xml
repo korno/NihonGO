@@ -5,8 +5,6 @@
     android:layout_height="match_parent"
     tools:context="uk.me.mikemike.nihongo.fragments.StudySessionFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -39,8 +37,9 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_current_question" />
 
-        <TextView
+        <se.fekete.furiganatextview.furiganaview.FuriganaTextView
             android:id="@+id/text_current_question"
+            app:contains_ruby_tags="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"

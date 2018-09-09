@@ -312,7 +312,7 @@ public class NihongoRepositoryTest extends BaseTest {
     @Test(expected = IllegalArgumentException.class)
     public void answerCurrentStudySessionQuestion_nullSessionTest(){
         NihongoRepository repository = new NihongoRepository(mRealm);
-        repository.answerStudySessionCurrentQuestion("", null);
+        repository.answerStudySessionCurrentQuestion("", null, true);
     }
 
     @Test(expected =  IllegalArgumentException.class)

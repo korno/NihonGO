@@ -34,8 +34,8 @@ public class StudySessionViewModel extends BaseNihongoViewModel {
         mStudySession.setValue(mRepos.getStudySessionByID(studySessionID));
     }
 
-    public boolean answerCurrentQuestion(String answer){
-        return mRepos.answerStudySessionCurrentQuestion(answer, mStudySession.getValue());
+    public boolean answerCurrentQuestion(String answer, boolean updateSessionState){
+        return mRepos.answerStudySessionCurrentQuestion(answer, mStudySession.getValue(), updateSessionState);
     }
 
     public void deleteCurrentSession(){
