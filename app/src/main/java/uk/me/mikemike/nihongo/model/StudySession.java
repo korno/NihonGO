@@ -99,7 +99,7 @@ public class StudySession extends RealmObject {
      * @return
      */
     public StudyCard getCurrent(){
-        if(mIsFinished == true) throw new RuntimeException("The test is finished getCurrent must not be called");
+        if(mIsFinished) throw new RuntimeException("The test is finished getCurrent must not be called");
         return mCurrentQuestion;
     }
 
@@ -204,6 +204,17 @@ public class StudySession extends RealmObject {
 
     public boolean answerCurrentQuestion(String answer){
         return answerCurrentQuestion(answer, true);
+    }
+
+
+    /**
+     * Forces the test to finish early
+     */
+    public void finishSession(){
+        if(mIsFinished) throw new IllegalStateException("The test is finished so calling finishTest is not allowed");
+        mCurrentQuestion=null;
+        mIsFinished=true;
+        mSessionCards.clear();
     }
 
 

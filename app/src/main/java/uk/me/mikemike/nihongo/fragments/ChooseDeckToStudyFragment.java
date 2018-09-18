@@ -33,24 +33,20 @@ package uk.me.mikemike.nihongo.fragments;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.realm.RealmResults;
 import uk.me.mikemike.nihongo.R;
-import uk.me.mikemike.nihongo.activities.StudySessionActivity;
 import uk.me.mikemike.nihongo.adapters.ChooseDeckToStudyListAdapter;
 import uk.me.mikemike.nihongo.model.Deck;
 import uk.me.mikemike.nihongo.model.StudyDeck;
@@ -65,14 +61,19 @@ import uk.me.mikemike.nihongo.viewmodels.NihongoViewModel;
  */
 public class ChooseDeckToStudyFragment extends Fragment implements Observer<RealmResults<Deck>>,ChooseDeckToStudyListAdapter.ChooseDeckToStudyAdapterHandler {
 
+
+    public interface ChooseDeckToStudyFragmentListener {
+        public void onStudyDeckCreated(StudyDeck d);
+    }
+
+
     protected NihongoViewModel mViewModel;
     protected ChooseDeckToStudyListAdapter mAdapter;
     @BindView(R.id.recycler_view_decks_list)
     protected RecyclerView mListDeck;
     protected Unbinder mUnbinder;
-    @BindString(R.string.snackbar_studydeck_created_format_string)
-    protected String mDeckAddedSnackbackFormatString;
     protected View mRootView;
+    protected ChooseDeckToStudyFragmentListener mListener;
 
 
     public ChooseDeckToStudyFragment() {
@@ -111,6 +112,17 @@ public class ChooseDeckToStudyFragment extends Fragment implements Observer<Real
         mUnbinder.unbind();
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof ChooseDeckToStudyFragmentListener) {
+            mListener = (ChooseDeckToStudyFragmentListener)context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
 
     @Override
     public void onChanged(@Nullable RealmResults<Deck> decks) {
@@ -127,14 +139,7 @@ public class ChooseDeckToStudyFragment extends Fragment implements Observer<Real
     @Override
     public void onDeckChosen(Deck d) {
         final StudyDeck studyDeck = mViewModel.startStudying(d);
-        Snackbar studyAddedBar = Snackbar.make(mRootView, String.format(mDeckAddedSnackbackFormatString, d.getName()), Snackbar.LENGTH_LONG);
-        studyAddedBar.setAction(R.string.snackbar_studydeck_created_study_action, new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent studyIntent = StudySessionActivity.createIntent(getContext(), studyDeck);
-                getActivity().startActivity(studyIntent);
-            }
-        });
-        studyAddedBar.show();
+        mListener.onStudyDeckCreated(studyDeck);
+
     }
 }

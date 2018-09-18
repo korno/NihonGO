@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <decks>
-    <deck name="Mikes Realworld Test" description="A collection of vocab for the N2 JLPT test. Designed also as a realworld test for NihonGO" author="Mike">
+    <deck name="Mikes real world Test" description="A collection of vocab for the N2 JLPT test. Designed also as a realworld test for NihonGO" author="Mike">
         <card
             mainLanguage="instructions"
             japaneseKanji="指示"
@@ -12,10 +12,61 @@
             <synonym>directions</synonym>
         </card>
         <card
-            mainLanguage="documentation"
-            japaneseHiragana="しりょう"
-           wordType="Noun"
+            japaneseKanji="入社する"
+            mainLanguage="to join a company"
+            japaneseHiragana="にゅうしゃする"
+           wordType="NounDo"
             >
+            <japaneseDisplay><![CDATA[<ruby>入社<rt>にゅうしゃ</rt></ruby>する]]>
+            </japaneseDisplay>
         </card>
+        <card
+            japaneseKanji="履歴書"
+            mainLanguage="resume"
+            japaneseHiragana="りれきしょ"
+            wordType="Noun"
+            >
+            <japaneseDisplay><![CDATA[<ruby>履歴書<rt>りれきしょ</rt></ruby>]]></japaneseDisplay>
+            <synonym>cv</synonym>>
+        </card>
+        <card
+            japaneseKanji="社員"
+            mainLanguage="employee"
+            japaneseHiragana="しゃいん"
+            wordType="Noun"
+            >
+            <japaneseDisplay><![CDATA[<ruby>社員<rt>しゃいん</rt></ruby>]]></japaneseDisplay>
+            <synonym>company employee</synonym>>
+        </card>
+        <card
+            japaneseKanji="給料"
+            mainLanguage="salary"
+            japaneseHiragana="きゅうりょう"
+            wordType="Noun"
+            >
+            <japaneseDisplay><![CDATA[<ruby>給料<rt>きゅうりょう</rt></ruby>]]></japaneseDisplay>
+            <synonym>wages</synonym>>
+            <synonym>pay</synonym>>
+        </card>
+        <card
+            japaneseKanji="時給"
+            mainLanguage="hourly wage"
+            japaneseHiragana="じきゅう"
+            wordType="Noun"
+            >
+            <japaneseDisplay><![CDATA[<ruby>時給<rt>じきゅう</rt></ruby>]]></japaneseDisplay>
+            <synonym>pay per hour</synonym>>
+            <synonym>hourly pay</synonym>>
+        </card>
+        <card
+            japaneseKanji="契約"
+            mainLanguage="contract"
+            japaneseHiragana="けいやく"
+            wordType="Noun"
+            >
+            <japaneseDisplay><![CDATA[<ruby>契約<rt>けいやく</rt></ruby>]]></japaneseDisplay>
+            <synonym>agreement</synonym>>
+        </card>
+
     </deck>
 </decks>

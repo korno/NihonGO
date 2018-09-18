@@ -330,6 +330,18 @@ public class NihongoRepository {
 
 
     /**
+     * Wraps the StudySession.finishTest method in a realm transaction
+     * @param session the session to use
+     */
+    public void finishSession(StudySession session){
+        if(session == null ) throw new IllegalArgumentException("session must not be null");
+        mRealm.beginTransaction();
+        session.finishSession();
+        mRealm.commitTransaction();
+    }
+
+
+    /**
      * Stops studying the passed study deck. This deletes all study related data from the realm
      * @param studyDeck The study deck to delete, must not be null
      */

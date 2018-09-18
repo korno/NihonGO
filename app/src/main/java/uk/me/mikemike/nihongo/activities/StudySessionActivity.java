@@ -2,9 +2,11 @@ package uk.me.mikemike.nihongo.activities;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Debug;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -102,6 +104,31 @@ public class StudySessionActivity extends AppCompatActivity implements StudySess
 
     }
 
+    @Override
+    public void onBackPressed() {
+        // if the test is finished we dont care just let them go back
+        if(mModel.getCurrentSession().getValue().isFinished()){
+            super.onBackPressed();
+        }
+        else{
+            // the test hasnt finished so we need to confirm their choice
+            AlertDialog dialog = new
+                    AlertDialog.Builder(this).setTitle(R.string.dialog_stop_study_session_title)
+                    .setPositiveButton(R.string.dialog_stop_study_session_positive_button, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            mStudySessionFragment.finishSession();
+                        }
+                    })
+                    .setNegativeButton(R.string.dialog_stop_study_session_negative_button, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                        }
+                    }).setMessage(R.string.dialog_stop_study_session_message).create();
+            dialog.show();
+        }
+    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -113,6 +140,15 @@ public class StudySessionActivity extends AppCompatActivity implements StudySess
     public void onTestFinished(StudySession session) {
         Toast.makeText(this, "Study Session finished", Toast.LENGTH_SHORT).show();
         displayResults();
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        if(isFinishing()) {
+            // only when the user actually means to leave the activity do we kill the session
+            mModel.deleteCurrentSession();
+        }
     }
 
     protected void displayResults(){
@@ -129,12 +165,5 @@ public class StudySessionActivity extends AppCompatActivity implements StudySess
                 .commit();
     }
 
-    @Override
-    public void onDestroy(){
-        super.onDestroy();
-        if(isFinishing()) {
-            // only when the user actually means to leave the activity do we kill the session
-            mModel.deleteCurrentSession();
-        }
-    }
+
 }

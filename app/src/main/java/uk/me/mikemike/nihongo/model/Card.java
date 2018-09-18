@@ -131,8 +131,10 @@ public class Card extends RealmObject {
     public boolean hasSynonyms(){
        return mSynonyms.size() > 0;
     }
+    public boolean hasKanji() { return !StringUtils.isEmptyOrNull(mJapaneseKanji);}
+    public boolean hasDisplayJapanese() { return !StringUtils.isEmptyOrNull(mJapaneseDisplay);}
 
-    public boolean hasDisplayJapanese() { return mJapaneseDisplay  != null;}
+
 
     public String createSynonymsString(String seperator){
         if(seperator == null) throw new IllegalArgumentException("The seperator must not be null");

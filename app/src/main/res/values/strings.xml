@@ -28,7 +28,9 @@
 
 
     <string name="toast_correct_answer"> ^_^ Correct!</string>
-    <string name="toast_wrong_answer"> &gt;_&lt; Wrong...</string>
+    <string name="toast_wrong_answer"><![CDATA[ >_< Wrong…]]></string>
+    <string name="toast_correct_with_spelling_errors">Correct! ... But with spelling errors</string>
+    <string name="toast_cant_use_spellchecker">Unable to find a spellchecker. Please be careful with your spelling!</string>
 
 
     <string name="format_next_study_date">yyyy-MM-dd-hh-mm</string>
@@ -44,6 +46,12 @@
     <string name="dialog_delete_studydeck_message">All study progress will be deleted. If you choose to study this deck again, you will have to start again.</string>
     <string name="dialog_delete_studydeck_positive_button">Stop Studying</string>
     <string name="dialog_delete_studydeck_negative_button">Cancel</string>
+
+    <string name="dialog_stop_study_session_title">Stop Reviewing?</string>
+    <string name="dialog_stop_study_session_message">You have not finished all reviews yet. You can finish outstanding reviews later.</string>
+    <string name="dialog_stop_study_session_positive_button">Stop Reviewing</string>
+    <string name="dialog_stop_study_session_negative_button">Cancel</string>
+
     <string name="item_current_study_study_percentage_title">Seen:</string>
 
 </resources>

@@ -38,6 +38,11 @@ public class StudySessionViewModel extends BaseNihongoViewModel {
         return mRepos.answerStudySessionCurrentQuestion(answer, mStudySession.getValue(), updateSessionState);
     }
 
+
+    public void finishCurrentSession(){
+        mRepos.finishSession(mStudySession.getValue());
+    }
+
     public void deleteCurrentSession(){
         if(mStudySession.getValue() != null) {
             mRepos.getConnectedRealm().beginTransaction();

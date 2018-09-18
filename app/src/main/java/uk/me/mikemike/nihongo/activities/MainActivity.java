@@ -30,8 +30,10 @@
  */
 package uk.me.mikemike.nihongo.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
@@ -43,23 +45,29 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import uk.me.mikemike.nihongo.R;
 import uk.me.mikemike.nihongo.fragments.ChooseDeckToStudyFragment;
 import uk.me.mikemike.nihongo.fragments.CurrentlyStudyingListFragment;
+import uk.me.mikemike.nihongo.model.StudyDeck;
 
 /* The Landing activity */
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ChooseDeckToStudyFragment.ChooseDeckToStudyFragmentListener {
 
     public static String CURRENTLY_CHOOSING_DECK_BUNDLE_ID = "CurrentlyChoosingDeck";
 
     protected ChooseDeckToStudyFragment mFragmentChooseDeckToStudy;
     protected CurrentlyStudyingListFragment mFragmentCurrentlyStudying;
     protected Fragment mCurrentFragment=null;
+    @BindString(R.string.snackbar_studydeck_created_format_string)
+    protected String mDeckAddedSnackbackFormatString;
 
 
+    // UI components
     @BindView(R.id.fab)
     protected FloatingActionButton mFAB;
     @BindView(R.id.toolbar)
@@ -164,4 +172,16 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public void onStudyDeckCreated(final StudyDeck d) {
+        Snackbar studyAddedBar = Snackbar.make(findViewById(android.R.id.content), String.format(mDeckAddedSnackbackFormatString, d.getName()), Snackbar.LENGTH_LONG);
+        studyAddedBar.setAction(R.string.snackbar_studydeck_created_study_action, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent studyIntent = StudySessionActivity.createIntent(MainActivity.this, d);
+                startActivity(studyIntent);
+            }
+        });
+        studyAddedBar.show();
+    }
 }

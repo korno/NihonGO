@@ -239,4 +239,49 @@ public class StudySessionTest extends BaseTest {
         }
         mRealm.commitTransaction();
     }
+
+
+    @Test
+    public void doFinishTest_UnfinishedTest() {
+        addDecks(1, 2, true);
+        StudySession s = new StudySession(getStudyDecks().first(), new Date());
+        mRealm.beginTransaction();
+        // answer one question
+        s.answerCurrentQuestion(getCorrectAnswerForCurrentQuestion(s));
+       assertEquals(1, s.getRemainingStudyCardsCount());
+       // cancel the tests
+        s.finishSession();
+        assertEquals(0, s.getRemainingStudyCardsCount());
+        assertEquals(true, s.isFinished());
+        assertEquals(0, s.getWrongCards().size());
+        assertEquals(1, s.getCorrectCards().size());
+        mRealm.commitTransaction();
+
+    }
+
+
+    @Test(expected = IllegalStateException.class)
+    public void doFinishTest_FinishedTest() {
+        addDecks(1, 2, true);
+        StudySession s = new StudySession(getStudyDecks().first(), new Date());
+        mRealm.beginTransaction();
+        s.answerCurrentQuestion(getCorrectAnswerForCurrentQuestion(s));
+        s.answerCurrentQuestion(getCorrectAnswerForCurrentQuestion(s));
+
+        // test should be finished
+        assertEquals(true, s.isFinished());
+        mRealm.commitTransaction();
+
+        // should die
+        s.finishSession();
+
+    }
+
+
+
+    private String getCorrectAnswerForCurrentQuestion(StudySession session){
+        return session.isCurrentQuestionJapaneseAnswer() ? session.getCurrent().getSourceCard().getJapaneseHiragana() : session.getCurrent().getSourceCard().getMainLanguage();
+
+    }
+
 }
