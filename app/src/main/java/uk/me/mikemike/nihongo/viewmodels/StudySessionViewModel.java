@@ -25,6 +25,8 @@ public class StudySessionViewModel extends BaseNihongoViewModel {
     }
 
     public void createSession(String studyDeckID, Date date){
+        // we can only ever have one active session
+        deleteAllSessions();
         StudyDeck sd = mRepos.getStudyDeckByID(studyDeckID);
         mStudySession.setValue(mRepos.createStudySession(sd, date));
     }
@@ -50,6 +52,15 @@ public class StudySessionViewModel extends BaseNihongoViewModel {
             mRepos.getConnectedRealm().commitTransaction();
             mStudySession.setValue(null);
         }
+    }
+
+    public void deleteAllSessions(){
+        mRepos.deleteAllStudySessions();
+    }
+
+
+    public int getNumberOfStudySessions(){
+        return mRepos.getAllStudySessions().size();
     }
 
 

@@ -38,6 +38,7 @@ public class StudySessionTest extends BaseTest {
         mRealm.commitTransaction();
 
         assertEquals(true, ss.isFinished());
+        assertEquals(1, ss.getNumberOfAttempts());
         assertEquals(1, ss.getCorrectCards().size());
         assertEquals(0, ss.getWrongCards().size());
         assertEquals(0, ss.getRemainingStudyCardsCount());
@@ -61,6 +62,7 @@ public class StudySessionTest extends BaseTest {
         assertEquals(0, ss.getCorrectCards().size());
         assertEquals(1, ss.getWrongCards().size());
         assertEquals(1, ss.getRemainingStudyCardsCount());
+        assertEquals(1, ss.getNumberOfAttempts());
 
         mRealm.beginTransaction();
         // answer correctly
@@ -71,6 +73,7 @@ public class StudySessionTest extends BaseTest {
         assertEquals(0, ss.getCorrectCards().size());
         assertEquals(1, ss.getWrongCards().size());
         assertEquals(0, ss.getRemainingStudyCardsCount());
+        assertEquals(2, ss.getNumberOfAttempts());
     }
 
     @Test(expected = RuntimeException.class)
@@ -141,6 +144,7 @@ public class StudySessionTest extends BaseTest {
         assertEquals(1, ss.getCorrectCards().size());
         assertEquals(2, ss.getWrongCards().size());
         assertEquals(0,ss.getRemainingStudyCardsCount());
+        assertEquals(5, ss.getNumberOfAttempts());
 
     }
 
@@ -168,6 +172,7 @@ public class StudySessionTest extends BaseTest {
         assertEquals(0, s2.getCorrectCards().size());
         assertEquals(2, s2.getRemainingStudyCardsCount());
         assertEquals(2, s2.getTotalStudyCardsCount());
+        assertEquals(1, s2.getNumberOfAttempts());
 
         // finish the test
 
@@ -180,10 +185,41 @@ public class StudySessionTest extends BaseTest {
         assertEquals(1, s2.getCorrectCards().size());
         assertEquals(1, s2.getRemainingStudyCardsCount());
         assertEquals(2, s2.getTotalStudyCardsCount());
+        assertEquals(2, s2.getNumberOfAttempts());
 
 
     }
 
+    @Test
+    public void doStudySession_GetPreviousQuestion_FirstQuestion(){
+        addDecks(1, 2, true);
+        StudySession ss =new StudySession(getStudyDecks().first(), new Date());
+        // first question so this should be null
+        assertEquals(null, ss.getPrevious());
+    }
+
+    @Test
+    public void doStudySession_GetPreviousQuestion_HasPreviousQuestion(){
+        addDecks(1, 2, true);
+        StudySession ss =new StudySession(getStudyDecks().first(), new Date());
+        StudyCard current = ss.getCurrent();
+        mRealm.beginTransaction();
+        ss.answerMainLanguage(current.getSourceCard().getMainLanguage(), true);
+        mRealm.commitTransaction();
+        assertEquals(ss.getPrevious().getSourceCard().getCardID(), current.getSourceCard().getCardID());
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void doStudySession_GetPreviousQuestion_TestFinished(){
+        addDecks(1, 2, true);
+        StudySession ss =new StudySession(getStudyDecks().first(), new Date());
+        StudyCard current = ss.getCurrent();
+        mRealm.beginTransaction();
+        ss.answerMainLanguage(current.getSourceCard().getMainLanguage(), true);
+        ss.answerMainLanguage(ss.getCurrent().getSourceCard().getMainLanguage());
+        mRealm.commitTransaction();
+        ss.getPrevious();
+    }
 
     @Test(expected = RuntimeException.class)
     public void doStudySession_EmptyStudySession(){

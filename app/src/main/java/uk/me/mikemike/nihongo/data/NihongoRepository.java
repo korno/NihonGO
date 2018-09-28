@@ -301,6 +301,14 @@ public class NihongoRepository {
         mRealm.commitTransaction();
     }
 
+    /**
+     * Deletes all study sessions only
+     */
+    public void deleteAllStudySessions(){
+        mRealm.beginTransaction();
+        mRealm.where(StudySession.class).findAll().deleteAllFromRealm();
+        mRealm.commitTransaction();
+    }
 
     /**
      * Returns the study session with the correct id

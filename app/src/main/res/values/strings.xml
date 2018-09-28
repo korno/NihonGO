@@ -31,12 +31,18 @@
     <string name="toast_wrong_answer"><![CDATA[ >_< Wrong…]]></string>
     <string name="toast_correct_with_spelling_errors">Correct! ... But with spelling errors</string>
     <string name="toast_cant_use_spellchecker">Unable to find a spellchecker. Please be careful with your spelling!</string>
+    <string name="toast_review_session_finished">Review Session Completed!</string>
+    <string name="toast_review_session_canceled">Review Session Stopped</string>
+
 
 
     <string name="format_next_study_date">yyyy-MM-dd-hh-mm</string>
     <string name="format_remaining_questions">%d remaining</string>
     <string name="format_number_of_reviews">%d reviews</string>
     <string name="format_studycard_detals">%d total cards. Studying since %s. </string>
+    <string name="format_next_studydate_label_days">Next study in about %d days</string>
+    <string name="format_next_studydate_label_hours">Next study in about %d hours</string>
+    <string name="format_cards_see_count">%s&lt;%s</string>
 
     <string name="item_current_study_deck_review_button">Review</string>
     <string name="item_current_study_deck_delete_button">Stop Studying</string>

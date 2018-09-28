@@ -1,10 +1,39 @@
+/*
+  NihonGO!
+  <p>
+  Copyright (c) 2018 Michael Hall <the.guitar.dude@gmail.com>
+  All rights reserved.
+  <p>
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are met:
+  <p>
+  1. Redistributions of source code must retain the above copyright notice,
+  this list of conditions and the following disclaimer.
+  2. Redistributions in binary form must reproduce the above copyright
+  notice, this list of conditions and the following disclaimer in the
+  documentation and/or other materials provided with the distribution.
+  3. Neither the name of NihonGO nor the names of its
+  contributors may be used to endorse or promote products derived from
+  this software without specific prior written permission.
+  <p>
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  POSSIBILITY OF SUCH DAMAGE.
+ */
 package uk.me.mikemike.nihongo.fragments;
 
 import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -41,20 +70,36 @@ import se.fekete.furiganatextview.furiganaview.FuriganaTextView;
 import uk.me.mikemike.nihongo.R;
 import uk.me.mikemike.nihongo.model.Card;
 import uk.me.mikemike.nihongo.model.StudySession;
+import uk.me.mikemike.nihongo.utils.NihonGOUtils;
 import uk.me.mikemike.nihongo.viewmodels.StudySessionViewModel;
 
 import static android.content.Context.TEXT_SERVICES_MANAGER_SERVICE;
+import static uk.me.mikemike.nihongo.utils.NihonGOUtils.getJapaneseDisplay;
 
-public class StudySessionFragment extends Fragment implements Observer<StudySession>, SpellCheckerSession.SpellCheckerSessionListener {
+/**
+ * Fragment that allows the user to study a session of cards
+ */
+public final class StudySessionFragment extends Fragment implements Observer<StudySession>, SpellCheckerSession.SpellCheckerSessionListener {
+
+
+    public interface StudySessionFragmentListener {
+        void onTestFinished(StudySession session);
+    }
+
+
+    private static String SHOWING_QUESION_BUNDLE_ID = "showing_question";
 
     private StudySessionFragmentListener mListener;
     private StudySessionViewModel mModel;
     private WanaKanaJavaText mWanaKana;
-    private TextServicesManager mTextServices = null;
     private SpellCheckerSession mSpellcheckerSession = null;
     private String mLastAnswer=null;
     private String[] mLastAnswerWords=null;
     private Toast mLastToast;
+    private NihonGOUtils.JapaneseDisplayMode mDisplayMode;
+    private boolean mCurrentlyShowingQuestion=true;
+    private Unbinder mUnbinder;
+
 
     @BindView(R.id.text_current_question)
     protected FuriganaTextView mQuestionText;
@@ -66,23 +111,16 @@ public class StudySessionFragment extends Fragment implements Observer<StudySess
     protected String mRemainingQuestionsFormatString;
     @BindView(R.id.button_answer)
     protected Button mAnswerButton;
-    protected Unbinder mUnbinder;
-
     @BindView(R.id.studySessionView)
     protected ViewSwitcher mViewSwitcher;
-
     @BindView(R.id.layout_question)
     protected View mReviewRoot;
     @BindView(R.id.layout_details)
     protected View mDetailsRoot;
-
-
-
-    protected JapaneseDisplayMode mDisplayMode;
-
-    public enum JapaneseDisplayMode { JAPANESE_DISPLAY, KANJI_DISPLAY, KANA};
-
-
+    @BindView(R.id.text_main_language)
+    protected TextView mMainLanguageText;
+    @BindView(R.id.text_japanese)
+    protected FuriganaTextView mJapaneseText;
 
 
     public StudySessionFragment() {
@@ -91,8 +129,7 @@ public class StudySessionFragment extends Fragment implements Observer<StudySess
 
 
     public static StudySessionFragment newInstance() {
-        StudySessionFragment fragment = new StudySessionFragment();
-        return fragment;
+        return new StudySessionFragment();
     }
 
 
@@ -113,15 +150,14 @@ public class StudySessionFragment extends Fragment implements Observer<StudySess
         mModel = ViewModelProviders.of(getActivity()).get(StudySessionViewModel.class);
         mModel.getCurrentSession().removeObserver(this);
         mModel.getCurrentSession().observe(this, this);
-        mDisplayMode = JapaneseDisplayMode.JAPANESE_DISPLAY;
-        mTextServices =
-                (TextServicesManager) activity.getSystemService(TEXT_SERVICES_MANAGER_SERVICE);
+        mDisplayMode = NihonGOUtils.JapaneseDisplayMode.JAPANESE_DISPLAY;
+        TextServicesManager textServicesManager = (TextServicesManager) activity.getSystemService(TEXT_SERVICES_MANAGER_SERVICE);
 
         // try to get the spell checker... this varies from device to device....
         mSpellcheckerSession =
-                mTextServices.newSpellCheckerSession(null, null, this, true);
+                textServicesManager.newSpellCheckerSession(null, null, this, true);
         if(mSpellcheckerSession == null){
-            mSpellcheckerSession= mTextServices.newSpellCheckerSession(null, Locale.forLanguageTag("en"), this, false);
+            mSpellcheckerSession= textServicesManager.newSpellCheckerSession(null, Locale.forLanguageTag("en"), this, false);
         }
 
 
@@ -130,7 +166,16 @@ public class StudySessionFragment extends Fragment implements Observer<StudySess
             showToast(R.string.toast_cant_use_spellchecker);
         }
 
-        showCurrentQuestion();
+        if(savedInstance != null){
+            mCurrentlyShowingQuestion = savedInstance.getBoolean(SHOWING_QUESION_BUNDLE_ID, true);
+        }
+
+        if(mCurrentlyShowingQuestion) {
+            showCurrentQuestion();
+        }
+        else{
+            showCurrentCardDetails();
+        }
     }
 
     @Override
@@ -178,6 +223,13 @@ public class StudySessionFragment extends Fragment implements Observer<StudySess
         mListener = null;
     }
 
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(SHOWING_QUESION_BUNDLE_ID, mCurrentlyShowingQuestion);
+    }
+
     @Override
     public void onChanged(@Nullable StudySession studySession) {
         BindCurrentQuestion();
@@ -190,60 +242,61 @@ public class StudySessionFragment extends Fragment implements Observer<StudySess
 
     @Override
     public void onGetSentenceSuggestions(SentenceSuggestionsInfo[] results) {
-
-        Log.w("nihongo", "received suggestions, checking");
         String currentTry="";
         SentenceSuggestionsInfo result = results[0];
-
-        Log.w("nihongo", "number of results:" + String.valueOf(results.length));
-
-
-        /*final StringBuffer sb = new StringBuffer("");
-        for(SentenceSuggestionsInfo result:results){
-            int n = result.getSuggestionsCount();
-            for(int i=0; i < n; i++){
-                int m = result.getSuggestionsInfoAt(i).getSuggestionsCount();
-
-                for(int k=0; k < m; k++) {
-                    sb.append(result.getSuggestionsInfoAt(i).getSuggestionAt(k))
-                            .append("\n");
-                }
-                sb.append("\n");
-            }
-        }*/
-
-        //Log.w("spelling", sb.toString());
-
-
         if(loopThroughTries(result, 0, currentTry)){
             Log.w("Spelling", "Spellchecker found correct word or phrase");
             showToast(R.string.toast_correct_with_spelling_errors);
         }
         else{
             Log.w("Spelling", "Spellchecker didn't find correct word or phrase");
-            showCurrentCardDetails();
             mModel.answerCurrentQuestion(mLastAnswer, true);
+            showCurrentCardDetails();
             showToast(R.string.toast_wrong_answer);
         }
 
     }
 
+    @OnClick(R.id.button_ok)
+    protected void okButtonClick(){
+        showCurrentQuestion();
+    }
 
-    protected void showCurrentCardDetails(){
-        if(mViewSwitcher.getCurrentView() != mDetailsRoot){
-            mViewSwitcher.showPrevious();
+    @OnClick(R.id.button_answer)
+    protected void answerQuestionClick(){
+        String answer = mAnswerEditText.getText().toString();
+        answerQuestion(answer);
+        //BindCurrentQuestion();
+    }
+
+
+    private void showCurrentCardDetails() {
+        Card current = getCurrentSessionFromModel().getPrevious().getSourceCard();
+        if (current != null) {
+            mMainLanguageText.setText(current.getMainLanguage());
+            mJapaneseText.setFuriganaText(getJapaneseDisplay(current, mDisplayMode));
+            if (mViewSwitcher.getCurrentView() != mDetailsRoot) {
+                mViewSwitcher.showPrevious();
+                mCurrentlyShowingQuestion = false;
+            }
         }
     }
 
 
-    protected void showCurrentQuestion(){
+    private void showCurrentQuestion(){
         if(mViewSwitcher.getCurrentView() != mReviewRoot){
             mViewSwitcher.showNext();
+            mCurrentlyShowingQuestion=true;
         }
     }
 
 
-    protected boolean loopThroughTries(SentenceSuggestionsInfo info, int myIndex, String dest){
+
+    private StudySession getCurrentSessionFromModel(){
+        return mModel.getCurrentSession().getValue();
+    }
+
+    private boolean loopThroughTries(SentenceSuggestionsInfo info, int myIndex, String dest){
 
         SuggestionsInfo mine = info.getSuggestionsInfoAt(myIndex);
         String destCopy = dest;
@@ -279,8 +332,6 @@ public class StudySessionFragment extends Fragment implements Observer<StudySess
                         mModel.answerCurrentQuestion(destCopy.trim(), true);
                         return true;
                     }
-                    else{
-                    }
                 } else {
                     if(loopThroughTries(info, myIndex + 1, destCopy)){
                         return true;
@@ -292,25 +343,7 @@ public class StudySessionFragment extends Fragment implements Observer<StudySess
     }
 
 
-    @OnClick(R.id.button_ok)
-    protected void okButtonClick(){
-        showCurrentQuestion();
-    }
-
-    @OnClick(R.id.button_answer)
-    protected void answerQuestionClick(){
-        String answer = mAnswerEditText.getText().toString();
-        answerQuestion(answer);
-        //BindCurrentQuestion();
-    }
-
-
-    public interface StudySessionFragmentListener {
-        void onTestFinished(StudySession session);
-    }
-
-
-    protected void BindCurrentQuestion(){
+    private void BindCurrentQuestion(){
         StudySession current = mModel.getCurrentSession().getValue();
         if(current != null) {
             mRemainingQuestionsText.setText(String.format(mRemainingQuestionsFormatString,current.getRemainingStudyCardsCount()));
@@ -323,36 +356,20 @@ public class StudySessionFragment extends Fragment implements Observer<StudySess
                 else
                 {
                     mWanaKana.unbind();
-                    questionText = StudySessionFragment.getJapaneseDisplay(current.getCurrent().getSourceCard(), mDisplayMode);
+                    questionText = getJapaneseDisplay(current.getCurrent().getSourceCard(), mDisplayMode);
                 }
                 mQuestionText.setFuriganaText(questionText);
                 mAnswerEditText.setText("");
                 mAnswerEditText.requestFocus();
             } else {
+                showToast(R.string.toast_review_session_finished);
                 mListener.onTestFinished(current);
             }
 
         }
     }
 
-    // gets the correct japanese to display for the question based on the users preferences and
-    // if the card actually contains that data
-    protected  static  String getJapaneseDisplay(Card card, JapaneseDisplayMode mode){
-        String japanese="";
-        switch(mode){
-            case KANA:
-                japanese = card.getJapaneseHiragana();
-                break;
-            case KANJI_DISPLAY:
-                japanese = card.hasKanji() ? card.getJapaneseKanji() : card.getJapaneseHiragana();
-                break;
-            case JAPANESE_DISPLAY:
-                japanese = card.hasDisplayJapanese() ? card.getJapaneseDisplay() : card.getJapaneseHiragana();
-        }
-        return japanese;
-    }
-
-    protected void answerQuestion(String answer){
+    private void answerQuestion(String answer){
         mLastAnswer = answer.replaceAll("\\s+", " ").trim();
         Log.w("spelling", "Answer after trim:" + mLastAnswer);
         if(!mLastAnswer.isEmpty()) {
@@ -370,8 +387,7 @@ public class StudySessionFragment extends Fragment implements Observer<StudySess
     }
 
 
-
-    protected void checkMainLanguageAnswer(String answer){
+    private void checkMainLanguageAnswer(String answer){
        // checking the main language answer is a bit more difficult as we need to invoke the spellchecker
         // to check for misspellings
         // first lets peek at the answer by telling the study session to not update itself
@@ -389,8 +405,8 @@ public class StudySessionFragment extends Fragment implements Observer<StudySess
             // do we have a spellchecker ?
             if(mSpellcheckerSession == null){
                 // nope so sorry.. we just have to mark the answer as wrong
-                showCurrentCardDetails();
                 mModel.answerCurrentQuestion(answer, true);
+                showCurrentCardDetails();
                 showToast(R.string.toast_wrong_answer);
             }
             else{
@@ -398,13 +414,7 @@ public class StudySessionFragment extends Fragment implements Observer<StudySess
                 // yes so invoke it (this will call the onSentanceSugestions callback
                 // see that method for handling the spellcheckers results )
                 mLastAnswerWords= mLastAnswer.split(" ");
-                TextInfo w[] = new TextInfo[mLastAnswerWords.length];
-                for(int i=0; i<mLastAnswerWords.length; i++){
-                    w[i] = new TextInfo((mLastAnswerWords[i]));
-                }
-
-
-                mSpellcheckerSession.getSentenceSuggestions(new  TextInfo[]{new TextInfo(answer)}, 5);
+                mSpellcheckerSession.getSentenceSuggestions(new  TextInfo[]{new TextInfo(answer)}, 3);
                 //mSpellcheckerSession.getSentenceSuggestions(w, 10);
 
             }
@@ -413,8 +423,7 @@ public class StudySessionFragment extends Fragment implements Observer<StudySess
 
     }
 
-
-    protected void checkJapaneseAnswer(String answer){
+    private void checkJapaneseAnswer(String answer){
         mLastAnswer = answer;
         if(mModel.answerCurrentQuestion(answer, true)){
             showToast(R.string.toast_correct_answer);
@@ -425,16 +434,15 @@ public class StudySessionFragment extends Fragment implements Observer<StudySess
         }
     }
 
-
-    protected void showToast(int messageID){
+    private void showToast(int messageID){
         handleShowingToast(Toast.makeText(getActivity(), messageID, Toast.LENGTH_SHORT));
     }
 
-    protected void showToast(String message){
+    private void showToast(String message){
         handleShowingToast(Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT));
     }
 
-    protected void handleShowingToast(Toast toast){
+    private void handleShowingToast(Toast toast){
         if(mLastToast != null){
             mLastToast.cancel();
         }
@@ -443,8 +451,11 @@ public class StudySessionFragment extends Fragment implements Observer<StudySess
         mLastToast = toast;
     }
 
-
+    /**
+     * Finishes the current test early
+     */
     public void finishSession(){
+        showToast(R.string.toast_review_session_canceled);
         mModel.finishCurrentSession();
     }
 

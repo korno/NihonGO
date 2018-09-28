@@ -37,6 +37,7 @@ import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
+import io.realm.Sort;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
 
@@ -84,6 +85,15 @@ public class StudyDeck extends RealmObject {
     public RealmResults<StudyCard> getCardsWithNextReviewDateOlderThan(Date date){
         if(date == null) throw new IllegalArgumentException("the date must not be null");
         return mStudyCards.where().lessThanOrEqualTo(StudyCardFields.LEARNING_STATE.NEXT_DUE_DATE, date).findAll();
+    }
+
+
+    /***
+     * Gets the next date that this StudyDeck can be studied (the studycard with the nearest study date)
+     * @return Date of the next time this can be studied
+     */
+    public Date getNextStudyDate(){
+        return mStudyCards.sort(StudyCardFields.LEARNING_STATE.NEXT_DUE_DATE, Sort.ASCENDING).first().getLearningState().getNextDueDate();
     }
 
     /**
@@ -151,6 +161,15 @@ public class StudyDeck extends RealmObject {
      */
     public int getMasteredCardPercentage(){return calculateCardPercentage(getAllMasteredCards().size());}
 
+
+    /**
+     * Returns the number of cards in this StudyDeck.
+     * Shorthand method for getStudyCards().size()
+     * @return the number of studycards in this deck
+     */
+    public int getNumberOfCards(){
+        return mStudyCards.size();
+    }
 
     protected int calculateCardPercentage(int number){
         if(number == 0) return 0;

@@ -53,4 +53,10 @@ public class DateUtils {
         return c.getTime();
     }
 
+    public static long getDayDifference(Date d1, Date d2){
+        if(d1 == null || d2 == null) throw new IllegalArgumentException("Either date cannot be null");
+        long timedifference = d1.getTime() - d2.getTime();
+        return (timedifference / (10000 * 60 * 60 * 24) ) ;
+     }
+
 }

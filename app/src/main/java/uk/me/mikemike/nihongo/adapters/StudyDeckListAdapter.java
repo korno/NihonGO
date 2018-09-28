@@ -43,6 +43,9 @@ import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import javax.xml.datatype.Duration;
+
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,6 +54,7 @@ import io.realm.OrderedRealmCollection;
 import io.realm.RealmRecyclerViewAdapter;
 import uk.me.mikemike.nihongo.R;
 import uk.me.mikemike.nihongo.model.StudyDeck;
+import uk.me.mikemike.nihongo.utils.DateUtils;
 
 /**
  * Adapter for displaying a list of study decks, displaying a button to allow interaction if the studydeck has reviews
@@ -112,9 +116,18 @@ public class StudyDeckListAdapter extends RealmRecyclerViewAdapter<StudyDeck, St
         protected TextView mReviewCount;
         @BindView(R.id.progress_bar_cards_seen)
         protected ProgressBar mCardsSeenProgressBar;
+        @BindString(R.string.format_next_studydate_label_days)
+        protected String mNextStudyDateFormatStringDays;
+        @BindString(R.string.format_next_studydate_label_days)
+        protected String mNextStudyDateFormatStringHours;
+        @BindView(R.id.progress_bar_mastered_amount)
+        protected ProgressBar mMasteredCardsProgressBar;
+        @BindView(R.id.text_cards_see_amount)
+        protected TextView mCardsSeenTextView;
+        @BindString(R.string.format_cards_see_count)
+        protected String mCardsSeenFormatString;
 
-        /*@BindView(R.id.progress_bar_cards_seen)*/
-        //protected ProgressBar mMasteredCardsProgressBar;
+
 
 
 
@@ -125,11 +138,24 @@ public class StudyDeckListAdapter extends RealmRecyclerViewAdapter<StudyDeck, St
 
         public void bindToStudyDeck(StudyDeck deck){
             mNameTextView.setText(deck.getName());
-            mReviewCount.setText(String.format(mNumberOfReviewsFormatString, deck.howManyReviewsWaiting(mDate)));
-            mTextViewStudyDeckDetails.setText(String.format(mStudyDeckDetailsFormatString, deck.getStudyCards().size(), mDateFormatter.format(deck.getStartedStudyDate())));
+            int reviewsWaiting = deck.howManyReviewsWaiting(mDate);
+            int numberOfStudyCards = deck.getNumberOfCards();
+            int newCards = deck.getAllNewCards().size();
+
+            long nextStudyInDays = DateUtils.getDayDifference(mDate, deck.getNextStudyDate());
+
+            // if we have reviews display how many, else display when the next review is due
+            if(reviewsWaiting > 0) {
+                mReviewCount.setText(String.format(mNumberOfReviewsFormatString, reviewsWaiting));
+            }
+            else{
+                mReviewCount.setText(String.format(mNextStudyDateFormatStringDays, nextStudyInDays);
+            }
+            mTextViewStudyDeckDetails.setText(String.format(mStudyDeckDetailsFormatString, numberOfStudyCards, mDateFormatter.format(deck.getStartedStudyDate())));
             mStartStudyButton.setEnabled(deck.hasReviewsWaiting(mDate));
             mCardsSeenProgressBar.setProgress(100 - deck.getNewCardPercentage());
-            //mMasteredCardsProgressBar.setProgress(deck.getMasteredCardPercentage());
+            mMasteredCardsProgressBar.setProgress(deck.getMasteredCardPercentage());
+            mCardsSeenTextView.setText(String.format(mCardsSeenFormatString, numberOfStudyCards - newCards, numberOfStudyCards));
         }
 
 

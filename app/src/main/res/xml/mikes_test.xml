@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <decks>
-    <deck name="Mikes real world Test" description="A collection of vocab for the N2 JLPT test. Designed also as a realworld test for NihonGO" author="Mike">
+    <deck name="Business Vocab (1)" description="Some business and office vocabulary, probably Around N2 or N3 level" author="Mike">
         <card
             mainLanguage="instructions"
             japaneseKanji="指示"
@@ -66,6 +66,39 @@
             >
             <japaneseDisplay><![CDATA[<ruby>契約<rt>けいやく</rt></ruby>]]></japaneseDisplay>
             <synonym>agreement</synonym>>
+        </card>
+        <card
+            japaneseKanji="本社"
+            mainLanguage="head office"
+            japaneseHiragana="ほんしゃ"
+            wordType="Noun">
+            <japaneseDisplay><![CDATA[<ruby>本社<rt>ほんしゃ</rt></ruby>]]></japaneseDisplay>
+            <synonym>headquarters</synonym>>
+        </card>
+        <card
+            japaneseKanji="通勤する"
+            mainLanguage="to commute to work"
+            japaneseHiragana="つうきんする"
+            wordType="NounDO">
+            <japaneseDisplay><![CDATA[<ruby>通勤<rt>つうきん</rt></ruby>する]]></japaneseDisplay>
+            <synonym>to travel to work</synonym>>
+        </card>
+        <card
+            japaneseKanji="首になる"
+            mainLanguage="to be fired"
+            japaneseHiragana="くびになる"
+            wordType="VerbU">
+            <japaneseDisplay><![CDATA[<ruby>首<rt>くび</rt></ruby>になる]]></japaneseDisplay>
+            <synonym>to be sacked</synonym>>
+            <synonym>to be dismissed</synonym>>
+        </card>
+        <card
+            japaneseKanji="公務員"
+            mainLanguage="civil servant"
+            japaneseHiragana="こうむいん"
+            wordType="Noun">
+            <japaneseDisplay><![CDATA[<ruby>公務員<rt>こうむいん</rt></ruby>]]></japaneseDisplay>
+            <synonym>government worker</synonym>>
         </card>
 
     </deck>

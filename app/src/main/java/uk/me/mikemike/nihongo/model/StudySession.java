@@ -58,7 +58,9 @@ public class StudySession extends RealmObject {
     protected RealmList<StudyCard> mWrongCards = new RealmList<>();
     protected Date mSessionDate;
     protected StudyCard mCurrentQuestion;
+    protected StudyCard mPreviousQuesion;
     protected int mTotalStudyCards;
+    protected int mAttempts;
     protected boolean mIsFinished=false;
     protected boolean mCurrentQuestionIsJapaneseAnswer=false;
 
@@ -69,18 +71,22 @@ public class StudySession extends RealmObject {
     public boolean isFinished() { return mIsFinished;}
     public RealmList<StudyCard> getWrongCards() { return  mWrongCards;}
     public RealmList<StudyCard> getCorrectCards() { return mCorrectCards;}
+    public int getNumberOfAttempts(){return  mAttempts;}
     public boolean isCurrentQuestionJapaneseAnswer(){return mCurrentQuestionIsJapaneseAnswer;}
 
+
     @Ignore
-    protected Random mRandom;
+    private Random mRandom;
 
     public StudySession(StudyDeck source, Date sessionDate){
         if(source == null) throw new IllegalArgumentException("Source deck must not be null");
         if(sessionDate == null) throw new IllegalArgumentException("Session date must not be null");
         mSessionCards.addAll(source.getCardsWithNextReviewDateOlderThan(sessionDate));
         mSessionDate = sessionDate;
+        mAttempts = 0;
         mTotalStudyCards = mSessionCards.size();
         mCurrentQuestion = mSessionCards.first(null);
+        mPreviousQuesion = null;
         mRandom = new Random();
         mCurrentQuestionIsJapaneseAnswer = mRandom.nextInt(2) == 1;
         if(mCurrentQuestion == null){
@@ -103,6 +109,25 @@ public class StudySession extends RealmObject {
         return mCurrentQuestion;
     }
 
+
+    /**
+     * Returns true if  attempts have been made on this study sesion
+     * @return
+     */
+    public boolean hasAnsweredAQuestion() {
+        return mAttempts != 0;
+    }
+
+
+    /**
+     * Gets the previously studied question.
+     * @return
+     */
+    public StudyCard getPrevious(){
+        if(mIsFinished) throw new RuntimeException("The test is finished so getPrevious must not be called");
+        return mPreviousQuesion;
+    }
+
     /**
      * Answers the current question by checking the japanese (hiragana) to the answer provided. After checking the
      * session will move on to the next question (or end the study if there isnt one)
@@ -123,8 +148,6 @@ public class StudySession extends RealmObject {
     public boolean answerJapanese(String answer){
         return answerJapanese(answer, true);
     }
-
-
 
 
     /**
@@ -170,6 +193,7 @@ public class StudySession extends RealmObject {
             // as we go the answer wrong, readd the question to the list
             mSessionCards.add(mCurrentQuestion);
         }
+        mAttempts++;
         mCurrentQuestion.getLearningState().performSR(result ? 4 : 1, mSessionDate);
         moveToNextQuestion();
     }
@@ -221,6 +245,7 @@ public class StudySession extends RealmObject {
 
 
     protected void moveToNextQuestion(){
+        mPreviousQuesion = mCurrentQuestion;
         mCurrentQuestion = mSessionCards.first(null);
         if(mCurrentQuestion == null){
             mIsFinished = true;

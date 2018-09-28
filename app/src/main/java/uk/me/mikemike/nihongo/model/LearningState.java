@@ -193,6 +193,6 @@ public class LearningState extends RealmObject {
 
     }
 
-    public boolean isNew(){return mStudyLevel == 0;}
+    public boolean isNew(){return mStudyLevel == NEW_LEVEL;}
 
 }
