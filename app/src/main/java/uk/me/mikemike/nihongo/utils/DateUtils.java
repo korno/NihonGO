@@ -53,10 +53,30 @@ public class DateUtils {
         return c.getTime();
     }
 
+    public static Date addHoursToDate(Date d, int hours){
+        if(d == null) throw new IllegalArgumentException("Date cannot be null");
+        Calendar c =  Calendar.getInstance();
+        c.setTime(d);
+        c.add(Calendar.HOUR_OF_DAY, hours);
+        return c.getTime();
+    }
+
     public static long getDayDifference(Date d1, Date d2){
         if(d1 == null || d2 == null) throw new IllegalArgumentException("Either date cannot be null");
         long timedifference = d1.getTime() - d2.getTime();
-        return (timedifference / (10000 * 60 * 60 * 24) ) ;
+        return Math.abs(timedifference / (1000 * 60 * 60 * 24) );
+     }
+
+     public static long getHourDifference(Date d1, Date d2){
+         if(d1 == null || d2 == null) throw new IllegalArgumentException("Either date cannot be null");
+         long timedifference = d1.getTime() - d2.getTime();
+         return Math.abs(timedifference / (1000 * 60 * 60) );
+     }
+
+     public static long getMinuteDifference(Date d1, Date d2){
+         if(d1 == null || d2 == null) throw new IllegalArgumentException("Either date cannot be null");
+         long timedifference = d1.getTime() - d2.getTime();
+         return Math.abs(timedifference / (1000 * 60 ) );
      }
 
 }

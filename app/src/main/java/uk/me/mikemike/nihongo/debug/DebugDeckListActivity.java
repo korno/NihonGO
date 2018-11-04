@@ -53,10 +53,6 @@ public class DebugDeckListActivity extends AppCompatActivity {
         NihongoRealmConfiguration.configureNihongoRealm(this);
         mRealm = Realm.getDefaultInstance();
         //mModel.init();
-        XmlImporter importer = new XmlImporter(mRealm,getResources().getXml(R.xml.testxml),
-                "", "", 0);
-        importer.importData();
-        mModel.startStudying(mModel.getAllDecks().getValue().last());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_debug_deck_list);
     }

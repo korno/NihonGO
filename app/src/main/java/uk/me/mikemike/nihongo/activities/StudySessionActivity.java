@@ -49,6 +49,7 @@ import uk.me.mikemike.nihongo.fragments.StudySessionFragment;
 import uk.me.mikemike.nihongo.fragments.StudySessionResultsFragment;
 import uk.me.mikemike.nihongo.model.StudyDeck;
 import uk.me.mikemike.nihongo.model.StudySession;
+import uk.me.mikemike.nihongo.model.StudySessionMultiple;
 import uk.me.mikemike.nihongo.viewmodels.StudySessionViewModel;
 
 /**
@@ -57,6 +58,7 @@ import uk.me.mikemike.nihongo.viewmodels.StudySessionViewModel;
 public final class StudySessionActivity extends AppCompatActivity implements StudySessionFragment.StudySessionFragmentListener {
 
     public final static  String ARG_STUDY_DECK_ID = "study_deck_id";
+    public final static String ARG_REVIEW_COUNT = "review_count";
     private final static String ARG_STUDY_SESSION_ID = "study_session_id";
     private StudySessionViewModel mModel;
     private StudySessionFragment mStudySessionFragment;
@@ -64,8 +66,13 @@ public final class StudySessionActivity extends AppCompatActivity implements Stu
 
 
     public static Intent createIntent(Context context, StudyDeck target){
+        return createIntent(context, target, 0);
+    }
+
+    public static Intent createIntent(Context context, StudyDeck target, int reviewCount){
         Intent i = new Intent(context, StudySessionActivity.class);
         i.putExtra(ARG_STUDY_DECK_ID, target.getStudyDeckID());
+        i.putExtra(ARG_REVIEW_COUNT, reviewCount);
         return i;
     }
 
@@ -116,7 +123,14 @@ public final class StudySessionActivity extends AppCompatActivity implements Stu
                 }
                 else {
                     // (create session will delete any unfinished saved sessions on disc)
-                    mModel.createSession(studyDeckID, new Date());
+                    int reviewCount =  getIntent().getIntExtra(ARG_REVIEW_COUNT, 0);
+                    Date date = new Date();
+                    if(reviewCount == 0) {
+                        mModel.createSession(studyDeckID, date);
+                    }
+                    else{
+                        mModel.createSession(studyDeckID, date, reviewCount);
+                    }
                     log("creating new session");
                 }
             }
@@ -173,7 +187,7 @@ public final class StudySessionActivity extends AppCompatActivity implements Stu
     }
 
     @Override
-    public void onTestFinished(StudySession session) {
+    public void onTestFinished(StudySessionMultiple session) {
         // no point in showing the results if there were no attempts
         if(session.getNumberOfAttempts() > 0) {
             displayResults();

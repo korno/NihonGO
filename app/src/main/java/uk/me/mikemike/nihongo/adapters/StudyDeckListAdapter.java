@@ -31,6 +31,7 @@
 package uk.me.mikemike.nihongo.adapters;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -38,14 +39,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
-import javax.xml.datatype.Duration;
-
+import butterknife.BindDrawable;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -62,11 +64,16 @@ import uk.me.mikemike.nihongo.utils.DateUtils;
  */
 public class StudyDeckListAdapter extends RealmRecyclerViewAdapter<StudyDeck, StudyDeckListAdapter.StudyDeckRecyclerView> {
 
-    protected Context mContext;
-    protected StudyDeckAdapterHandler mHandler;
-    protected Date mDate;
-    protected SimpleDateFormat mDateFormatter;
+    private Context mContext;
+    private StudyDeckAdapterHandler mHandler;
+    private Date mDate;
+    private SimpleDateFormat mDateFormatter;
+    private ArrayList<String> mExpandedDetails = new ArrayList<>();
 
+    @BindDrawable(R.drawable.ic_expand_less_black_24dp)
+    protected Drawable mShowLessIcon;
+    @BindDrawable(R.drawable.ic_expand_more_black_48dp)
+    protected Drawable mShowMoreIcon;
 
     public StudyDeckListAdapter(Context context, StudyDeckAdapterHandler handler, @Nullable OrderedRealmCollection<StudyDeck> data, boolean autoUpdate,
                                         Date date) {
@@ -75,6 +82,7 @@ public class StudyDeckListAdapter extends RealmRecyclerViewAdapter<StudyDeck, St
         mHandler = handler;
         mDate = date;
         mDateFormatter = new SimpleDateFormat("MMM d, ''yyyy");
+        new StudyDeckListAdapter_ViewBinding(this, context);
     }
 
     @Override
@@ -98,6 +106,7 @@ public class StudyDeckListAdapter extends RealmRecyclerViewAdapter<StudyDeck, St
     public interface StudyDeckAdapterHandler{
         void onReviewStudyDeckChosen(StudyDeck deck);
         void onStopStudyingDeckChosen(StudyDeck deck);
+        void onReviewStudyDeckChose10(StudyDeck deck, int reviewCount);
     }
 
     public class StudyDeckRecyclerView extends RecyclerView.ViewHolder{
@@ -106,6 +115,8 @@ public class StudyDeckListAdapter extends RealmRecyclerViewAdapter<StudyDeck, St
         protected TextView mNameTextView;
         @BindView(R.id.button_start_review_session)
         protected Button mStartStudyButton;
+        @BindView(R.id.button_start_review_session_10_reviews)
+        protected Button mStartQuickStudyButton;
         @BindView(R.id.text_studying_details)
         protected TextView mTextViewStudyDeckDetails;
         @BindString(R.string.format_number_of_reviews)
@@ -118,46 +129,111 @@ public class StudyDeckListAdapter extends RealmRecyclerViewAdapter<StudyDeck, St
         protected ProgressBar mCardsSeenProgressBar;
         @BindString(R.string.format_next_studydate_label_days)
         protected String mNextStudyDateFormatStringDays;
-        @BindString(R.string.format_next_studydate_label_days)
+        @BindString(R.string.format_next_studydate_label_hours)
         protected String mNextStudyDateFormatStringHours;
+        @BindString(R.string.format_next_studydate_label_minutes)
+        protected String mNextStudyDateIFormatStringMinutes;
         @BindView(R.id.progress_bar_mastered_amount)
         protected ProgressBar mMasteredCardsProgressBar;
         @BindView(R.id.text_cards_see_amount)
         protected TextView mCardsSeenTextView;
-        @BindString(R.string.format_cards_see_count)
-        protected String mCardsSeenFormatString;
+        @BindString(R.string.format_generic_x_of_y)
+        protected String mXofYFormatString;
+        @BindView(R.id.progress_bar_learning)
+        protected ProgressBar mLearningProgressBar;
+        @BindView(R.id.text_learning_amount)
+        protected TextView mLearningTextView;
 
+        @BindView(R.id.progress_bar_mastered_2)
+        protected ProgressBar tmMasteredCardsDetailProgressBar;
+        @BindView(R.id.text_mastered_amount)
+        protected TextView mMasteredTextView;
 
+        @BindView(R.id.layout_details)
+        protected View mDetailsView;
 
+        @BindView(R.id.image_show_details)
+        protected ImageView mShowDetailsButton;
 
+        @BindView(R.id.text_review_count_banana)
+        protected TextView mTextViewReviewsCount;
 
-        public StudyDeckRecyclerView(View itemView) {
+        StudyDeckRecyclerView(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        public void bindToStudyDeck(StudyDeck deck){
+        void bindToStudyDeck(StudyDeck deck){
             mNameTextView.setText(deck.getName());
             int reviewsWaiting = deck.howManyReviewsWaiting(mDate);
             int numberOfStudyCards = deck.getNumberOfCards();
             int newCards = deck.getAllNewCards().size();
+            Date nextStudyDate = deck.getNextStudyDate();
+            long nextStudyInDays = DateUtils.getDayDifference(mDate, nextStudyDate);
+            int masteredCardsPrecentage = deck.getMasteredCardPercentage();
 
-            long nextStudyInDays = DateUtils.getDayDifference(mDate, deck.getNextStudyDate());
+            mTextViewReviewsCount.setText(String.valueOf(reviewsWaiting));
 
             // if we have reviews display how many, else display when the next review is due
             if(reviewsWaiting > 0) {
-                mReviewCount.setText(String.format(mNumberOfReviewsFormatString, reviewsWaiting));
+                //mReviewCount.setText(String.format(mNumberOfReviewsFormatString, reviewsWaiting));
+                mReviewCount.setVisibility(View.GONE);
             }
             else{
-                mReviewCount.setText(String.format(mNextStudyDateFormatStringDays, nextStudyInDays);
+                if(nextStudyInDays >= 1) {
+                    mReviewCount.setText(String.format(mNextStudyDateFormatStringDays, nextStudyInDays));
+                }
+                else{
+
+                    long diff = DateUtils.getHourDifference(mDate, nextStudyDate);
+                    if(diff < 1){
+                        diff = DateUtils.getMinuteDifference(mDate, nextStudyDate);
+                        mReviewCount.setText(String.format(mNextStudyDateIFormatStringMinutes, diff));
+                    }
+                    else{
+                        mReviewCount.setText(String.format(mNextStudyDateFormatStringHours, diff));
+                    }
+
+
+                }
             }
             mTextViewStudyDeckDetails.setText(String.format(mStudyDeckDetailsFormatString, numberOfStudyCards, mDateFormatter.format(deck.getStartedStudyDate())));
-            mStartStudyButton.setEnabled(deck.hasReviewsWaiting(mDate));
+
+            mStartStudyButton.setEnabled(reviewsWaiting > 0);
+            mStartQuickStudyButton.setEnabled(reviewsWaiting > 0 && reviewsWaiting > 9);
+
             mCardsSeenProgressBar.setProgress(100 - deck.getNewCardPercentage());
-            mMasteredCardsProgressBar.setProgress(deck.getMasteredCardPercentage());
-            mCardsSeenTextView.setText(String.format(mCardsSeenFormatString, numberOfStudyCards - newCards, numberOfStudyCards));
+            mMasteredCardsProgressBar.setProgress(masteredCardsPrecentage);
+            mCardsSeenTextView.setText(String.format(mXofYFormatString, numberOfStudyCards - newCards, numberOfStudyCards));
+            mLearningProgressBar.setProgress(deck.getLearningCardPercentage());
+            mLearningTextView.setText(String.format(mXofYFormatString,  deck.getNumberOfLearningCards(), numberOfStudyCards));
+            mMasteredTextView.setText(String.format(mXofYFormatString, deck.getNumberOfMasteredCards(), numberOfStudyCards));
+            tmMasteredCardsDetailProgressBar.setProgress(masteredCardsPrecentage);
+            if(mExpandedDetails.contains(deck.getStudyDeckID())){
+                mDetailsView.setVisibility(View.VISIBLE);
+                mShowDetailsButton.setImageDrawable(mShowLessIcon);
+            }
+            else{
+                mDetailsView.setVisibility(View.GONE);
+                mShowDetailsButton.setImageDrawable(mShowMoreIcon);
+            }
         }
 
+
+        @OnClick({R.id.text_details, R.id.image_show_details })
+        protected void expandDetails(){
+            if(mDetailsView.getVisibility() == View.GONE){
+                mDetailsView.setVisibility(View.VISIBLE);
+                mShowDetailsButton.setImageDrawable(mShowLessIcon);
+                mExpandedDetails.add(getItem(getAdapterPosition()).getStudyDeckID());
+            }
+            else{
+                mDetailsView.setVisibility(View.GONE);
+                mShowDetailsButton.setImageDrawable(mShowMoreIcon);
+                mExpandedDetails.remove(getItem(getAdapterPosition()).getStudyDeckID());
+            }
+            notifyItemChanged(getAdapterPosition());
+        }
 
         @OnClick(R.id.button_remove_study)
         protected void onStopStudyingButtonClicked(){
@@ -167,6 +243,11 @@ public class StudyDeckListAdapter extends RealmRecyclerViewAdapter<StudyDeck, St
         @OnClick(R.id.button_start_review_session)
         protected void onReviewButtonClicked(){
             mHandler.onReviewStudyDeckChosen(getItem(getAdapterPosition()));
+        }
+
+        @OnClick(R.id.button_start_review_session_10_reviews)
+        protected void onReviewButton10Clicked(){
+            mHandler.onReviewStudyDeckChose10(getItem(getAdapterPosition()), 10);
         }
     }
 }

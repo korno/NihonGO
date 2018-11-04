@@ -50,6 +50,8 @@ import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import uk.me.mikemike.nihongo.R;
+import uk.me.mikemike.nihongo.debug.DebugCardListActivity;
+import uk.me.mikemike.nihongo.debug.DebugDeckListActivity;
 import uk.me.mikemike.nihongo.fragments.ChooseDeckToStudyFragment;
 import uk.me.mikemike.nihongo.fragments.CurrentlyStudyingListFragment;
 import uk.me.mikemike.nihongo.model.StudyDeck;
@@ -138,6 +140,8 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent i = new Intent(this, DebugDeckListActivity.class);
+            startActivity(i);
             return true;
         }
 

@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import java.util.Date;
 import uk.me.mikemike.nihongo.model.StudyDeck;
 import uk.me.mikemike.nihongo.model.StudySession;
+import uk.me.mikemike.nihongo.model.StudySessionMultiple;
 import uk.me.mikemike.nihongo.utils.RealmObjectLiveData;
 
 /**
@@ -13,14 +14,14 @@ import uk.me.mikemike.nihongo.utils.RealmObjectLiveData;
 
 public class StudySessionViewModel extends BaseNihongoViewModel {
 
-    protected RealmObjectLiveData<StudySession> mStudySession;
+    protected RealmObjectLiveData<StudySessionMultiple> mStudySession;
 
     public StudySessionViewModel(@NonNull Application application) {
         super(application);
         mStudySession = new RealmObjectLiveData<>(null);
     }
 
-    public RealmObjectLiveData<StudySession> getCurrentSession(){
+    public RealmObjectLiveData<StudySessionMultiple> getCurrentSession(){
         return mStudySession;
     }
 
@@ -28,12 +29,18 @@ public class StudySessionViewModel extends BaseNihongoViewModel {
         // we can only ever have one active session
         deleteAllSessions();
         StudyDeck sd = mRepos.getStudyDeckByID(studyDeckID);
-        mStudySession.setValue(mRepos.createStudySession(sd, date));
+        mStudySession.setValue(mRepos.createMultipleStudySession(sd, date));
+    }
+
+    public void createSession(String studyDeckID, Date date, int maxReviews){
+        deleteAllSessions();
+        StudyDeck sd = mRepos.getStudyDeckByID(studyDeckID);
+        mStudySession.setValue(mRepos.createMultipleStudySession(sd, date, maxReviews));
     }
 
 
     public void loadSession(String studySessionID){
-        mStudySession.setValue(mRepos.getStudySessionByID(studySessionID));
+        mStudySession.setValue(mRepos.getStudySessionMultipleByID(studySessionID));
     }
 
     public boolean answerCurrentQuestion(String answer, boolean updateSessionState){
@@ -47,12 +54,13 @@ public class StudySessionViewModel extends BaseNihongoViewModel {
 
     public void deleteCurrentSession(){
         if(mStudySession.getValue() != null) {
-            mRepos.getConnectedRealm().beginTransaction();
-            mStudySession.getValue().deleteFromRealm();
-            mRepos.getConnectedRealm().commitTransaction();
+            deleteAllSessions();
             mStudySession.setValue(null);
         }
     }
+
+
+
 
     public void deleteAllSessions(){
         mRepos.deleteAllStudySessions();

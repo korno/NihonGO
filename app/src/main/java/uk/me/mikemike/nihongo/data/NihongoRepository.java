@@ -30,7 +30,10 @@
  */
 package uk.me.mikemike.nihongo.data;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
+
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
@@ -43,6 +46,9 @@ import uk.me.mikemike.nihongo.model.StudyDeck;
 import uk.me.mikemike.nihongo.model.StudyDeckFields;
 import uk.me.mikemike.nihongo.model.StudySession;
 import uk.me.mikemike.nihongo.model.StudySessionFields;
+import uk.me.mikemike.nihongo.model.StudySessionMultiple;
+import uk.me.mikemike.nihongo.model.StudySessionMultipleFields;
+import uk.me.mikemike.nihongo.model.StudySessionQuestion;
 import uk.me.mikemike.nihongo.utils.DateUtils;
 
 /**
@@ -180,7 +186,11 @@ public class NihongoRepository {
      * @param intervalBetweenMaxCards the interval between each max cards collection. set to zero for all study cards to have the same start day
      * @return The managed StudyDeck representing the deck
      */
-    public StudyDeck startStudying(Deck deck, Date date, int maxCardsPerDay, int intervalBetweenMaxCards) {
+    public StudyDeck startStudying(Deck deck, Date date, int maxCardsPerDay, int intervalBetweenMaxCards){
+        return startStudying(deck, date, maxCardsPerDay, intervalBetweenMaxCards, false);
+    }
+
+    public StudyDeck startStudying(Deck deck, Date date, int maxCardsPerDay, int intervalBetweenMaxCards, boolean randomize) {
 
         if (deck == null) throw new IllegalArgumentException("the deck must not be null");
         if (date == null) throw new IllegalArgumentException("the date must not be null");
@@ -191,11 +201,15 @@ public class NihongoRepository {
 
         try {
             mRealm.beginTransaction();
+            RealmList<Card> cards = deck.getCards();
             Date current = date;
             int cardCount = 0;
             StudyDeck d = new StudyDeck(deck.getName(), new RealmList<StudyCard>(), deck);
-            for (Card c : deck.getCards()) {
-                StudyCard sc = new StudyCard(c, new LearningState(current, LearningState.STARTING_E_VALUE, 0, 0));
+            if(randomize){
+                Collections.shuffle(cards);
+            }
+            for (Card c : cards) {
+                StudyCard sc = new StudyCard(c, new LearningState(current, current, LearningState.STARTING_E_VALUE, 0, 0));
                 d.getStudyCards().add(sc);
                 cardCount++;
                 if (cardCount == maxCardsPerDay) {
@@ -252,6 +266,24 @@ public class NihongoRepository {
         return mss;
     }
 
+    public StudySessionMultiple createMultipleStudySession(StudyDeck deck, Date date){
+        mRealm.beginTransaction();
+        StudySessionMultiple s = new StudySessionMultiple(deck, date);
+        StudySessionMultiple sss = mRealm.copyToRealmOrUpdate(s);
+        mRealm.commitTransaction();
+        return sss;
+    }
+
+    public StudySessionMultiple createMultipleStudySession(StudyDeck deck, Date date, int maxReviews){
+        mRealm.beginTransaction();
+        StudySessionMultiple s = new StudySessionMultiple(deck, date, maxReviews);
+        StudySessionMultiple sss = mRealm.copyToRealmOrUpdate(s);
+        mRealm.commitTransaction();
+        return sss;
+    }
+
+
+
     /**
      * Answers a study sessions question. This method just wraps the StudySession.answerJapanese
      * in a realm transaction.
@@ -260,6 +292,23 @@ public class NihongoRepository {
      * @return true if correct, false otherwise
      */
     public boolean answerStudySessionJapaneseAnswer(StudySession session, String answer, boolean updateSessionState){
+        boolean result;
+        try{
+            mRealm.beginTransaction();
+            result = session.answerJapanese(answer, updateSessionState);
+            mRealm.commitTransaction();
+            return result;
+        }
+        catch (Exception e){
+            if(mRealm.isInTransaction()) {
+                mRealm.cancelTransaction();
+            }
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public boolean answerStudySessionJapaneseAnswer(StudySessionMultiple session, String answer, boolean updateSessionState){
         boolean result;
         try{
             mRealm.beginTransaction();
@@ -292,6 +341,8 @@ public class NihongoRepository {
      */
     public void deleteEverything(){
         mRealm.beginTransaction();
+        mRealm.where(StudySessionQuestion.class).findAll().deleteAllFromRealm();
+        mRealm.where(StudySessionMultiple.class).findAll().deleteAllFromRealm();
         mRealm.where(StudySession.class).findAll().deleteAllFromRealm();
         mRealm.where(StudyCard.class).findAll().deleteAllFromRealm();
         mRealm.where(StudyDeck.class).findAll().deleteAllFromRealm();
@@ -306,6 +357,8 @@ public class NihongoRepository {
      */
     public void deleteAllStudySessions(){
         mRealm.beginTransaction();
+        mRealm.where(StudySessionQuestion.class).findAll().deleteAllFromRealm();
+        mRealm.where(StudySessionMultiple.class).findAll().deleteAllFromRealm();
         mRealm.where(StudySession.class).findAll().deleteAllFromRealm();
         mRealm.commitTransaction();
     }
@@ -320,6 +373,10 @@ public class NihongoRepository {
         return mRealm.where(StudySession.class).equalTo(StudySessionFields.STUDY_SESSION_ID, id).findFirst();
     }
 
+    public StudySessionMultiple getStudySessionMultipleByID(String id){
+        if(id == null) throw new IllegalArgumentException("id must not be null");
+        return mRealm.where(StudySessionMultiple.class).equalTo(StudySessionMultipleFields.STUDY_SESSION_ID, id).findFirst();
+    }
 
     /**
      * Wraps a StudySession.answerCurrentQuestion in a realm transaction
@@ -337,6 +394,15 @@ public class NihongoRepository {
     }
 
 
+    public boolean answerStudySessionCurrentQuestion(String answer, StudySessionMultiple session, boolean updateSessionState){
+        if(session == null) throw new IllegalArgumentException("session must not be null");
+        boolean result;
+        mRealm.beginTransaction();
+        result = session.answerCurrentQuestion(answer, updateSessionState);
+        mRealm.commitTransaction();
+        return result;
+    }
+
     /**
      * Wraps the StudySession.finishTest method in a realm transaction
      * @param session the session to use
@@ -348,6 +414,12 @@ public class NihongoRepository {
         mRealm.commitTransaction();
     }
 
+    public void finishSession(StudySessionMultiple session){
+        if(session == null ) throw new IllegalArgumentException("session must not be null");
+        mRealm.beginTransaction();
+        session.finishSession();
+        mRealm.commitTransaction();
+    }
 
     /**
      * Stops studying the passed study deck. This deletes all study related data from the realm
@@ -365,6 +437,34 @@ public class NihongoRepository {
         studyDeck.getStudyCards().deleteAllFromRealm();
         // delete the study deck itself
         studyDeck.deleteFromRealm();
+        mRealm.commitTransaction();
+    }
+
+    public void deleteDeck(Deck d){
+        if(d == null){
+            throw new IllegalArgumentException("Deck must not be null");
+        }
+        if(d.isBeingStudied()){
+            for(StudyDeck sd: mRealm.where(StudyDeck.class).equalTo(StudyDeckFields.SOURCE_DECK.DECK_ID, d.getDeckID()).findAll()){
+                stopStudying(sd);
+            }
+        }
+
+        mRealm.beginTransaction();
+        for(Card c: d.getCards()){
+            c.getSynonyms().deleteAllFromRealm();
+        }
+        d.getCards().deleteAllFromRealm();
+        d.deleteFromRealm();
+        mRealm.commitTransaction();
+
+
+    }
+
+    public void deleteCard(Card c){
+        mRealm.beginTransaction();
+        c.getSynonyms().deleteAllFromRealm();
+        c.deleteFromRealm();
         mRealm.commitTransaction();
     }
 

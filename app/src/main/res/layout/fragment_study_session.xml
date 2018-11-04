@@ -3,127 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="uk.me.mikemike.nihongo.fragments.StudySessionFragment">
+    tools:context="uk.me.mikemike.nihongo.fragments.StudySessionFragment"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto">
 
-    <ViewSwitcher
+    <ViewFlipper
         android:id="@+id/studySessionView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="4dp">
 
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/layout_details"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <include layout="@layout/layout_new_word" />
+        <include layout="@layout/layout_studycard_question"/>
+        <include layout="@layout/layout_mistake" />
 
-            <se.fekete.furiganatextview.furiganaview.FuriganaTextView
-                android:id="@+id/text_japanese"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:text="HELLO"
-                android:textAppearance="@android:style/TextAppearance.Material.Large"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView3"></se.fekete.furiganatextview.furiganaview.FuriganaTextView>
 
-            <TextView
-                android:id="@+id/textView3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
 
-                android:layout_marginTop="8dp"
-                android:text="q"
-                android:textAppearance="@android:style/TextAppearance.Material.Headline"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="WRONG!" />
-
-            <TextView
-                android:id="@+id/text_main_language"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="TextView"
-                android:textAppearance="@android:style/TextAppearance.Material.Large"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_japanese" />
-
-            <Button
-                android:id="@+id/button_ok"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Button"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_main_language" />
-        </android.support.constraint.ConstraintLayout>
-
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/layout_question"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/text_remaining_questions"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:text="TextView"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.974"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <EditText
-                android:id="@+id/edittext_answer_input"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="40dp"
-                android:ems="10"
-                android:imeOptions="actionDone|flagForceAscii"
-                android:inputType="textNoSuggestions"
-                android:text="Name"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.503"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_current_question" />
-
-            <se.fekete.furiganatextview.furiganaview.FuriganaTextView
-                android:id="@+id/text_current_question"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:text="HELLO"
-                android:textAppearance="@android:style/TextAppearance.Material.Headline"
-                app:contains_ruby_tags="true"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_remaining_questions" />
-
-            <Button
-                android:id="@+id/button_answer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:text="Button"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/edittext_answer_input" />
-
-        </android.support.constraint.ConstraintLayout>
-    </ViewSwitcher>
+    </ViewFlipper>
 
 </FrameLayout>

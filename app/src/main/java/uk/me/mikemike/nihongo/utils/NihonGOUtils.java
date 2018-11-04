@@ -2,6 +2,7 @@ package uk.me.mikemike.nihongo.utils;
 
 import android.view.textservice.SentenceSuggestionsInfo;
 
+import io.realm.RealmList;
 import uk.me.mikemike.nihongo.model.Card;
 
 public class NihonGOUtils {
@@ -23,6 +24,21 @@ public class NihonGOUtils {
         return japanese;
     }
 
+    public static String getSynonymsString(Card c, String seperator){
+        StringBuilder sb = new StringBuilder();
+        RealmList<String> s = c.getSynonyms();
+        if(s.isEmpty()){
+            return "";
+        }
+
+        sb.append(s.get(0));
+        for(int i=1; i<c.getSynonyms().size(); i++)
+        {
+            sb.append(seperator);
+            sb.append(s.get(i));
+        }
+        return sb.toString();
+    }
 
     public static String generateDictionaryResultsString(SentenceSuggestionsInfo[] results){
         final StringBuffer sb = new StringBuffer("");

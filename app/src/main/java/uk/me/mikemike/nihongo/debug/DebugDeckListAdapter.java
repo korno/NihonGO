@@ -84,6 +84,7 @@ public class DebugDeckListAdapter extends RealmRecyclerViewAdapter<Deck, DebugDe
     public interface DebugDeckListListener{
         void onDeckClicked(Deck d);
         void onDeckViewStudyInformationSelected(Deck d);
+        void onDeckDeleteCilicked(Deck d);
     }
 
 
@@ -135,5 +136,12 @@ public class DebugDeckListAdapter extends RealmRecyclerViewAdapter<Deck, DebugDe
         public void onViewStudyStateClick(){
             mListener.onDeckViewStudyInformationSelected(getItem(getAdapterPosition()));
         }
+
+        @OnClick(R.id.button_delete)
+        public void onDeleteClick(){
+            mListener.onDeckDeleteCilicked(getItem(getAdapterPosition()));
+        }
+
+
     }
 }

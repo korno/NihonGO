@@ -13,6 +13,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmRecyclerViewAdapter;
+import se.fekete.furiganatextview.furiganaview.FuriganaTextView;
 import uk.me.mikemike.nihongo.R;
 import uk.me.mikemike.nihongo.model.Card;
 import uk.me.mikemike.nihongo.model.LearningState;
@@ -55,7 +56,7 @@ public class DebugStudyCardListAdapter  extends RealmRecyclerViewAdapter<StudyCa
         @BindView(R.id.text_next_study_date)
         protected TextView mTextNextStudyDate;
         @BindView(R.id.text_japanese_display)
-        protected TextView mTextJapanese;
+        protected FuriganaTextView mTextJapanese;
         @BindView(R.id.text_main_language)
         protected TextView mTextMainLanguage;
         @BindView(R.id.text_japanese_hiragana)
@@ -66,6 +67,14 @@ public class DebugStudyCardListAdapter  extends RealmRecyclerViewAdapter<StudyCa
         protected TextView mTextInterval;
 
 
+        // format strings
+        @BindString(R.string.item_debug_study_card_e)
+        protected String mEValueFormatString;
+        @BindString(R.string.item_debug_study_card_interval)
+        protected String mIntervalFormatString;
+        @BindString(R.string.item_debug_next_study_date)
+        protected String mNextStudyDateFormatString;
+
         public DebugStudyCardListReyclerView(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -74,13 +83,13 @@ public class DebugStudyCardListAdapter  extends RealmRecyclerViewAdapter<StudyCa
         public void bindStudyCard(StudyCard s){
 
             LearningState state = s.getLearningState();
-            mTextENumber.setText(String.valueOf(state.getEasyness()));
-            mTextNextStudyDate.setText(mFormatter.format(state.getNextDueDate()));
+            mTextENumber.setText(String.format(mEValueFormatString, state.getEasyness()));
+            mTextNextStudyDate.setText(String.format(mNextStudyDateFormatString, mFormatter.format(state.getNextDueDate())));
             mTextReps.setText(String.valueOf(state.getReps()));
-            mTextInterval.setText(String.valueOf(state.getInterval()));
+            mTextInterval.setText(String.format(mIntervalFormatString, state.getInterval()));
 
             Card sc = s.getSourceCard();
-            mTextJapanese.setText(sc.getJapaneseDisplayIfPresentKanjiIfNot());
+            mTextJapanese.setFuriganaText(sc.getJapaneseDisplayIfPresentKanjiIfNot());
             mTextJapaneseHiragana.setText(sc.getJapaneseHiragana());
             mTextMainLanguage.setText(sc.getMainLanguage());
 

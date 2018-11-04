@@ -124,6 +124,13 @@ public class StudyDeck extends RealmObject {
         return getCardsForLevelQuery(LearningState.NEW_LEVEL).findAll();
     }
 
+    /**
+     * Returns all the cards currently being learnt (not new and not mastered)
+     * @return a realm result
+     */
+    public RealmResults<StudyCard> getAllLearningCards(){
+        return getCardsForLevelQuery(LearningState.STUDYING_LEVEL).findAll();
+    }
 
     /**
      * Reeturns all the studycards that have been mastered (studyLevel == 2)
@@ -161,6 +168,15 @@ public class StudyDeck extends RealmObject {
      */
     public int getMasteredCardPercentage(){return calculateCardPercentage(getAllMasteredCards().size());}
 
+    /**
+     * Returns the percentage of cards that are bing learned (not new nor mastered)
+     * @return
+     */
+    public int getLearningCardPercentage(){return calculateCardPercentage(getAllLearningCards().size());}
+
+    public int getNumberOfMasteredCards(){return getAllMasteredCards().size();}
+
+    public int getNumberOfLearningCards(){return getAllLearningCards().size();}
 
     /**
      * Returns the number of cards in this StudyDeck.

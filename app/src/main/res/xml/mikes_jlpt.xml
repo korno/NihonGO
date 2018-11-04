@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<decks>
+    <deck name="Mike's JLPT N3 - Set 2" description="This is a collection of various vocabulary I have found while studying N3 textbooks." author="Mike">
+        <card
+            japaneseKanji="季節"
+            mainLanguage="season"
+            japaneseHiragana="きせつ"
+            wordType="NounDO">
+            <synonym>time of year</synonym>
+            <japaneseDisplay><![CDATA[<ruby>季節<rt>きせつ</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="大問題"
+            mainLanguage="big problem"
+            japaneseHiragana="だいもんだい"
+            wordType="Noun">
+            <synonym>big issue</synonym>
+            <japaneseDisplay><![CDATA[<ruby>大問題<rt>だいもんだい</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="最優先"
+            mainLanguage="top priority"
+            japaneseHiragana="さいゆうせん"
+            wordType="Noun">
+            <synonym>main priority</synonym>
+            <synonym>first priority</synonym>
+            <japaneseDisplay><![CDATA[<ruby>最優先<rt>さいゆうせん</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="数人"
+            mainLanguage="a few people"
+            japaneseHiragana="すうにん"
+            wordType="Noun">
+            <synonym>several people</synonym>
+            <japaneseDisplay><![CDATA[<ruby>数人<rt>すうにん</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="発送する"
+            mainLanguage="to ship"
+            japaneseHiragana="はっそうする"
+            wordType="NounDO">
+            <synonym>to dispatch</synonym>
+            <japaneseDisplay><![CDATA[<ruby>発送<rt>はっそう</rt></ruby>する]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="研修"
+            mainLanguage="training"
+            japaneseHiragana="けんしゅう"
+            wordType="Noun">
+            <japaneseDisplay><![CDATA[<ruby>研修<rt>けんしゅう</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="復習する"
+            mainLanguage="to review"
+            japaneseHiragana="ふくしゅうする"
+            wordType="NounDo">
+            <synonym>to revise</synonym>
+            <japaneseDisplay><![CDATA[<ruby>復習<rt>ふくしゅう</rt></ruby>する]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="片手"
+            mainLanguage="one hand"
+            japaneseHiragana="かたて"
+            wordType="Noun">
+            <japaneseDisplay><![CDATA[<ruby>片手<rt>かたて</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="真剣に考える"
+            mainLanguage="to think seriously"
+            japaneseHiragana=""
+            wordType="VerbRU">
+            <japaneseDisplay><![CDATA[<ruby>真剣<rt>しんけん</rt></ruby>に<ruby>考<rt>かん</rt></ruby>える]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="最新"
+            mainLanguage="the latest"
+            japaneseHiragana="さいしん"
+            wordType="Noun">
+            <japaneseDisplay><![CDATA[<ruby>最新<rt>さいしん</rt></ruby>]]></japaneseDisplay>
+            <synonym>the newest</synonym>
+        </card>
+        <card
+            japaneseKanji="徹夜する"
+            mainLanguage="to stay up all night"
+            japaneseHiragana="てつやする"
+            wordType="NounDO">
+            <japaneseDisplay><![CDATA[<ruby>徹夜<rt>てつや</rt></ruby>する]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="お互い"
+            mainLanguage="each other"
+            japaneseHiragana="おたがい"
+            wordType="Noun">
+            <japaneseDisplay><![CDATA[<ruby>お互い<rt>おたがい</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="〜が動く"
+            mainLanguage="~ moves"
+            japaneseHiragana="〜がうごく"
+            wordType="VerbU">
+            <japaneseDisplay><![CDATA[〜が<ruby>動<rt>うご</rt></ruby>く]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="動かす"
+            mainLanguage="to move"
+            japaneseHiragana="うごかす"
+            wordType="VerbU">
+            <japaneseDisplay><![CDATA[<ruby>動<rt>うご</rt></ruby>かす]]></japaneseDisplay>
+        </card>
+    </deck>
+</decks>

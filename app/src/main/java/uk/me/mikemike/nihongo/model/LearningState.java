@@ -47,10 +47,22 @@ public class LearningState extends RealmObject {
     public static final int NEW_LEVEL =0;
     public static final int STUDYING_LEVEL = 1;
     public static final int MASTERED_LEVEL = 2;
-    public static float STARTING_E_VALUE = 2.5f;
+
+
     public static float MINIMUM_E_VALUE = 1.3f;
     public static float MASTERED_E_VALUE = 2.48f;
-    public static int MASTERED_MIN_TRIES = 5;
+    public static int MASTERED_MIN_TRIES = 10;
+    public static float STARTING_E_VALUE = MASTERED_E_VALUE-0.5f;
+
+    public static float[] EF_FACTOR = {
+            -0.8f,
+            -0.54f,
+            -0.32f,
+            -0.14f,
+            0f,
+            0.1f
+    };
+
 
     @PrimaryKey
     @Required
@@ -61,10 +73,11 @@ public class LearningState extends RealmObject {
     protected float mInterval;
     protected int mTotalTries;
     protected int mStudyLevel;
-
+    protected Date mStartDate;
 
     public String getCardLearningStateID(){return mCardLearningStateID;}
     public Date getNextDueDate(){return mNextDueDate;}
+    public Date getStartDate(){return mStartDate;}
     public float getEasyness(){return mEasiness;}
     public int getReps(){return mReps;}
     public float getInterval(){return mInterval;}
@@ -95,8 +108,8 @@ public class LearningState extends RealmObject {
         mEasiness = STARTING_E_VALUE;
         mReps = 0;
         mInterval = 0;
-        mNextDueDate = new Date();
         mStudyLevel=NEW_LEVEL;
+        mStartDate = mNextDueDate;
     }
 
     /**
@@ -106,9 +119,10 @@ public class LearningState extends RealmObject {
      * @param consecutiveCorrectAnswers The number of consecutive correct answers. Must be greate than or equal to zero
      * @param interval The  interval to use.
      */
-    public LearningState(Date nextDueDate, float easiness, int consecutiveCorrectAnswers,
+    public LearningState(Date startDate, Date nextDueDate, float easiness, int consecutiveCorrectAnswers,
                          float interval){
 
+        if(startDate == null) throw new IllegalArgumentException("start date cannot be null");
         if(nextDueDate == null) throw new IllegalArgumentException("next due date must not be null");
         if(easiness < MINIMUM_E_VALUE) throw new IllegalArgumentException("the easiness value is less than the minimum value");
         if(interval < 0) throw new IllegalArgumentException("the interval must be 0 or greater");
@@ -118,6 +132,7 @@ public class LearningState extends RealmObject {
         mReps = consecutiveCorrectAnswers;
         mInterval = interval;
         mTotalTries=0;
+        mStartDate = startDate;
     }
 
     /**
@@ -127,6 +142,7 @@ public class LearningState extends RealmObject {
      */
     public void startLearning(Date startDate){
         if(startDate == null)throw new IllegalArgumentException("Start date must not be null");
+        mStartDate = startDate;
         mNextDueDate = startDate;
         mInterval = 0;
         mEasiness = STARTING_E_VALUE;
@@ -147,32 +163,38 @@ public class LearningState extends RealmObject {
         if(date == null) throw new IllegalArgumentException("the date can not be null");
 
         float oldE = mEasiness;
+        mEasiness = Math.max(MINIMUM_E_VALUE, oldE + EF_FACTOR[answerLevel]);
+        mEasiness = Math.min(MASTERED_E_VALUE, mEasiness);
         if(answerLevel < 3){
             mInterval = 0;
             mReps = 0;
         }
         else {
             // newEF = oldEF + (0.1 - (5-grade)*(0.08+(5-grade)*0.02));
-            mEasiness = Math.max(MINIMUM_E_VALUE, oldE + (0.1f - (5f-answerLevel)*(0.08f+(5f-answerLevel)*0.02f)));
+            // EF':=EF-0.8+0.28*q-0.02*q*q
+            //mEasiness = Math.max(MINIMUM_E_VALUE, oldE + (0.1f - (5f-answerLevel)*(0.08f+(5f-answerLevel)*0.02f)));
             mReps++;
         }
 
         switch (mReps){
             case 0:
-                mInterval=1;
+                mInterval=0.25f;
                 break;
             case 1:
-                mInterval=1;
+                mInterval=0.25f;
                 break;
             case 2:
-                mInterval=6;
+                mInterval=1;
+                break;
+            case 3:
+                mInterval=3;
                 break;
             default:
-                mInterval = mInterval * mEasiness;
+                mInterval = (mInterval * mEasiness);
         }
 
         mTotalTries++;
-        mNextDueDate = DateUtils.addDaysToDate(date, (int)Math.ceil(mInterval));
+        mNextDueDate = DateUtils.addHoursToDate(date, (int)Math.ceil(mInterval*24));
         changeLevel();
     }
 
@@ -194,5 +216,18 @@ public class LearningState extends RealmObject {
     }
 
     public boolean isNew(){return mStudyLevel == NEW_LEVEL;}
+
+    @Override
+    public String toString() {
+        return "LearningState{" +
+                /*"mCardLearningStateID='" + mCardLearningStateID + '\'' +*/
+                ", mNextDueDate=" + mNextDueDate +
+                ", mEasiness=" + mEasiness +
+                ", mReps=" + mReps +
+                ", mInterval=" + mInterval +
+                ", mTotalTries=" + mTotalTries +
+                ", mStudyLevel=" + mStudyLevel +
+                '}';
+    }
 
 }

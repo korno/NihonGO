@@ -43,13 +43,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import uk.me.mikemike.nihongo.R;
 import uk.me.mikemike.nihongo.adapters.StudySessionResultsMistakesCardAdapter;
 import uk.me.mikemike.nihongo.model.StudySession;
+import uk.me.mikemike.nihongo.model.StudySessionMultiple;
 import uk.me.mikemike.nihongo.viewmodels.StudySessionViewModel;
 
 /**
@@ -57,13 +61,21 @@ import uk.me.mikemike.nihongo.viewmodels.StudySessionViewModel;
  * Expects the contaiing activity to have created a StudySessionViewModel
  * with a study session. Will do nothing if this is not present.
  */
-public class StudySessionResultsFragment extends Fragment implements Observer<StudySession> {
+public class StudySessionResultsFragment extends Fragment implements Observer<StudySessionMultiple> {
 
     Unbinder mUnbinder;
     StudySessionViewModel mModel;
     StudySessionResultsMistakesCardAdapter mMistakesCardAdapter;
     @BindView(R.id.recycler_view_mistakes)
     RecyclerView mListMistakes;
+
+    @BindView(R.id.progress_score)
+    ProgressBar mResultsPercentage;
+
+    @BindString(R.string.format_generic_x_of_y)
+    String mScoreString;
+    @BindView(R.id.text_score)
+    TextView mResultsTextView;
 
     public static StudySessionResultsFragment newInstance(){
         return new StudySessionResultsFragment();
@@ -105,8 +117,17 @@ public class StudySessionResultsFragment extends Fragment implements Observer<St
     }
 
     @Override
-    public void onChanged(@Nullable StudySession studySession) {
+    public void onChanged(@Nullable StudySessionMultiple studySession) {
+
         if(studySession != null){
+            int wrong = studySession.getWrongCards().size();
+            int right = studySession.getCorrectCards().size();
+            int total = wrong + right;
+            if(total != 0) {
+                float results = (100.0f / total) * right;
+                mResultsPercentage.setProgress((int)results);
+            }
+            mResultsTextView.setText(String.format(mScoreString, right, total));
             if(mMistakesCardAdapter == null){
                 mMistakesCardAdapter = new StudySessionResultsMistakesCardAdapter(studySession.getWrongCards(), true, getContext());
                 mListMistakes.setAdapter(mMistakesCardAdapter);

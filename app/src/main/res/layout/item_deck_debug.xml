@@ -80,6 +80,15 @@
             android:layout_height="wrap_content"
             android:layout_weight="0"
             android:text="@string/item_debug_deck_list_view_study_state_button" />
+
+        <Button
+            android:id="@+id/button_delete"
+            style="@android:style/Widget.Material.Button.Borderless.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="@string/item_debug_deck_list_delete_button" />
+
     </LinearLayout>
 
 </LinearLayout>

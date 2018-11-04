@@ -55,7 +55,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ViewSwitcher;
+import android.widget.ViewFlipper;
 
 import com.wanakanajava.WanaKanaJavaText;
 
@@ -69,7 +69,7 @@ import butterknife.Unbinder;
 import se.fekete.furiganatextview.furiganaview.FuriganaTextView;
 import uk.me.mikemike.nihongo.R;
 import uk.me.mikemike.nihongo.model.Card;
-import uk.me.mikemike.nihongo.model.StudySession;
+import uk.me.mikemike.nihongo.model.StudySessionMultiple;
 import uk.me.mikemike.nihongo.utils.NihonGOUtils;
 import uk.me.mikemike.nihongo.viewmodels.StudySessionViewModel;
 
@@ -79,15 +79,20 @@ import static uk.me.mikemike.nihongo.utils.NihonGOUtils.getJapaneseDisplay;
 /**
  * Fragment that allows the user to study a session of cards
  */
-public final class StudySessionFragment extends Fragment implements Observer<StudySession>, SpellCheckerSession.SpellCheckerSessionListener {
+public final class StudySessionFragment extends Fragment implements Observer<StudySessionMultiple>, SpellCheckerSession.SpellCheckerSessionListener {
 
 
     public interface StudySessionFragmentListener {
-        void onTestFinished(StudySession session);
+        void onTestFinished(StudySessionMultiple session);
     }
 
 
-    private static String SHOWING_QUESION_BUNDLE_ID = "showing_question";
+    private static String SHOWING_QUESTION_BUNDLE_ID = "showing_view";
+    private static int NEW_WORD_VIEW_INDEX =0;
+    private  static int QUESTION_VIEW_INDEX = 1;
+    private  static int MISTAKE_VIEW_INDEX = 2;
+    private int mCurrentlyShowingViewIndex = QUESTION_VIEW_INDEX;
+
 
     private StudySessionFragmentListener mListener;
     private StudySessionViewModel mModel;
@@ -112,7 +117,7 @@ public final class StudySessionFragment extends Fragment implements Observer<Stu
     @BindView(R.id.button_answer)
     protected Button mAnswerButton;
     @BindView(R.id.studySessionView)
-    protected ViewSwitcher mViewSwitcher;
+    protected ViewFlipper mViewSwitcher;
     @BindView(R.id.layout_question)
     protected View mReviewRoot;
     @BindView(R.id.layout_details)
@@ -121,7 +126,13 @@ public final class StudySessionFragment extends Fragment implements Observer<Stu
     protected TextView mMainLanguageText;
     @BindView(R.id.text_japanese)
     protected FuriganaTextView mJapaneseText;
+    @BindView(R.id.text_new_japanese)
+    protected FuriganaTextView mNewWordJapaneseText;
+    @BindView(R.id.text_new_main_language)
+    protected TextView mNewWordMainLanguage;
 
+    @BindString(R.string.format_new_word_main_language)
+    protected String mNewWordMainLanguageFormatString;
 
     public StudySessionFragment() {
         // Required empty public constructor
@@ -146,7 +157,7 @@ public final class StudySessionFragment extends Fragment implements Observer<Stu
 
         Activity activity = getActivity();
         activity.getWindow().setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         mModel = ViewModelProviders.of(getActivity()).get(StudySessionViewModel.class);
         mModel.getCurrentSession().removeObserver(this);
         mModel.getCurrentSession().observe(this, this);
@@ -167,15 +178,11 @@ public final class StudySessionFragment extends Fragment implements Observer<Stu
         }
 
         if(savedInstance != null){
-            mCurrentlyShowingQuestion = savedInstance.getBoolean(SHOWING_QUESION_BUNDLE_ID, true);
+            mCurrentlyShowingViewIndex = savedInstance.getInt(SHOWING_QUESTION_BUNDLE_ID, QUESTION_VIEW_INDEX);
         }
 
-        if(mCurrentlyShowingQuestion) {
-            showCurrentQuestion();
-        }
-        else{
-            showCurrentCardDetails();
-        }
+        showUI(mCurrentlyShowingViewIndex);
+
     }
 
     @Override
@@ -188,9 +195,15 @@ public final class StudySessionFragment extends Fragment implements Observer<Stu
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 boolean handled = false;
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    answerQuestion(mAnswerEditText.getText().toString());
-                    handled = true;
+                if(mCurrentlyShowingQuestion) {
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        answerQuestion(mAnswerEditText.getText().toString());
+                        handled = true;
+                    }
+                }
+                else{
+                    showCurrentQuestion();
+                    handled=true;
                 }
                 return handled;
             }
@@ -227,11 +240,11 @@ public final class StudySessionFragment extends Fragment implements Observer<Stu
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean(SHOWING_QUESION_BUNDLE_ID, mCurrentlyShowingQuestion);
+        outState.putInt(SHOWING_QUESTION_BUNDLE_ID, mCurrentlyShowingViewIndex);
     }
 
     @Override
-    public void onChanged(@Nullable StudySession studySession) {
+    public void onChanged(@Nullable StudySessionMultiple studySession) {
         BindCurrentQuestion();
     }
 
@@ -245,11 +258,11 @@ public final class StudySessionFragment extends Fragment implements Observer<Stu
         String currentTry="";
         SentenceSuggestionsInfo result = results[0];
         if(loopThroughTries(result, 0, currentTry)){
-            Log.w("Spelling", "Spellchecker found correct word or phrase");
+            //Log.w("Spelling", "Spellchecker found correct word or phrase");
             showToast(R.string.toast_correct_with_spelling_errors);
         }
         else{
-            Log.w("Spelling", "Spellchecker didn't find correct word or phrase");
+            //Log.w("Spelling", "Spellchecker didn't find correct word or phrase");
             mModel.answerCurrentQuestion(mLastAnswer, true);
             showCurrentCardDetails();
             showToast(R.string.toast_wrong_answer);
@@ -269,30 +282,44 @@ public final class StudySessionFragment extends Fragment implements Observer<Stu
         //BindCurrentQuestion();
     }
 
+    @OnClick(R.id.button_new_word_ok)
+    protected  void newWordOkButtonCLick(){
+        showUI(QUESTION_VIEW_INDEX);
+    }
 
     private void showCurrentCardDetails() {
         Card current = getCurrentSessionFromModel().getPrevious().getSourceCard();
         if (current != null) {
             mMainLanguageText.setText(current.getMainLanguage());
             mJapaneseText.setFuriganaText(getJapaneseDisplay(current, mDisplayMode));
-            if (mViewSwitcher.getCurrentView() != mDetailsRoot) {
-                mViewSwitcher.showPrevious();
-                mCurrentlyShowingQuestion = false;
-            }
+            showUI(MISTAKE_VIEW_INDEX);
         }
+    }
+
+    private void showNewCard(){
+       showUI(NEW_WORD_VIEW_INDEX);
+        Card current = getCurrentSessionFromModel().getCurrent().getSourceCard();
+        mNewWordJapaneseText.setFuriganaText(getJapaneseDisplay(current, mDisplayMode));
+        mNewWordMainLanguage.setText(String.format(mNewWordMainLanguageFormatString, current.getMainLanguage(), NihonGOUtils.getSynonymsString(current, " ,")));
     }
 
 
     private void showCurrentQuestion(){
-        if(mViewSwitcher.getCurrentView() != mReviewRoot){
-            mViewSwitcher.showNext();
-            mCurrentlyShowingQuestion=true;
+        if(getCurrentSessionFromModel().isCurrentNew()){
+            showNewCard();
+        }
+        else {
+            showUI(QUESTION_VIEW_INDEX);
         }
     }
 
 
+    private void showUI(int ui){
+        mCurrentlyShowingViewIndex=ui;
+        mViewSwitcher.setDisplayedChild(ui);
+    }
 
-    private StudySession getCurrentSessionFromModel(){
+    private StudySessionMultiple getCurrentSessionFromModel(){
         return mModel.getCurrentSession().getValue();
     }
 
@@ -300,12 +327,12 @@ public final class StudySessionFragment extends Fragment implements Observer<Stu
 
         SuggestionsInfo mine = info.getSuggestionsInfoAt(myIndex);
         String destCopy = dest;
-        Log.w("spelling", "Suggestions:" + String.valueOf(mine.getSuggestionsCount()));
+        //Log.w("spelling", "Suggestions:" + String.valueOf(mine.getSuggestionsCount()));
         if(mine.getSuggestionsCount() <= 0){
             destCopy += " " + mLastAnswerWords[myIndex];
             if(myIndex == info.getSuggestionsCount()-1){
 
-                Log.w("Spelling", "Trying " + destCopy.trim());
+                //Log.w("Spelling", "Trying " + destCopy.trim());
                 if(mModel.answerCurrentQuestion(destCopy.trim(), false))
                {
 
@@ -326,7 +353,7 @@ public final class StudySessionFragment extends Fragment implements Observer<Stu
                 String current = mine.getSuggestionAt(i);
                 destCopy = dest + " " + current;
                 if (myIndex == info.getSuggestionsCount()-1) {
-                    Log.w("Spelling", "Trying " + destCopy.trim());
+                    //Log.w("Spelling", "Trying " + destCopy.trim());
                     if(mModel.answerCurrentQuestion(destCopy.trim(), false))
                     {
                         mModel.answerCurrentQuestion(destCopy.trim(), true);
@@ -344,7 +371,7 @@ public final class StudySessionFragment extends Fragment implements Observer<Stu
 
 
     private void BindCurrentQuestion(){
-        StudySession current = mModel.getCurrentSession().getValue();
+        StudySessionMultiple current = mModel.getCurrentSession().getValue();
         if(current != null) {
             mRemainingQuestionsText.setText(String.format(mRemainingQuestionsFormatString,current.getRemainingStudyCardsCount()));
             if (current.isFinished() == false) {
@@ -361,8 +388,16 @@ public final class StudySessionFragment extends Fragment implements Observer<Stu
                 mQuestionText.setFuriganaText(questionText);
                 mAnswerEditText.setText("");
                 mAnswerEditText.requestFocus();
+
+                if(current.isCurrentNew()){
+                    showNewCard();
+                }
+
+
             } else {
-                showToast(R.string.toast_review_session_finished);
+                if(current.isFinished()) {
+                    showToast(R.string.toast_review_session_finished);
+                }
                 mListener.onTestFinished(current);
             }
 
@@ -371,7 +406,7 @@ public final class StudySessionFragment extends Fragment implements Observer<Stu
 
     private void answerQuestion(String answer){
         mLastAnswer = answer.replaceAll("\\s+", " ").trim();
-        Log.w("spelling", "Answer after trim:" + mLastAnswer);
+        //Log.w("spelling", "Answer after trim:" + mLastAnswer);
         if(!mLastAnswer.isEmpty()) {
 
 

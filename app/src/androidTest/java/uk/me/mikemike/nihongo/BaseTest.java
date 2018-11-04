@@ -116,7 +116,7 @@ public abstract class BaseTest {
     }
 
     public LearningState getDummyNonRealmLearningState(){
-        return new LearningState(new Date(),LearningState.STARTING_E_VALUE, 0, 0);
+        return new LearningState(new Date(), new Date(),LearningState.STARTING_E_VALUE, 0, 0);
     }
 
     public void addDecks(int count, int cardCount, boolean addStudyDeck){

@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
 
@@ -12,12 +13,13 @@
         android:layout_weight="1"
         android:text="TextView" />
 
-    <TextView
+    <se.fekete.furiganatextview.furiganaview.FuriganaTextView
         android:id="@+id/text_japanese_display"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="TextView" />
+        android:text="TextView"
+        app:contains_ruby_tags="true"/>
 
     <TextView
         android:id="@+id/text_japanese_hiragana"
@@ -53,4 +55,16 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="TextView" />
+    <View
+        android:id="@+id/divider"
+        android:layout_width="368dp"
+        android:layout_height="1dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 </LinearLayout>

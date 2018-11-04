@@ -42,4 +42,159 @@
 
     </card>
 </deck>
+    <deck name="Business Vocab (1)" description="Some business and office vocabulary, probably Around N2 or N3 level" author="Mike">
+        <card
+            mainLanguage="instructions"
+            japaneseKanji="指示"
+            japaneseHiragana="しじ"
+            wordType="Noun"
+            >
+            <japaneseDisplay><![CDATA[<ruby>指示<rt>しじ</rt></ruby>]]>
+            </japaneseDisplay>
+            <synonym>directions</synonym>
+        </card>
+        <card
+            japaneseKanji="入社する"
+            mainLanguage="to join a company"
+            japaneseHiragana="にゅうしゃする"
+            wordType="NounDo"
+            >
+            <japaneseDisplay><![CDATA[<ruby>入社<rt>にゅうしゃ</rt></ruby>する]]>
+            </japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="履歴書"
+            mainLanguage="resume"
+            japaneseHiragana="りれきしょ"
+            wordType="Noun"
+            >
+            <japaneseDisplay><![CDATA[<ruby>履歴書<rt>りれきしょ</rt></ruby>]]></japaneseDisplay>
+            <synonym>cv</synonym>>
+        </card>
+        <card
+            japaneseKanji="社員"
+            mainLanguage="employee"
+            japaneseHiragana="しゃいん"
+            wordType="Noun"
+            >
+            <japaneseDisplay><![CDATA[<ruby>社員<rt>しゃいん</rt></ruby>]]></japaneseDisplay>
+            <synonym>company employee</synonym>>
+        </card>
+        <card
+            japaneseKanji="給料"
+            mainLanguage="salary"
+            japaneseHiragana="きゅうりょう"
+            wordType="Noun"
+            >
+            <japaneseDisplay><![CDATA[<ruby>給料<rt>きゅうりょう</rt></ruby>]]></japaneseDisplay>
+            <synonym>wages</synonym>>
+            <synonym>pay</synonym>>
+        </card>
+        <card
+            japaneseKanji="時給"
+            mainLanguage="hourly wage"
+            japaneseHiragana="じきゅう"
+            wordType="Noun"
+            >
+            <japaneseDisplay><![CDATA[<ruby>時給<rt>じきゅう</rt></ruby>]]></japaneseDisplay>
+            <synonym>pay per hour</synonym>>
+            <synonym>hourly pay</synonym>>
+        </card>
+        <card
+            japaneseKanji="契約"
+            mainLanguage="contract"
+            japaneseHiragana="けいやく"
+            wordType="Noun"
+            >
+            <japaneseDisplay><![CDATA[<ruby>契約<rt>けいやく</rt></ruby>]]></japaneseDisplay>
+            <synonym>agreement</synonym>>
+        </card>
+        <card
+            japaneseKanji="本社"
+            mainLanguage="head office"
+            japaneseHiragana="ほんしゃ"
+            wordType="Noun">
+            <japaneseDisplay><![CDATA[<ruby>本社<rt>ほんしゃ</rt></ruby>]]></japaneseDisplay>
+            <synonym>headquarters</synonym>>
+        </card>
+        <card
+            japaneseKanji="通勤する"
+            mainLanguage="to commute to work"
+            japaneseHiragana="つうきんする"
+            wordType="NounDO">
+            <japaneseDisplay><![CDATA[<ruby>通勤<rt>つうきん</rt></ruby>する]]></japaneseDisplay>
+            <synonym>to travel to work</synonym>>
+        </card>
+        <card
+            japaneseKanji="首になる"
+            mainLanguage="to be fired"
+            japaneseHiragana="くびになる"
+            wordType="VerbU">
+            <japaneseDisplay><![CDATA[<ruby>首<rt>くび</rt></ruby>になる]]></japaneseDisplay>
+            <synonym>to be sacked</synonym>>
+            <synonym>to be dismissed</synonym>>
+        </card>
+        <card
+            japaneseKanji="公務員"
+            mainLanguage="civil servant"
+            japaneseHiragana="こうむいん"
+            wordType="Noun">
+            <japaneseDisplay><![CDATA[<ruby>公務員<rt>こうむいん</rt></ruby>]]></japaneseDisplay>
+            <synonym>government worker</synonym>>
+        </card>
+        <card
+            japaneseKanji="採用する"
+            mainLanguage="to employ"
+            japaneseHiragana="さいようする"
+            wordType="NounDO">
+            <japaneseDisplay><![CDATA[<ruby>採用<rt>さいよう</rt></ruby>する]]></japaneseDisplay>
+            <synonym>to adopt</synonym>
+        </card>
+        <card
+            japaneseKanji=""
+            mainLanguage="suitable"
+            japaneseHiragana="ふさわしい"
+            wordType="Adjective">
+            <synonym>proper</synonym>
+        </card>
+        <card
+            japaneseKanji="〜関係の仕事"
+            mainLanguage="~related job"
+            japaneseHiragana="~かんけいのしごと"
+            wordType="Noun">
+            <japaneseDisplay><![CDATA[〜<ruby>関係<rt>かんけい</rt></ruby>の<ruby>仕事<rt>しごと</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="登録する"
+            mainLanguage="to register"
+            japaneseHiragana="とうろくする"
+            wordType="NounDO">
+            <japaneseDisplay><![CDATA[<ruby>登録<rt>とうろく</rt></ruby>する]]></japaneseDisplay>
+            <synonym>to enroll</synonym>
+        </card>
+        <card
+            japaneseKanji="怠け者"
+            mainLanguage="lazy person"
+            japaneseHiragana="なまけもの"
+            wordType="Noun">
+            <japaneseDisplay><![CDATA[<ruby>怠け者<rt>なまけもの</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="働き者"
+            mainLanguage="hardworking person"
+            japaneseHiragana="はたらきもの"
+            wordType="Noun">
+            <japaneseDisplay><![CDATA[<ruby>働き者<rt>はたらきもの</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="仕事でミスする"
+            mainLanguage="to make a mistake at work"
+            japaneseHiragana="しごとでみすする"
+            wordType="NounDO">
+            <synonym>to make mistakes at work</synonym>
+            <japaneseDisplay><![CDATA[<ruby>仕事<rt>しごと</rt></ruby>でミスする]]></japaneseDisplay>
+        </card>
+
+
+    </deck>
 </decks>

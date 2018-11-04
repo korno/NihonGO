@@ -42,6 +42,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmRecyclerViewAdapter;
+import se.fekete.furiganatextview.furiganaview.FuriganaTextView;
 import uk.me.mikemike.nihongo.R;
 import uk.me.mikemike.nihongo.model.Card;
 import uk.me.mikemike.nihongo.model.StudyCard;
@@ -71,12 +72,12 @@ public class StudySessionResultsMistakesCardAdapter extends RealmRecyclerViewAda
     public class MistakesCardAdapterViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.text_japanese)
-        TextView mJapaneseTextView;
+        FuriganaTextView mJapaneseTextView;
         @BindView(R.id.text_main_language)
         TextView mMainLanguageTextView;
 
         public void bindToCard(Card card){
-            mJapaneseTextView.setText(card.getJapaneseDisplayIfPresentKanjiIfNot());
+            mJapaneseTextView.setFuriganaText(card.getJapaneseDisplayIfPresentKanjiIfNot());
             mMainLanguageTextView.setText(card.getMainLanguage());
         }
 

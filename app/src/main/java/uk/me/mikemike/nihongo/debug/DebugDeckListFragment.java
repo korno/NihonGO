@@ -39,6 +39,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,6 +63,9 @@ public class DebugDeckListFragment extends Fragment implements Observer<RealmRes
     NihongoViewModel mModel;
     DebugDeckListAdapter mAdapter;
     protected Unbinder mUnbinder;
+
+    protected boolean mStudyingOnly=true;
+
 
     public DebugDeckListFragment() {
         // Required empty public constructor
@@ -133,5 +137,11 @@ public class DebugDeckListFragment extends Fragment implements Observer<RealmRes
     public void onDeckViewStudyInformationSelected(Deck d) {
         Intent deckStateIntent = DebugDeckStudyStateActivity.createIntent(getActivity(), d.getStudyDecksUsingThisDeck().first().getStudyDeckID());
         startActivity(deckStateIntent);
+    }
+
+    @Override
+    public void onDeckDeleteCilicked(Deck d) {
+        Log.w("aa", " delete called");
+        mModel.deleteDeck(d);
     }
 }

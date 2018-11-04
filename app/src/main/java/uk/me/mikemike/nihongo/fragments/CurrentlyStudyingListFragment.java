@@ -41,11 +41,13 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.Date;
+import java.util.Random;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -55,6 +57,7 @@ import io.realm.RealmResults;
 import uk.me.mikemike.nihongo.R;
 import uk.me.mikemike.nihongo.activities.StudySessionActivity;
 import uk.me.mikemike.nihongo.adapters.StudyDeckListAdapter;
+import uk.me.mikemike.nihongo.model.LearningState;
 import uk.me.mikemike.nihongo.model.StudyDeck;
 import uk.me.mikemike.nihongo.viewmodels.NihongoViewModel;
 
@@ -101,8 +104,21 @@ public class CurrentlyStudyingListFragment extends Fragment implements Observer<
         super.onActivityCreated(savedInstanceState);
         mModel = ViewModelProviders.of(getActivity()).get(NihongoViewModel.class);
         mModel.importXml(getActivity().getResources().getXml(R.xml.mikes_test));
+        mModel.importXml(getActivity().getResources().getXml(R.xml.mikes_jlpt));
         mModel.getAllStudyDecks().observe(this, this);
         mModel.getStudyDate().observe(this, mDateObserver);
+
+        /*LearningState s = new LearningState();
+        Random r = new Random();
+        Log.w("Little test", s.toString());
+        for(int i=0; i<10; i++){
+            int score = r.nextInt(4)+2;
+            Log.w("Little test", "My answer score : " + score );
+            s.performSR(score, s.getNextDueDate());
+            Log.w("Little test", s.toString());
+        }*/
+
+
     }
 
     @Override
@@ -154,6 +170,11 @@ public class CurrentlyStudyingListFragment extends Fragment implements Observer<
                     }
                 }).setMessage(R.string.dialog_delete_studydeck_message).create();
         dialog.show();
+    }
+
+    @Override
+    public void onReviewStudyDeckChose10(StudyDeck deck, int reviewCount) {
+        startActivity(StudySessionActivity.createIntent(getActivity(), deck, reviewCount));
     }
 
     @Override

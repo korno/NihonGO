@@ -1,6 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <decks>
-    <deck name="Business Vocab (1)" description="Some business and office vocabulary, probably Around N2 or N3 level" author="Mike">
+    <deck name="Mike's JLPT N3　- Set 1" description="This is a collection of various vocabulary I have found while studying N3 textbooks." author="Mike">
+        <card
+            japaneseKanji="紹介する"
+            mainLanguage="to introduce"
+            japaneseHiragana="しょうかいする"
+            wordType="NounDO">
+            <synonym>to present</synonym>
+            <japaneseDisplay><![CDATA[<ruby>紹介<rt>しょうかい</rt></ruby>する]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="体操"
+            mainLanguage="gymnastics"
+            japaneseHiragana="たいそう"
+            wordType="Noun">
+            <japaneseDisplay><![CDATA[<ruby>体操<rt>たいそう</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="順に"
+            mainLanguage="in order"
+            japaneseHiragana="じゅんに"
+            wordType="Adverb">
+            <japaneseDisplay><![CDATA[<ruby>順<rt>じゅん</rt></ruby>に]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="伝統芸術"
+            mainLanguage="traditional arts"
+            japaneseHiragana="でんとうげいじゅつ"
+            wordType="Noun">
+            <japaneseDisplay><![CDATA[<ruby>伝統芸術<rt>でんとうげいじゅつ</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="寝坊する"
+            mainLanguage="to oversleep"
+            japaneseHiragana="ねぼうする"
+            wordType="NounDO">
+            <synonym>to sleep in</synonym>
+            <japaneseDisplay><![CDATA[<ruby>寝坊<rt>ねぼう</rt></ruby>する]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="経済"
+            mainLanguage="economy"
+            japaneseHiragana="けいざい"
+            wordType="Noun">
+            <synonym>economics</synonym>
+            <japaneseDisplay><![CDATA[<ruby>経済<rt>けいざい</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="宣伝する"
+            mainLanguage="to advertise"
+            japaneseHiragana="せんでんする"
+            wordType="NounDO">
+            <japaneseDisplay><![CDATA[<ruby>宣伝<rt>せんでん</rt></ruby>する]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="自然"
+            mainLanguage="nature"
+            japaneseHiragana="しぜん"
+            wordType="Noun">
+            <japaneseDisplay><![CDATA[<ruby>自然<rt>しぜん</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="来日する"
+            mainLanguage="to visit Japan"
+            japaneseHiragana="らいにちする"
+            wordType="NounDo">
+            <japaneseDisplay><![CDATA[<ruby>来日<rt>らいにち</rt></ruby>する]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="発売する"
+            mainLanguage="to release"
+            japaneseHiragana="はつばいする"
+            wordType="NounDo">
+            <synonym>to launch</synonym>
+            <japaneseDisplay><![CDATA[<ruby>発売<rt>はつばい</rt></ruby>する]]></japaneseDisplay>
+        </card>
         <card
             mainLanguage="instructions"
             japaneseKanji="指示"
@@ -15,7 +89,7 @@
             japaneseKanji="入社する"
             mainLanguage="to join a company"
             japaneseHiragana="にゅうしゃする"
-           wordType="NounDo"
+            wordType="NounDo"
             >
             <japaneseDisplay><![CDATA[<ruby>入社<rt>にゅうしゃ</rt></ruby>する]]>
             </japaneseDisplay>
@@ -93,13 +167,346 @@
             <synonym>to be dismissed</synonym>>
         </card>
         <card
-            japaneseKanji="公務員"
-            mainLanguage="civil servant"
-            japaneseHiragana="こうむいん"
+            japaneseKanji=""
+            mainLanguage="suitable"
+            japaneseHiragana="ふさわしい"
+            wordType="Adjective">
+            <synonym>proper</synonym>
+        </card>
+        <card
+            japaneseKanji="〜関係の仕事"
+            mainLanguage="~related job"
+            japaneseHiragana="~かんけいのしごと"
             wordType="Noun">
-            <japaneseDisplay><![CDATA[<ruby>公務員<rt>こうむいん</rt></ruby>]]></japaneseDisplay>
-            <synonym>government worker</synonym>>
+            <japaneseDisplay><![CDATA[〜<ruby>関係<rt>かんけい</rt></ruby>の<ruby>仕事<rt>しごと</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="登録する"
+            mainLanguage="to register"
+            japaneseHiragana="とうろくする"
+            wordType="NounDO">
+            <japaneseDisplay><![CDATA[<ruby>登録<rt>とうろく</rt></ruby>する]]></japaneseDisplay>
+            <synonym>to enroll</synonym>
+        </card>
+        <card
+            japaneseKanji="怠け者"
+            mainLanguage="lazy person"
+            japaneseHiragana="なまけもの"
+            wordType="Noun">
+            <japaneseDisplay><![CDATA[<ruby>怠け者<rt>なまけもの</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="働き者"
+            mainLanguage="hardworking person"
+            japaneseHiragana="はたらきもの"
+            wordType="Noun">
+            <japaneseDisplay><![CDATA[<ruby>働き者<rt>はたらきもの</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="仕事でミスする"
+            mainLanguage="to make a mistake at work"
+            japaneseHiragana="しごとでみすする"
+            wordType="NounDO">
+            <synonym>to make mistakes at work</synonym>
+            <japaneseDisplay><![CDATA[<ruby>仕事<rt>しごと</rt></ruby>でミスする]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="完成する"
+            mainLanguage="to complete"
+            japaneseHiragana="かんせいする"
+            wordType="NounDO">
+            <japaneseDisplay><![CDATA[<ruby>完成<rt>かんせい</rt></ruby>する]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="悩む"
+            mainLanguage="to be troubled"
+            japaneseHiragana="なやむ"
+            wordType="VerbU">
+            <synonym>to be worried</synonym>
+            <japaneseDisplay><![CDATA[<ruby>悩む<rt>なや</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="商品"
+            mainLanguage="product"
+            japaneseHiragana="しょうひん"
+            wordType="Noun">
+            <synonym>goods</synonym>
+            <synonym>products</synonym>
+            <synonym>merchandise</synonym>
+            <japaneseDisplay><![CDATA[<ruby>商品<rt>しょうひん</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="商品開発"
+            mainLanguage="product development"
+            japaneseHiragana="しょうひんかいはつ"
+            wordType="Noun">
+            <synonym>goods development</synonym>
+            <synonym>merchandise development</synonym>
+            <japaneseDisplay><![CDATA[<ruby>商品開発<rt>しょうひんかいはつ</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="理解を深まる"
+            mainLanguage="to deepen your understanding"
+            japaneseHiragana="りかいをふかまる"
+            wordType="VerbRU">
+            <synonym>to gain more understanding</synonym>
+            <synonym>to understand more deeply</synonym>
+            <japaneseDisplay><![CDATA[<ruby>理解<rt>りかい</rt></ruby>を<ruby>深まる<rt>ふかまる</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="自然環境"
+            mainLanguage="natural environment"
+            japaneseHiragana="しぜんかんきょう"
+            wordType="Noun">
+            <synonym>to gain more understanding</synonym>
+            <synonym>to understand more deeply</synonym>
+            <japaneseDisplay><![CDATA[<ruby>自然環境<rt>しぜんかんきょう</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="検査"
+            mainLanguage="checkup"
+            japaneseHiragana="けんさ"
+            wordType="Noun">
+            <synonym>inspection</synonym>
+            <synonym>medical test</synonym>
+            <japaneseDisplay><![CDATA[<ruby>検査<rt>けんさ</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="風景"
+            mainLanguage="landscape"
+            japaneseHiragana="ふうけい"
+            wordType="Noun">
+            <synonym>scenery</synonym>
+            <japaneseDisplay><![CDATA[<ruby>風景<rt>ふうけい</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="優勝する"
+            mainLanguage="to win something"
+            japaneseHiragana="ゆうしょうする"
+            wordType="NounDO">
+            <japaneseDisplay><![CDATA[<ruby>優勝<rt>ゆうしょう</rt></ruby>する]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="自由形"
+            mainLanguage="freestyle"
+            japaneseHiragana="じゆうがた"
+            wordType="Noun">
+            <japaneseDisplay><![CDATA[<ruby>自由形<rt>じゆうがた</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="出張する"
+            mainLanguage="to go on a business trip"
+            japaneseHiragana="しゅっちょうする"
+            wordType="NounDO">
+            <synonym>to take a business trip</synonym>
+            <japaneseDisplay><![CDATA[<ruby>出張<rt>しゅっちょう</rt></ruby>する]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="水不足"
+            mainLanguage="water shortage"
+            japaneseHiragana="みずふそく"
+            wordType="Noun">
+            <synonym>lack of water</synonym>
+            <japaneseDisplay><![CDATA[<ruby>水不足<rt>みずふそく</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="農作物"
+            mainLanguage="crops"
+            japaneseHiragana="のうさくもつ"
+            wordType="Noun">
+            <japaneseDisplay><![CDATA[<ruby>農作物<rt>のうさくもつ</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="被害"
+            mainLanguage="damage"
+            japaneseHiragana="ひがい"
+            wordType="Noun">
+            <japaneseDisplay><![CDATA[<ruby>被害<rt>ひがい</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="全員"
+            mainLanguage="all members"
+            japaneseHiragana="ぜんいん"
+            wordType="Noun">
+            <synonym>everyone</synonym>
+            <synonym>everybody</synonym>
+            <japaneseDisplay><![CDATA[<ruby>全員<rt>ぜんいん</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="現在"
+            mainLanguage="currently"
+            japaneseHiragana="げんざい"
+            wordType="Noun">
+            <synonym>now</synonym>
+            <synonym>at this time</synonym>
+            <japaneseDisplay><![CDATA[<ruby>現在<rt>げんざい</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="積雪"
+            mainLanguage="fallen snow"
+            japaneseHiragana="せきせつ"
+            wordType="Noun">
+            <synonym>snow cover</synonym>
+            <japaneseDisplay><![CDATA[<ruby>積雪<rt>せきせつ</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="影響"
+            mainLanguage="effect"
+            japaneseHiragana="えいきょう"
+            wordType="Noun">
+            <japaneseDisplay><![CDATA[<ruby>影響<rt>えいきょう</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="育児"
+            mainLanguage="childcare"
+            japaneseHiragana="いくじ"
+            wordType="Noun">
+            <japaneseDisplay><![CDATA[<ruby>育児<rt>いくじ</rt></ruby>]]></japaneseDisplay>
+            <synonym>child care</synonym>
+        </card>
+        <card
+            japaneseKanji="休暇"
+            mainLanguage="day off"
+            japaneseHiragana="きゅうか"
+            wordType="Noun">
+            <japaneseDisplay><![CDATA[<ruby>休暇<rt>きゅうか</rt></ruby>]]></japaneseDisplay>
+            <synonym>holiday</synonym>
+        </card>
+        <card
+            japaneseKanji="育児休暇"
+            mainLanguage="childcare leave"
+            japaneseHiragana="いくじきゅうか"
+            wordType="Noun">
+            <japaneseDisplay><![CDATA[<ruby>育児休暇<rt>いくじきゅうか</rt></ruby>]]></japaneseDisplay>
+            <synonym>maternity leave</synonym>
+        </card>
+        <card
+            japaneseKanji="子育て"
+            mainLanguage="parenting"
+            japaneseHiragana="こそだて"
+            wordType="Noun">
+            <japaneseDisplay><![CDATA[<ruby>子育て<rt>こそだて</rt></ruby>]]></japaneseDisplay>
+            <synonym>raising a child</synonym>
+            <synonym>raising children</synonym>
         </card>
 
+        <card
+            japaneseKanji="航空便"
+            mainLanguage="airmail"
+            japaneseHiragana="こうくうびん"
+            wordType="Noun">
+            <japaneseDisplay><![CDATA[<ruby>航空便<rt>こうくうびん</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="騒音"
+            mainLanguage="noise"
+            japaneseHiragana="そうおん"
+            wordType="Noun">
+            <japaneseDisplay><![CDATA[<ruby>騒音<rt>そうおん</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="大家さん"
+            mainLanguage="landlord"
+            japaneseHiragana="おおやさん"
+            wordType="Noun">
+            <japaneseDisplay><![CDATA[<ruby>大家さん<rt>おおやさん</rt></ruby>]]></japaneseDisplay>
+            <synonym>landlady</synonym>
+        </card>
+        <card
+            japaneseKanji="報告書"
+            mainLanguage="written report"
+            japaneseHiragana="ほうこくしょ"
+            wordType="Noun">
+            <japaneseDisplay><![CDATA[<ruby>報告書<rt>ほうこくしょ</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="案内する"
+            mainLanguage="to show around"
+            japaneseHiragana="あんないする"
+            wordType="NounDO">
+            <japaneseDisplay><![CDATA[<ruby>案内<rt>あんない</rt></ruby>する]]></japaneseDisplay>
+            <synonym>to guide</synonym>
+        </card>
+        <card
+            japaneseKanji="話し合う"
+            mainLanguage="to discuss"
+            japaneseHiragana="はなしあう"
+            wordType="Verb">
+            <japaneseDisplay><![CDATA[<ruby>話し合う<rt>はなしあう</rt></ruby>]]></japaneseDisplay>
+            <synonym>to talk over</synonym>
+        </card>
+        <card
+            japaneseKanji="訳す"
+            mainLanguage="to translate"
+            japaneseHiragana="やくす"
+            wordType="Verb">
+            <japaneseDisplay><![CDATA[<ruby>訳す<rt>やくす</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="同僚"
+            mainLanguage="coworker"
+            japaneseHiragana="どうりょう"
+            wordType="Noun">
+            <japaneseDisplay><![CDATA[<ruby>同僚<rt>どうりょう</rt></ruby>]]></japaneseDisplay>
+            <synonym>colleague</synonym>
+        </card>
+        <card
+            japaneseKanji="影響する"
+            mainLanguage="to have an impact on"
+            japaneseHiragana="えいきょうする"
+            wordType="NounDO">
+            <japaneseDisplay><![CDATA[<ruby>影響<rt>えいきょう</rt></ruby>する]]></japaneseDisplay>
+            <synonym>to affect</synonym>
+        </card>
+        <card
+            japaneseKanji="努力する"
+            mainLanguage="to make an effort"
+            japaneseHiragana="どりょくする"
+            wordType="NounDO">
+            <japaneseDisplay><![CDATA[<ruby>努力<rt>どりょく</rt></ruby>する]]></japaneseDisplay>
+            <synonym>to endeavour</synonym>
+        </card>
+        <card
+            japaneseKanji="事務所"
+            mainLanguage="office"
+            japaneseHiragana="じむしょ"
+            wordType="Noun">
+            <japaneseDisplay><![CDATA[<ruby>事務所<rt>じむしょ</rt></ruby>]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="来店する"
+            mainLanguage="to come to a store"
+            japaneseHiragana="らいてんする"
+            wordType="NounDO">
+            <japaneseDisplay><![CDATA[<ruby>来店<rt>らいてん</rt></ruby>する]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="お目にかかる"
+            mainLanguage="to humbly meet"
+            japaneseHiragana="おめにかかる"
+            wordType="VerbRU">
+            <japaneseDisplay><![CDATA[お<ruby>目<rt>め</rt></ruby>にかかる]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="お目にかける"
+            mainLanguage="to humbly show"
+            japaneseHiragana="おめにかける"
+            wordType="VerbRU">
+            <japaneseDisplay><![CDATA[お<ruby>目<rt>め</rt></ruby>にかける]]></japaneseDisplay>
+        </card>
+        <card
+            japaneseKanji="ちょうだいする"
+            mainLanguage="to humbly receive"
+            japaneseHiragana="ちょうだいする"
+            wordType="NounDO">
+        </card>
+        <card
+            japaneseKanji="存じ上げる"
+            mainLanguage="to humbly know"
+            japaneseHiragana="ぞんじあげる"
+            wordType="VerbRU">
+            <japaneseDisplay><![CDATA[<ruby>存じ上げる<rt>ぞんじあげる</rt></ruby>]]></japaneseDisplay>
+        </card>
     </deck>
+
 </decks>

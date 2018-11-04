@@ -19,7 +19,7 @@ public class LearningStateTest extends  BaseTest {
     @Test
     public void startLearningTest(){
         Date d = new Date();
-        LearningState s = new LearningState(d, LearningState.STARTING_E_VALUE,
+        LearningState s = new LearningState(d, d, LearningState.STARTING_E_VALUE,
                                                 0,0);
         s.startLearning(d);
         assertEquals(d, s.getNextDueDate());
@@ -33,7 +33,7 @@ public class LearningStateTest extends  BaseTest {
     @Test(expected = IllegalArgumentException.class)
     public void performSRWithNullDateTest(){
         Date d = new Date();
-        LearningState s = new LearningState(d, LearningState.STARTING_E_VALUE,
+        LearningState s = new LearningState(d, d, LearningState.STARTING_E_VALUE,
                 0,0);
         s.performSR(5, null);
     }
@@ -42,7 +42,7 @@ public class LearningStateTest extends  BaseTest {
     @Test(expected = IllegalArgumentException.class)
     public void startLearningWithNullDateTest(){
         Date d = new Date();
-        LearningState s = new LearningState(d, LearningState.STARTING_E_VALUE,
+        LearningState s = new LearningState(d, d, LearningState.STARTING_E_VALUE,
                 0,0);
        s.startLearning(null);
     }
@@ -50,7 +50,7 @@ public class LearningStateTest extends  BaseTest {
     @Test(expected = IllegalArgumentException.class)
     public void performSRWithInvalidAnswerGradeLow(){
         Date d = new Date();
-        LearningState s = new LearningState(d, LearningState.STARTING_E_VALUE,
+        LearningState s = new LearningState(d, d, LearningState.STARTING_E_VALUE,
                 0,0);
         s.performSR(-1, new Date());
     }
@@ -59,7 +59,7 @@ public class LearningStateTest extends  BaseTest {
     @Test(expected = IllegalArgumentException.class)
     public void performSRWithInvalidAnswerGradeHigh(){
         Date d = new Date();
-        LearningState s = new LearningState(d, LearningState.STARTING_E_VALUE,
+        LearningState s = new LearningState(d, d, LearningState.STARTING_E_VALUE,
                 0,0);
         s.performSR(6, new Date());
     }
@@ -67,7 +67,7 @@ public class LearningStateTest extends  BaseTest {
     @Test
     public  void performFirstTwoReviewsTest(){
         Date d = new Date();
-        LearningState s = new LearningState(d, LearningState.STARTING_E_VALUE,
+        LearningState s = new LearningState(d, d, LearningState.STARTING_E_VALUE,
                 0,0);
         assertEquals(0f, s.getInterval(), 1e-15);
         s.performSR(5, d);
@@ -81,7 +81,7 @@ public class LearningStateTest extends  BaseTest {
     @Test
     public void performFirstTwoReviewsThenFailIntervalCheckTest() {
         Date d = new Date();
-        LearningState s = new LearningState(d, LearningState.STARTING_E_VALUE,
+        LearningState s = new LearningState(d, d, LearningState.STARTING_E_VALUE,
                 0,0);
         assertEquals(0f, s.getInterval(), 1e-15);
         assertEquals(d, s.getNextDueDate());
@@ -109,26 +109,26 @@ public class LearningStateTest extends  BaseTest {
     @Test(expected =  IllegalArgumentException.class)
     public void invalidEasinessValueTest(){
         Date d = new Date();
-        LearningState s = new LearningState(d,  -1f, 0, 0);
+        LearningState s = new LearningState(d, d,  -1f, 0, 0);
     }
 
     @Test(expected =  IllegalArgumentException.class)
     public void invalidIntervalValueTest(){
         Date d = new Date();
-        LearningState s = new LearningState(d,  2.3f, 0, -2);
+        LearningState s = new LearningState(d, d,  2.3f, 0, -2);
     }
 
     @Test(expected =  IllegalArgumentException.class)
     public void invalidConsecutiveValueTest(){
         Date d = new Date();
-        LearningState s = new LearningState(d,  2.3f, -1, 0);
+        LearningState s = new LearningState(d, d,  2.3f, -1, 0);
     }
 
     @Test
     public void minimumEasinessValueTest(){
         Date d = new Date();
         // starting at the minimum e value
-        LearningState s = new LearningState(d, LearningState.MINIMUM_E_VALUE, 5, 5 * LearningState.MINIMUM_E_VALUE);
+        LearningState s = new LearningState(d, d, LearningState.MINIMUM_E_VALUE, 5, 5 * LearningState.MINIMUM_E_VALUE);
         // get it right a few times
         s.performSR(3, d);
         s.performSR(3, d);

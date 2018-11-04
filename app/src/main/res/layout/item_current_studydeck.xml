@@ -5,19 +5,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp">
+    android:padding="8dp"
+    android:animateLayoutChanges="true">
 
     <android.support.v7.widget.CardView
         android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
         card_view:cardCornerRadius="4dp"
         card_view:cardElevation="5dp"
         card_view:cardUseCompatPadding="true">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true">
 
 
             <TextView
@@ -28,26 +31,26 @@
                 android:layout_alignParentStart="true"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
                 android:text="TextView"
                 android:textAppearance="@android:style/TextAppearance.Material.Title"
+                app:layout_constraintBaseline_toBaselineOf="@+id/text_review_count_banana"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="jjjj" />
+                app:layout_constraintStart_toEndOf="@+id/text_review_count_banana"
+                tools:text="Mike's JLPT N3 - Set 1" />
 
             <TextView
                 android:id="@+id/text_review_count"
                 android:layout_width="0dp"
-                android:layout_height="23dp"
+                android:layout_height="26dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:text="TextView"
-                android:textAppearance="@android:style/TextAppearance.Material.Widget.ActionBar.Subtitle"
+                android:textAppearance="@android:style/TextAppearance.Material.Subhead"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/progress_bar_mastered_amount" />
+                app:layout_constraintTop_toBottomOf="@+id/text_review_count_banana"
+                tools:text="18 reviews" />
 
 
             <Button
@@ -65,6 +68,20 @@
                 app:layout_constraintTop_toBottomOf="@+id/tile_divider" />
 
             <Button
+                android:id="@+id/button_start_review_session_10_reviews"
+                style="@android:style/Widget.Material.Button.Borderless.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_weight="1"
+                android:text="@string/item_current_study_deck_review_button_10_reviews"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/button_start_review_session"
+                app:layout_constraintTop_toBottomOf="@+id/tile_divider" />
+
+            <Button
                 android:id="@+id/button_remove_study"
                 style="@android:style/Widget.Material.Button.Borderless.Colored"
                 android:layout_width="wrap_content"
@@ -75,21 +92,8 @@
                 android:layout_weight="1"
                 android:text="@string/item_current_study_deck_delete_button"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/button_start_review_session"
+                app:layout_constraintStart_toEndOf="@+id/button_start_review_session_10_reviews"
                 app:layout_constraintTop_toBottomOf="@+id/tile_divider" />
-
-            <TextView
-                android:id="@+id/text_studying_details"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:text="TextView"
-                android:textAppearance="@android:style/TextAppearance.Material.Body1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_review_count" />
 
             <View
                 android:id="@+id/tile_divider"
@@ -98,52 +102,87 @@
                 android:layout_marginTop="8dp"
                 android:background="?android:attr/dividerVertical"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+                app:layout_constraintTop_toBottomOf="@+id/layout_details" />
+
+
+            <View
+                android:id="@+id/tile_divider2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="8dp"
+                android:background="?android:attr/dividerVertical"
+                android:visibility="visible"
+                app:layout_constraintBottom_toTopOf="@+id/image_show_details"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_review_count"></View>
 
             <ProgressBar
                 android:id="@+id/progress_bar_mastered_amount"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="0dp"
-                android:layout_height="16dp"
-                android:layout_marginEnd="8dp"
+                android:layout_height="13dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="4dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/text_review_count_banana"
                 app:layout_constraintTop_toBottomOf="@+id/text_studydeck_name" />
 
+            <ImageView
+                android:id="@+id/image_show_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="62dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/text_details"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tile_divider2"
+                app:srcCompat="@drawable/ic_expand_more_black_48dp" />
+
             <android.support.constraint.ConstraintLayout
-                android:id="@+id/constraintLayout"
+                android:id="@+id/layout_details"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_studying_details">
+                app:layout_constraintTop_toBottomOf="@+id/image_show_details">
+
+                <TextView
+                    android:id="@+id/text_studying_details"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:text="TextView"
+                    android:textAppearance="@android:style/TextAppearance.Material.Body1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/textView2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
                     android:text="@string/item_current_study_study_percentage_title"
                     android:textAppearance="@android:style/TextAppearance.Material.Small"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/text_studying_details" />
 
                 <ProgressBar
                     android:id="@+id/progress_bar_cards_seen"
                     style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView2" />
@@ -153,14 +192,123 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="16dp"
                     android:text="TextView"
                     app:layout_constraintBottom_toTopOf="@+id/progress_bar_cards_seen"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toEndOf="@+id/textView2" />
+
+                <ProgressBar
+                    android:id="@+id/progress_bar_learning"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/item_current_study_learning_percentage_title"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/progress_bar_cards_seen" />
+
+                <TextView
+                    android:id="@+id/text_learning_amount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="8dp"
+                    android:text="TextView"
+                    app:layout_constraintBottom_toTopOf="@+id/progress_bar_learning"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toEndOf="@+id/textView4" />
+
+                <ProgressBar
+                    android:id="@+id/progress_bar_mastered_2"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/text_mastered_title" />
+
+                <TextView
+                    android:id="@+id/text_mastered_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/item_current_study_mastered_precentage_title"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/progress_bar_learning" />
+
+                <TextView
+                    android:id="@+id/text_mastered_amount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="8dp"
+                    android:text="TextView"
+                    app:layout_constraintBottom_toTopOf="@+id/progress_bar_mastered_2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toEndOf="@+id/text_mastered_title" />
+
+
             </android.support.constraint.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/text_details"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:clickable="true"
+                android:text="@string/item_current_study_details"
+                android:textAppearance="@android:style/TextAppearance.Material.Subhead"
+                app:layout_constraintBottom_toBottomOf="@+id/image_show_details"
+                app:layout_constraintEnd_toStartOf="@+id/image_show_details"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tile_divider2"
+                tools:text="@string/item_current_study_details" />
+
+            <TextView
+                android:id="@+id/text_review_count_banana"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/reviews_circle"
+                android:padding="0dp"
+                android:scaleType="centerInside"
+                android:text="@string/item_current_study_deck_review_button_10_reviews"
+                android:textAppearance="@android:style/TextAppearance.Material.Inverse"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="25" />
 
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
